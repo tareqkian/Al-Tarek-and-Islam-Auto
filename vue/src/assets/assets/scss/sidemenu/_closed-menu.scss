@@ -1,0 +1,25 @@
+@media (min-width: 992px) {
+    .closed.app.sidenav-toggled .app-sidebar {
+        display: none !important;
+    }
+
+    .closed.app.sidenav-toggled .app-content {
+        margin-left: 0px !important;
+    }
+
+    .closed.app.sidenav-toggled .app-header {
+        padding-left: 0px !important;
+    }
+}
+
+@media (min-width: 992px) {
+    .rtl.closed.app.sidenav-toggled .app-content {
+        margin-right: 0px !important;
+        margin-left: auto !important;
+    }
+
+    .rtl.closed.app.sidenav-toggled .app-header {
+        padding-left: inherit !important;
+        padding-right: 0px !important;
+    }
+}

@@ -1,0 +1,159 @@
+<template>
+  <PageLayoutVue :pageTitle="this.$route.meta.pageTitle">
+    <button class="btn btn-primary mb-2" @click="userDialog()">
+      <i class="fe fe-plus"></i>
+      Add New User
+    </button>
+    <div class="card">
+      <div class="card-body">
+        <DataTable :loading="users.loading" :value="users.data"
+                   :filters="filters" :rows-per-page-options="[5,15,30]"
+                   paginator :rows="5"
+                   paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                   current-page-report-template="Showing {first} to {last} of {totalRecords}"
+                   table-class="table table-vcenter text-nowrap border-bottom table-striped table-hover">
+          <template #loading>
+            <Loading />
+          </template>
+          <template #header>
+            <div class="search-element w-25 ms-auto mx-3 mb-4">
+              <input type="search" class="form-control header-search"
+                     v-model="filters['global'].value" placeholder="Search…"
+                     aria-label="Search" tabindex="1">
+              <i class="feather feather-search position-absolute" style="top: 30%;right: 10px"></i>
+            </div>
+          </template>
+          <Column :sortable="true" field="name" header="Name"></Column>
+          <Column :sortable="true" field="email" header="Email"></Column>
+          <Column field="avatar" header="Avatar">
+            <template #body="val">
+                <Image class="w-30" :src="val.data[val.field]" preview/>
+            </template>
+          </Column>
+          <Column :sortable="true" field="role.display_name" header="Role"></Column>
+          <Column :sortable="true" field="created_at" header="Created at"></Column>
+          <Column :sortable="true" field="updated_at" header="Updated at"></Column>
+          <Column header="Actions">
+            <template #body="val">
+              <i class="fa fa-edit text-info mx-1" @click="userDialog(val.data)"></i>
+              <i class="fa fa-trash text-danger mx-1" @click="userDelete($event,val.data)"></i>
+            </template>
+          </Column>
+        </DataTable>
+      </div>
+    </div>
+
+    <handleUser
+      :userDialogShow="userDialogShow"
+      :loading="loading"
+      :errors="errors"
+      :defaultImg="defaultImg"
+      :userForm="userForm"
+      @handleUserForm="handleUserForm"
+    />
+  </PageLayoutVue>
+</template>
+
+<script setup>
+import PageLayoutVue from "/src/components/Layouts/PageLayout.vue"
+import Loading from "/src/components/Loading.vue";
+import handleUser from "/src/components/User/handleUser.vue"
+import DataTable from "primevue/datatable";
+import Column from "primevue/column";
+import Avatar from 'primevue/avatar';
+import Image from 'primevue/image';
+
+import { useToast } from "primevue/usetoast";
+import { useConfirm } from "primevue/useconfirm";
+import { computed, ref } from "vue";
+import { FilterMatchMode } from "primevue/api";
+import { useUsersStore } from "/src/store/Users";
+import { useRolesStore } from "/src/store/Roles";
+import { useSystemSettings } from "/src/store/SystemSettings"
+import {useAuth} from "../../store/Auth";
+
+const filters = ref({'global': { value: null, matchMode: FilterMatchMode.CONTAINS }})
+const confirm = useConfirm();
+const toast = useToast();
+
+const usersStore = useUsersStore();
+const users = computed(()=>usersStore.users)
+// users.value.data.length || usersStore.initUsers();
+usersStore.initUsers();
+
+const userDialogShow = ref(false);
+const loading = ref(false);
+const errors = ref({});
+const defaultImg = ref(null)
+const userForm = ref({
+  name: null,
+  email: null,
+  avatar: null,
+  role_id: null,
+  Desktop: 0,
+  Mobile: 0
+})
+const userDialog = (user = {})=>{
+  userDialogShow.value = true
+  defaultImg.value = user.avatar || null
+  userForm.value.id = user.id || null
+  userForm.value.name = user.name || null
+  userForm.value.email = user.email || null
+  userForm.value.Desktop = (user.settings ? user.settings.devices[0].count : null)
+  userForm.value.Mobile = (user.settings ? user.settings.devices[1].count : null)
+  userForm.value.avatar = null
+  userForm.value.role_id = (user.role ? user.role.id : null)
+}
+const handleUserForm = async ()=>{
+  try {
+    loading.value = true
+    errors.value = {}
+    if ( userForm.value.id ) await usersStore.updateUser(userForm.value)
+    else await usersStore.storeUser(userForm.value)
+    userDialogShow.value = false
+    toast.add({
+      closable: false,
+      severity: "success",
+      summary: "Users",
+      detail: "Has Been Updated",
+      life: 3000
+    })
+    loading.value = false
+  } catch (e) {
+    errors.value = e
+    loading.value = false
+  }
+}
+const userDelete = (event,user)=>{
+  confirm.require({
+    target: event.currentTarget,
+    message: {
+      header: 'Are Ya Sure',
+      body: "You won't be able to revert this!"
+    },
+    icon: 'pi pi-exclamation-triangle',
+    acceptLabel: "Yes, delete it!",
+    acceptClass: 'btn btn-sm btn-danger mx-1',
+    rejectLabel: "Cancel",
+    rejectClass: 'btn btn-sm btn-secondary mx-1',
+    accept: async()=>{
+      await usersStore.distroyUser(user)
+      toast.add({
+        closable: false,
+        severity: "success",
+        summary: "User",
+        detail: "has been Deleted",
+        life: 3000
+      })
+    }
+  });
+}
+</script>
+
+<style lang="scss" scoped>
+::v-deep(.p-paginator) {
+  .p-paginator-current {
+    margin-left: auto;
+  }
+}
+</style>

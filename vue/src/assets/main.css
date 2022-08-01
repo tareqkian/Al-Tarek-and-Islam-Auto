@@ -1,0 +1,15 @@
+/* Icons */
+@import "assets/css/icons.css";
+/* Bootstrap */
+@import "assets/plugins/bootstrap/css/bootstrap.css";
+/* Style */
+@import "assets/css/style.css";
+@import "assets/css/boxed.css";
+@import "assets/css/dark.css";
+@import "assets/css/skin-modes.css";
+@import "assets/css/transparent-style.css";
+/* Animate */
+@import "assets/css/animated.css";
+/* INTERNAL Switcher */
+@import "assets/switcher/css/switcher.css";
+@import "assets/switcher/demo.css";

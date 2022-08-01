@@ -1,0 +1,335 @@
+/*------------------------------------------------------------------
+[Master Stylesheet]
+
+Project        :   Dayone - Multipurpose Admin & Dashboard Template
+Version        :   V.1
+Create Date    :   23/04/2021
+Copyright      :   Spruko Technologies Private Limited 
+Author         :   Spruko
+Author URL     :   https://themeforest.net/user/spruko
+Support	       :   support@spruko.com
+License        :   Licensed under ThemeForest License
+
+-------------------------------------------------------------------*/
+
+@import "variables";
+
+/*
+1.  Accordions
+2.  Alerts
+3.  Badges
+4.  Bootstrap-Styles
+5.  Breadcrumbs
+6.  Buttons
+7.  Card
+8.  Carousel
+9.  Dropdown
+10. Input-Group
+11. Jumbotron
+12. Labels
+13. List
+14. Media
+15. Modal
+16. Navigation
+17. Pagination
+18. Panel
+19. Progress
+20. Tables
+21. Tags
+22. Thumbnail
+23. Tolltip&popover
+24. Typography
+25. Chat
+26. Chat2
+27. Contact
+28. Date-Picker
+29. Loader
+30. Popup-chat
+31. Profile
+32. RangeSlider
+33. Rating
+34. Select-Group
+35. Selectize
+36. Tabs
+37. Vectormap
+38. Avatars
+39. Custom-Control
+40. Custom-styles
+41. Custom
+42. Feather-icons
+43. Highlight
+44. Icon-list
+46. Pricing
+47. SupportDashboard
+48. Footer
+49. Grid
+50. Header
+51. Horizontal-menu
+52. rtl
+53. support-hor
+54. Calendar
+53. Charts
+54. Email
+55. Form-Elements
+56. Form-wizard
+57. Gallery
+58. Time-line
+59. accept-cookies
+60. accordions
+61. bootstrap-datepicker
+62. bootstrap-timepicker
+63. buttons.bootstrap
+64. buttons.dataTables
+65. color-picker
+66. c3-chart
+67. cookies
+68. cropme
+69. dataTables.bootstrap
+70. datepicker
+71. dragula
+72. fancy_fileupload
+73. fileupload
+74. fullcalendar
+75. gallery
+76. intlTelInput
+77. ion.rangeSlider
+78. plugins/ion.rangeSlider.skinFlat
+79. plugins/jquery-jvectormap
+80. plugins/jquery.autocomplete
+81. plugins/jquery.countdown
+82. plugins/jQuery.countdownTimer
+83. plugins/jquery.growl
+84. plugins/jquery.sweet-modal
+85. plugins/jquery.timepicker
+86. plugins/jquery.transfer
+87. plugins/jqvmap
+89. plugins/leaflet
+90. plugins/lightslider
+100. plugins/morris
+101. plugins/multi
+102. plugins/multiple-select
+103. plugins/notifIt
+104. plugins/owl-carousel
+105. plugins/p-scrollbar
+106. plugins/pignose.calendar
+107. plugins/quill.bubble
+108. plugins/quill.snow
+109. plugins/responsive.bootstrap5
+110. plugins/richtext
+111. plugins/sample
+112. plugins/select2
+113. plugins/sidebar
+114. plugins/smart_wizard_theme_dots
+115. plugins/smart_wizard
+116. plugins/twentytwenty
+117. plugins/spectrum-colorpicker
+118. plugins/summernote1
+119. plugins/sumoselect
+120. plugins/sweetalert
+121. plugins/treeview
+122. plugins/twentytwenty
+123. Alignments
+124. Backgrounds
+125. Borders
+126. Height
+127. Margin
+128. Padding
+129. Typography
+130. Width
+*/
+
+/* ###### Fonts ####### */
+@import "custom/fonts/fonts";
+
+
+/* ###### bootstrap ####### */
+@import "bootstrap/accordion";
+@import "bootstrap/alerts";
+@import "bootstrap/badges";
+@import "bootstrap/bootstrap-styles";
+@import "bootstrap/breadcrumb";
+@import "bootstrap/buttons";
+@import "bootstrap/cards";
+@import "bootstrap/carousel";
+@import "bootstrap/dropdown";
+@import "bootstrap/input-group";
+@import "bootstrap/jumbotron";
+@import "bootstrap/labels";
+@import "bootstrap/list";
+@import "bootstrap/media";
+@import "bootstrap/modal";
+@import "bootstrap/navigation";
+@import "bootstrap/pagination";
+@import "bootstrap/panel";
+@import "bootstrap/progress";
+@import "bootstrap/tables";
+@import "bootstrap/tags";
+@import "bootstrap/thumbnail";
+@import "bootstrap/tooltip&popover";
+@import "bootstrap/typhography";
+
+
+/* ###### components ####### */
+@import "components/chat";
+@import "components/chat2";
+@import "components/contact";
+@import "components/date-picker";
+@import "components/loader";
+@import "components/popup-chat";
+@import "components/profile";
+@import "components/rangeslider";
+@import "components/rating";
+@import "components/select-group";
+@import "components/selectize";
+@import "components/tabs";
+@import "components/vectormap";
+
+
+/* ###### custom ####### */
+@import "custom/avatars";
+@import "custom/custom-control";
+@import "custom/custom-styles";
+@import "custom/custom";
+@import "custom/feather-icons";
+@import "custom/highlight";
+@import "custom/icon-list";
+@import "custom/pricing";
+@import "custom/supportdashboard";
+
+
+/* ###### layouts ####### */
+@import "layouts/footer";
+@import "layouts/grid";
+@import "layouts/header";
+@import "layouts/horizontal-menu";
+@import "layouts/rtl";
+@import "layouts/support-hor";
+
+
+/* ###### library ####### */
+@import "library/calendar";
+@import "library/charts";
+@import "library/email";
+@import "library/form-elements";
+@import "library/form-wizard";
+@import "library/gallery";
+@import "library/timeline";
+
+
+/* ###### plugins ####### */
+@import "plugins/accept-cookies";
+@import "plugins/accordions";
+@import "plugins/bootstrap-datepicker";
+@import "plugins/bootstrap-timepicker";
+@import "plugins/buttons.bootstrap";
+@import "plugins/buttons.dataTables";
+@import "plugins/c3-chart";
+@import "plugins/color-picker";
+@import "plugins/cookies";
+@import "plugins/cropme";
+@import "plugins/dataTables.bootstrap";
+@import "plugins/datepicker";
+@import "plugins/dragula";
+@import "plugins/fancy_fileupload";
+@import "plugins/fileupload";
+@import "plugins/fullcalendar";
+@import "plugins/gallery";
+@import "plugins/intlTelInput";
+@import "plugins/ion.rangeSlider";
+@import "plugins/ion.rangeSlider.skinFlat";
+@import "plugins/jquery-jvectormap";
+@import "plugins/jquery.autocomplete";
+@import "plugins/jquery.countdown";
+@import "plugins/jQuery.countdownTimer";
+@import "plugins/jquery.growl";
+@import "plugins/jquery.sweet-modal";
+@import "plugins/jquery.timepicker";
+@import "plugins/jquery.transfer";
+@import "plugins/jqvmap";
+@import "plugins/leaflet";
+@import "plugins/lightslider";
+@import "plugins/modal-datepicker";
+@import "plugins/morris";
+@import "plugins/multi";
+@import "plugins/multiple-select";
+@import "plugins/notifIt";
+@import "plugins/owl-carousel";
+@import "plugins/p-scrollbar";
+@import "plugins/pignose.calendar";
+@import "plugins/quill.bubble";
+@import "plugins/quill.snow";
+@import "plugins/responsive.bootstrap5";
+@import "plugins/richtext";
+// @import "plugins/sample";
+@import "plugins/select2";
+@import "plugins/sidebar";
+@import "plugins/smart_wizard_theme_dots";
+@import "plugins/smart_wizard";
+@import "plugins/twentytwenty";
+@import "plugins/spectrum-colorpicker";
+@import "plugins/summernote1";
+@import "plugins/sumoselect";
+@import "plugins/sweetalert";
+@import "plugins/treeview";
+@import "plugins/twentytwenty";
+
+
+/* ###### library ####### */
+@import "sidemenu/closed-menu";
+@import "sidemenu/default-menu";
+@import "sidemenu/hover-submenu";
+@import "sidemenu/hover-submenu1";
+@import "sidemenu/icon-text";
+
+
+/* ###### utlities ####### */
+@import "utlities/alignments";
+@import "utlities/backgrounds";
+@import "utlities/borders";
+@import "utlities/height";
+@import "utlities/margin";
+@import "utlities/padding";
+@import "utlities/typography";
+@import "utlities/width";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

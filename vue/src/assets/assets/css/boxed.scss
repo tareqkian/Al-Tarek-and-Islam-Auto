@@ -1,0 +1,193 @@
+@import "../scss/variables";
+
+@media (min-width: 1400px) {
+	.boxed {
+		.page {
+			width: 85%;
+			margin: 0 auto;
+			background: #f2f6f9;
+			position: relative;
+			display: -ms-flexbox;
+			display: -webkit-box;
+			display: flex;
+			-ms-flex-direction: column;
+			-webkit-box-orient: vertical;
+			-webkit-box-direction: normal;
+			flex-direction: column;
+			-ms-flex-pack: center;
+			-webkit-box-pack: center;
+			justify-content: center;
+			min-height: 100vh;
+			-webkit-box-shadow: rgba(0, 0, 0, 0.3) 0 5px 0 0, rgba(0, 0, 0, 0.3) 0 5px 25px 0;
+			box-shadow: rgba(0, 0, 0, 0.3) 0 5px 0 0, rgba(0, 0, 0, 0.3) 0 5px 25px 0;
+		}
+
+		.header.top-header {
+			width: 85% !important;
+		}
+
+		.hor-menu.horizontal-main {
+			max-width: 100%;
+			&.fixed-header {
+				max-width: 85%;
+			}
+		}
+
+		.main-content {
+			.container,
+			.container-fluid {
+				padding-left: 20px;
+				padding-right: 20px;
+			}
+		}
+
+		.main-header > {
+			.container,
+			.container-fluid {
+				padding-left: 15px;
+				padding-right: 15px;
+			}
+		}
+
+		.app-sidebar {
+			left: auto !important;
+		}
+
+		.side-header {
+			left: auto !important;
+			right: auto !important;
+			z-index: 1044;
+		}
+
+		.main-header.side-header {
+			max-width: 85%;
+		}
+
+		.nav-tabs .nav-link {
+			padding: 1rem 1.2rem;
+		}
+
+		&.app.sidenav-toggled .app-sidebar.comb-sidebar {
+			left: -230px !important;
+		}
+
+		.horizontalMenu > .horizontalMenu-list > li:last-child > ul.sub-menu {
+			right: initial;
+		}
+		.horizontalMenu > .horizontalMenu-list > li > a {
+			padding: 0.75rem 1.2rem;
+		}
+
+		// .app-header {
+		// 	padding-right: 10px !important;
+		// }
+
+		.second-sidemenu {
+			left: auto !important;
+			margin-left: 70px;
+		}
+
+		&.app.sidebar-mini.sidenav-toggled4 .first-sidemenu {
+			left: auto !important;
+		}
+		@media (min-width: 992px) {
+			.landingmain-header.header .horizontal-main {
+				width: inherit;
+			}
+			.landingmain-header.header .sticky-wrapper.is-sticky .horizontal-main {
+				width: 85% !important;
+			}
+		}
+		@media (min-width: 992px) {
+			&.horizontal .sticky-pin {
+				position: fixed;
+				top: 0;
+				width: 100%;
+				z-index: 999;
+				right: 0;
+			}
+		}
+		.task-bored {
+			display: block !important;
+		}
+		.task-bored .avatar-list.avatar-list-stacked {
+			margin-top: 15px !important;
+		}
+
+		// .search-background .xdsoft_autocomplete input {
+		// 	width: 85% !important;
+		// }
+	}
+
+	body.boxed {
+		background: #bdc0c8 !important;
+	}
+
+	.boxed .app-header.header {
+		width: 85%;
+		margin: 0 auto;
+	}
+	.boxed.transparent-mode .page {
+		background: $transparent-body;
+		-webkit-box-shadow: $black-3 0px 5px 0px 0px, $black-3 0px 5px 25px 0px;
+		box-shadow: $black-3 0px 5px 0px 0px, $black-3 0px 5px 25px 0px;
+	}
+}
+@media only screen and (max-width: 1162px) and (min-width: 992px) {
+	.boxed .hor-menu .horizontalMenu > .horizontalMenu-list > li > a {
+		font-size: 12px;
+		padding: 10px 5px 10px 5px !important;
+	}
+}
+.boxed.rtl {
+	.app-content {
+		margin-right: 0px;
+		margin-left: inherit;
+	}
+	.app-content .side-app {
+		padding: 25px m 0 1.5rem;
+	}
+	@media (min-width: 992px) {
+		.app-content {
+			margin-right: 270px;
+			padding-bottom: 0rem;
+		}
+		// &.sidenav-toggled .app-header {
+		// 	padding-right: 70px !important;
+		// }
+		&.horizontal .sticky-pin {
+			left: 0;
+			right: inherit;
+		}
+	}
+	@media (min-width: 1400px) {
+		.app-sidebar {
+			right: auto !important;
+		}
+	}
+}
+.today-profit {
+	margin-left: 30px;
+}
+.boxed.dark-mode .page {
+	background: #151636;
+	-webkit-box-shadow: $black-3 0px 5px 0px 0px, $black-3 0px 5px 25px 0px;
+	box-shadow: $black-3 0px 5px 0px 0px, $black-3 0px 5px 25px 0px;
+}
+body.boxed.dark-mode {
+	background: #4f516c !important;
+}
+@media (min-width: 1280px) {
+	.boxed .hor-header .container,
+	.boxed .horizontal-main.hor-menu .container,
+	.boxed.horizontal .main-content .container {
+		max-width: 95% !important;
+	}
+}
+@media (min-width: 575.98px) and (max-width: 1300px){
+	.header .form-inline .form-control {
+		width: 150px;
+		min-width: 0 !important;
+	}
+
+}
