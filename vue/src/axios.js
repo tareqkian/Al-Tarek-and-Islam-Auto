@@ -10,5 +10,4 @@ api.interceptors.request.use(config=>{
   return config
 })
 api.defaults.withCredentials = true
-
 export default api;
