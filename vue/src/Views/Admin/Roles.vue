@@ -16,7 +16,9 @@
                @click="selectedRole(role)" :href="`#${roles.data[0].name}`" role="tab">
               <div>
                 {{ t(role,"display_name") }}
-                <small class="text-muted ms-3"> {{ t(role,"name") }} </small>
+<!--                {{ role.display_name }}-->
+<!--                <small class="text-muted ms-3"> {{ t(role,"name") }} </small>-->
+                <small class="text-muted ms-3"> {{ role.name }} </small>
               </div>
               <div>
                 <i class="fa fa-edit text-info mx-1" @click="roleDialog(role)"></i>
@@ -138,6 +140,8 @@ import { useRolesStore } from "../../store/Roles";
 import { usePermissions } from "../../store/Permissions";
 import {computed, inject, ref} from "vue";
 
+const t = inject("t")
+
 const rolesStore = useRolesStore();
 const permissionsStore = usePermissions();
 const toast = useToast()
@@ -158,11 +162,14 @@ const newRole = {
   name: null,
   display_name: null,
 }
+
+
 const roleDialog = (role = {})=>{
   roleDialogShow.value = !roleDialogShow.value
   newRole.id = role.id || null;
   newRole.name = role.name || null;
-  newRole.display_name = role.display_name || null;
+  /*newRole.display_name = role.display_name || null;*/
+  newRole.display_name = t(role,"display_name") || null;
   errors.value = {}
 }
 
@@ -261,8 +268,6 @@ Echo.channel("RolesEvent")
       ]
     }
   })
-
-
 
 </script>
 

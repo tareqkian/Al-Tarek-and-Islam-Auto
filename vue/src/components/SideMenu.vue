@@ -26,7 +26,7 @@
               </div>
               <div class="user-info">
                 <h5 class=" mb-2">{{ user.name }}</h5>
-                <span class="text-muted app-sidebar__user-name text-sm"> {{ Object.keys(user).length ? user.role.display_name : '' }} </span>
+                <span class="text-muted app-sidebar__user-name text-sm"> {{ t(user.role,"display_name") }} </span>
               </div>
             </div>
           </div>

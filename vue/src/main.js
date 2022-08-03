@@ -1,4 +1,4 @@
-import {createApp, ref} from 'vue'
+import {createApp} from 'vue'
 import pinia from "./store";
 import router from "./router"
 import App from './App.vue'
@@ -59,4 +59,3 @@ app.use(ToastService);
 app.use(ConfirmationService);
 app.directive('badge', BadgeDirective);
 app.mount('#app');
-

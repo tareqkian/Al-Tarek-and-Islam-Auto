@@ -2,7 +2,6 @@ import { defineStore } from "pinia";
 import {ref} from "vue";
 import api from "../axios";
 
-
 export const useRolesStore = defineStore("RolesStore",()=>{
   const roles = {
     data: ref([]),
@@ -17,7 +16,6 @@ export const useRolesStore = defineStore("RolesStore",()=>{
     try {
       roles.loading.value = true
       const { data } = await api.get('/roles')
-      console.log(data.data)
       roles.data.value = data.data
       roles.loading.value = false
     } catch (e) {
@@ -42,7 +40,7 @@ export const useRolesStore = defineStore("RolesStore",()=>{
   }
 
   // Broadcasting
-  const updatePERMISSIONS = async (payload) =>{
+  const updatePERMISSIONS = async (payload)=>{
     try {
       await api.put("/roles/"+payload.id,payload)
     } catch (error) {

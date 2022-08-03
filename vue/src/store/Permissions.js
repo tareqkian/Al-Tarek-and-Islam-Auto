@@ -34,19 +34,19 @@ export const usePermissions = defineStore("Permissions",()=>{
   }
 
 
-  const generatePermissions = async (name)=>{
-    try {
-      await api.post('/permissions',{name})
-    } catch (e) {
-      throw e.response.data.errors
-    }
-  }
+  // const generatePermissions = async (name)=>{
+  //   try {
+  //     await api.post('/permissions',{name})
+  //   } catch (e) {
+  //     throw e.response.data.errors
+  //   }
+  // }
 
   return {
     permissions,
     currentPermissions,
     initCurrentPermissions,
     initPERMISSIONS,
-    generatePermissions
+    // generatePermissions
   }
 })

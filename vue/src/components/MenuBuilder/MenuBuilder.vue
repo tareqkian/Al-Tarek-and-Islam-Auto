@@ -13,13 +13,13 @@
         <small v-else class="text-muted ms-3"> # </small>
       </div>
       <div class="float-end d-inline-block">
-        <i class="feather feather-lock text-success mx-1" v-if="item.route" @click="emit('permissionsGenerator',item)"></i>
+<!--        <i class="feather feather-lock text-success mx-1" v-if="item.route" @click="emit('permissionsGenerator',item)"></i>-->
         <i class="fa fa-edit text-info mx-1" @click="emit('edit_click',item)"></i>
         <i class="fa fa-trash text-danger mx-1" @click="emit('remove_click',item)"></i>
       </div>
+<!--             @child_permissionsGenerator="child_permissionsGenerator"-->
       <Child @child_edit_click="child_edit_click"
              @child_remove_click="child_remove_click"
-             @child_permissionsGenerator="child_permissionsGenerator"
              v-if="item.children.length"
              :items="item.children"
              :parentMenu="parentMenu"
@@ -39,7 +39,7 @@ const props = defineProps({
   parentMenu: String
 })
 const emit = defineEmits([
-  'permissionsGenerator',
+  // 'permissionsGenerator',
   'edit_click',
   'remove_click',
   'order_change'
@@ -62,9 +62,9 @@ const child_edit_click = (item)=>{
 const child_remove_click = (item)=>{
   emit("remove_click",item)
 }
-const child_permissionsGenerator = (item)=>{
-  emit("permissionsGenerator",item)
-}
+// const child_permissionsGenerator = (item)=>{
+//   emit("permissionsGenerator",item)
+// }
 
 </script>
 <style scoped>

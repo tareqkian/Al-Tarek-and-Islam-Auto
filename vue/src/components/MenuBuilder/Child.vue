@@ -9,7 +9,7 @@
         <small v-else class="text-muted ms-3"> # </small>
       </div>
       <div class="float-end d-inline-block">
-        <i class="feather feather-lock text-success mx-1" v-if="item.route" @click="emit('child_permissionsGenerator',item)"></i>
+<!--        <i class="feather feather-lock text-success mx-1" v-if="item.route" @click="emit('child_permissionsGenerator',item)"></i>-->
         <i class="fa fa-edit text-info mx-1" @click="emit('child_edit_click',item)"></i>
         <i class="fa fa-trash text-danger mx-1" @click="emit('child_remove_click',item)"></i>
       </div>
@@ -26,7 +26,7 @@ const props = defineProps({
   parentMenu: String
 })
 const emit = defineEmits([
-  'child_permissionsGenerator',
+  // 'child_permissionsGenerator',
   'child_edit_click',
   'child_remove_click',
   'child_order_change'

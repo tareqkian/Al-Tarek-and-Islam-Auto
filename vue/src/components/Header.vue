@@ -38,12 +38,51 @@
                     href="javascript:void(0);" data-bs-toggle="search">
                     <i class="feather feather-search search-icon header-icon"></i>
                   </a>--> <!-- SEARCH MOBILE -->
+
                    <div class="d-flex align-items-center">
-                    <select v-model="currentLocale" @change="changeLocale()" class="form-select">
-                      <option value="en"> en </option>
-                      <option value="ar"> ar </option>
-                    </select>
-                  </div>
+<!--                    <select v-model="currentLocale"
+                            @change="changeLocale()"
+                            class="form-select">
+                      <option label="locales"></option>
+                      <option v-for="(lang,index) in languages" :key="index" :value="index"> {{ index }} </option>
+                    </select>-->
+
+
+<!--                     <div>
+                       <a class="nav-link icon" data-bs-toggle="dropdown">
+                         <img :src="`/src/assets/assets/images/flags/${currentLocale}.svg`" alt="img" class="h-24">
+                       </a>
+                       <div class="dropdown-menu language dropdown-menu-end dropdown-menu-arrow animated">
+                         <a v-for="(lang,index) in languages"
+                            :key="index"
+                            @click.prevent="currentLocale = index;changeLocale()"
+                            class="dropdown-item w-100">
+                           <img :src="`/src/assets/assets/images/flags/${index}.svg`" alt="img" class="h-24">
+                         </a>
+                       </div>
+                     </div>-->
+
+                     <div class="btn-group">
+<!--                       <button class="btn btn-default dropdown-toggle"-->
+<!--                               data-bs-toggle="dropdown"-->
+<!--                               aria-expanded="false">-->
+<!--                         <img :src="`/src/assets/assets/images/flags/${currentLocale}.svg`" alt="img" class="h-24">-->
+<!--                       </button>-->
+                       <a class="nav-link icon" data-bs-toggle="dropdown">
+                         <img :src="`/src/assets/assets/images/flags/${currentLocale}.svg`" alt="img" class="h-24">
+                       </a>
+                       <ul class="dropdown-menu" style="width: 57px !important;min-width: 10px !important;">
+                           <li v-for="(lang,index) in languages"
+                              :key="index"
+                              @click.prevent="currentLocale = index;changeLocale()"
+                              class="py-2 px-1 text-center">
+                             <img :src="`/src/assets/assets/images/flags/${index}.svg`" alt="img" class="h-24">
+                           </li>
+                       </ul>
+                     </div>
+
+                   </div>
+
                   <div class="d-flex" v-if="$can('browse_admin_dashboard')">
                     <router-link :to="{name: 'Admin Dashboard'}"
                                  active-class="active"
@@ -51,13 +90,13 @@
                       <i class="ti-crown text-yellow"></i>
                     </router-link>
                   </div>
-                  <div class="d-flex">
+                  <!--<div class="d-flex">
                     <a @click="dirSwitch" class="nav-link icon nav-link-bg">
                       <i>
                         {{ ['rtl','ltr'].filter(x=>x!==DIR)[0] || 'rtl' }}
                       </i>
                     </a>
-                  </div>
+                  </div>-->
                   <div class="d-flex">
                     <a class="nav-link icon theme-layout nav-link-bg layout-setting">
                       <span class="dark-layout"><i class="fe fe-moon"></i></span>
@@ -296,22 +335,17 @@
 import Sidebar from 'primevue/sidebar';
 import TabView from 'primevue/tabview';
 import TabPanel from 'primevue/tabpanel';
+
 import { useRouter } from "vue-router";
 import { useDir } from "../store/Dir";
 import { useAuth } from "../store/Auth";
-import { ref } from "vue";
+import {computed, ref} from "vue";
+import {useTranslationStore} from "../store/Translation";
 
 const visibleLeft = ref(false);
 const props = defineProps({
   user: Object
 })
-let DIR = ref(localStorage.getItem("DIR"));
-const dirSwitch = (e)=>{
-  const DIRTXT = e.currentTarget.innerText
-  const Dir = useDir()
-  Dir.changeDIR(DIRTXT)
-  DIR.value = Dir.currentDIR
-}
 const { push, go } = useRouter();
 const logout = async ()=>{
   try {
@@ -323,18 +357,34 @@ const logout = async ()=>{
   }
 }
 
+const translationStore = useTranslationStore();
+const languages = computed(()=>translationStore.languages)
+translationStore.initLanguages()
+
+
+const countries = ref([
+  {name: 'Australia', code: 'AU'},
+  {name: 'Brazil', code: 'BR'},
+  {name: 'China', code: 'CN'},
+  {name: 'Egypt', code: 'EG'},
+  {name: 'France', code: 'FR'},
+  {name: 'Germany', code: 'DE'},
+  {name: 'India', code: 'IN'},
+  {name: 'Japan', code: 'JP'},
+  {name: 'Spain', code: 'ES'},
+  {name: 'United States', code: 'US'}
+]);
 
 const currentLocale = ref(localStorage.getItem("locale"))
 const changeLocale = ()=>{
   localStorage.setItem("locale",currentLocale.value)
   window.dispatchEvent(new CustomEvent('locale-changed', {
-    detail: {
-      storage: localStorage.getItem("locale")
-    }
+    detail: { storage: localStorage.getItem("locale") }
   }));
-
+  const DIRTXT = languages.value[currentLocale.value].dir
+  const Dir = useDir()
+  Dir.changeDIR(DIRTXT)
 }
-
 </script>
 
 <style lang="scss" scoped>

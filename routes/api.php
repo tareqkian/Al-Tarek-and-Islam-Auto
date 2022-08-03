@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LanguagesController;
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\SettingController;
 use Illuminate\Http\Request;
@@ -41,6 +42,9 @@ Route::middleware('auth:sanctum')->group(function(){
   Route::apiResource('/users',UsersController::class);
   Route::put('/changePassword/{id}',[UsersController::class,"changePassword"]);
   Route::apiResource('/log',LogController::class);
+
+  Route::apiResource('/translation',TranslatorController::class);
+  Route::apiResource('/languages', LanguagesController::class);
 
 
   Route::post('/logout',[AuthController::class,'logout']);

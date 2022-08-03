@@ -46,10 +46,10 @@
         </div>
         <div class="card">
           <div class="card-body dd" id="#dd">
+<!--            @permissionsGenerator="generatePermissions" -->
             <menu-builder :items="items"
                           :MenuID="selectedMenu.id"
                           :parentMenu="selectedMenu.name"
-                          @permissionsGenerator="generatePermissions"
                           @edit_click="showEditModal"
                           @remove_click="removeMenuItem"
                           @order_change="reOrder" />
@@ -404,7 +404,7 @@ const removeMenuItem = (item)=>{
   });
 }
 
-const generatePermissions = async (item,type="all")=>{
+/*const generatePermissions = async (item,type="all")=>{
   try {
     const pathArr = item.importedComponent.split('/');
     const parent = pathArr[pathArr.length-2];
@@ -426,7 +426,7 @@ const generatePermissions = async (item,type="all")=>{
       life: 3000
     })
   }
-}
+}*/
 
 
 
