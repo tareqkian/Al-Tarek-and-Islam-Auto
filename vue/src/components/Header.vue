@@ -17,16 +17,6 @@
               <i class="feather feather-x"></i>
             </a>
           </div>
-          <!--<div class="mt-0">
-            <form class="form-inline">
-              <div class="search-element">
-                <input type="search" class="form-control header-search" placeholder="Search…" aria-label="Search" tabindex="1">
-                <button class="btn btn-primary-color" >
-                  <i class="feather feather-search"></i>
-                </button>
-              </div>
-            </form>
-          </div>--> <!--SEARCH-->
           <div class="d-flex order-lg-2 my-auto ms-auto">
             <button class="navbar-toggler nav-link icon navresponsive-toggler vertical-icon ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent-4" aria-controls="navbarSupportedContent-4" aria-expanded="false" aria-label="Toggle navigation">
               <i class="fe fe-more-vertical header-icons navbar-toggler-icon"></i>
@@ -34,11 +24,6 @@
             <div class="mb-0 navbar navbar-expand-lg navbar-nav-right responsive-navbar navbar-dark p-0">
               <div class="collapse navbar-collapse" id="navbarSupportedContent-4">
                 <div class="d-flex justify-content-center">
-                  <!--<a class="nav-link icon p-0 nav-link-lg d-lg-none navsearch"
-                    href="javascript:void(0);" data-bs-toggle="search">
-                    <i class="feather feather-search search-icon header-icon"></i>
-                  </a>--> <!-- SEARCH MOBILE -->
-
                   <div class="d-flex align-items-center">
                     <div class="btn-group">
                       <a class="nav-link icon" data-bs-toggle="dropdown">
@@ -54,7 +39,6 @@
                       </ul>
                     </div>
                   </div>
-
                   <div class="d-flex" v-if="$can('browse_admin_dashboard')">
                     <router-link :to="{name: 'Admin Dashboard'}"
                                  active-class="active"
@@ -62,21 +46,18 @@
                       <i class="ti-crown text-yellow"></i>
                     </router-link>
                   </div>
-
                   <div class="d-flex">
                     <a class="nav-link icon theme-layout nav-link-bg layout-setting">
                       <span class="dark-layout"><i class="fe fe-moon"></i></span>
                       <span class="light-layout"><i class="fe fe-sun"></i></span>
                     </a>
                   </div>
-
                   <div class="dropdown header-notify">
                     <a class="nav-link icon" @click="visibleLeft = true">
                       <i class="feather feather-bell header-icon"></i>
                       <span class="badge badge-success side-badge"> 2 </span>
                     </a>
                   </div>
-
                   <div class="dropdown profile-dropdown">
                     <a href="javascript:void(0);" class="nav-link pe-1 ps-0 leading-none" data-bs-toggle="dropdown">
                         <span>
@@ -178,20 +159,6 @@ const logout = async ()=>{
 const translationStore = useTranslationStore();
 const languages = computed(()=>translationStore.languages)
 translationStore.initLanguages()
-
-
-const countries = ref([
-  {name: 'Australia', code: 'AU'},
-  {name: 'Brazil', code: 'BR'},
-  {name: 'China', code: 'CN'},
-  {name: 'Egypt', code: 'EG'},
-  {name: 'France', code: 'FR'},
-  {name: 'Germany', code: 'DE'},
-  {name: 'India', code: 'IN'},
-  {name: 'Japan', code: 'JP'},
-  {name: 'Spain', code: 'ES'},
-  {name: 'United States', code: 'US'}
-]);
 
 const currentLocale = ref(localStorage.getItem("locale"))
 const changeLocale = ()=>{
