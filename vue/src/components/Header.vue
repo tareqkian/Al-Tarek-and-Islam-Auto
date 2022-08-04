@@ -113,9 +113,6 @@
       </div>
     </div>
 
-
-
-
     <Sidebar v-model:visible="visibleLeft"
              :baseZIndex="1000"
              position="right"
