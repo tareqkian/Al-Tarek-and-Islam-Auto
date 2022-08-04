@@ -34,7 +34,6 @@
             <div class="card">
               <div class="card-body">
                 <div class="row text-center">
-                  {{ permissions.data[0] }}
                   <DataTable :loading="permissions.loading || rolePermissions.loading"
                              :value="permissions.data"
                              :filters="filters" :rows-per-page-options="[15,30,60]"
