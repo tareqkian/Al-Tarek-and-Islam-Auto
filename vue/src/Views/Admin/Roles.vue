@@ -34,7 +34,9 @@
             <div class="card">
               <div class="card-body">
                 <div class="row text-center">
-                  <DataTable :loading="permissions.loading || rolePermissions.loading" :value="permissions.data"
+                  {{ permissions.data[0] }}
+                  <DataTable :loading="permissions.loading || rolePermissions.loading"
+                             :value="permissions.data"
                              :filters="filters" :rows-per-page-options="[15,30,60]"
                              row-group-mode="rowspan" group-rows-by="table_name" paginator :rows="15"
                              paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
@@ -52,23 +54,53 @@
                            style="top: 30%;right: 10px"></i>
                       </div>
                     </template>
-
                     <Column :sortable="true" class="text-capitalize" field="table_name" header="Table Name">
                       <template #body="value">
                         {{ value.data[value.field].replace(/_/g,' ') }}
                       </template>
                     </Column>
-                    <Column :sortable="true" class="text-capitalize" field="key" header="Roles" width="10%">
-                      <template #body="value">
-                        {{ value.data[value.field].split('_')[0] }}
-                      </template>
-                    </Column>
-                    <Column :sortable="true" class="text-capitalize" field="key" header="Action">
+                    <Column :sortable="true" class="text-capitalize" header="browse" width="10%">
                       <template #body="value">
                         <div class="form-switch">
                           <input class="form-check-input" type="checkbox"
-                                 @change="handleRolePermissions" :name="value.data.id"
-                                 v-model="rolePermissions.data.permissions[value.data.id]">
+                                 @change="handleRolePermissions" :name='JSON.parse("["+permissions.data.filter(x=>x.table_name===value.data.table_name)[0].total+"]").filter(x=>x.key.includes("browse_"))[0].id'
+                                 v-model='rolePermissions.data.permissions[JSON.parse("["+permissions.data.filter(x=>x.table_name===value.data.table_name)[0].total+"]").filter(x=>x.key.includes("browse_"))[0].id]'>
+                        </div>
+                      </template>
+                    </Column>
+                    <Column :sortable="true" class="text-capitalize" header="read" width="10%">
+                      <template #body="value">
+                        <div class="form-switch">
+                          <input class="form-check-input" type="checkbox"
+                                 @change="handleRolePermissions" :name='JSON.parse("["+permissions.data.filter(x=>x.table_name===value.data.table_name)[0].total+"]").filter(x=>x.key.includes("read_"))[0].id'
+                                 v-model='rolePermissions.data.permissions[JSON.parse("["+permissions.data.filter(x=>x.table_name===value.data.table_name)[0].total+"]").filter(x=>x.key.includes("read_"))[0].id]'>
+                        </div>
+                      </template>
+                    </Column>
+                    <Column :sortable="true" class="text-capitalize" header="edit" width="10%">
+                      <template #body="value">
+                        <div class="form-switch">
+                          <input class="form-check-input" type="checkbox"
+                                 @change="handleRolePermissions" :name='JSON.parse("["+permissions.data.filter(x=>x.table_name===value.data.table_name)[0].total+"]").filter(x=>x.key.includes("edit_"))[0].id'
+                                 v-model='rolePermissions.data.permissions[JSON.parse("["+permissions.data.filter(x=>x.table_name===value.data.table_name)[0].total+"]").filter(x=>x.key.includes("edit_"))[0].id]'>
+                        </div>
+                      </template>
+                    </Column>
+                    <Column :sortable="true" class="text-capitalize" header="add" width="10%">
+                      <template #body="value">
+                        <div class="form-switch">
+                          <input class="form-check-input" type="checkbox"
+                                 @change="handleRolePermissions" :name='JSON.parse("["+permissions.data.filter(x=>x.table_name===value.data.table_name)[0].total+"]").filter(x=>x.key.includes("add_"))[0].id'
+                                 v-model='rolePermissions.data.permissions[JSON.parse("["+permissions.data.filter(x=>x.table_name===value.data.table_name)[0].total+"]").filter(x=>x.key.includes("add_"))[0].id]'>
+                        </div>
+                      </template>
+                    </Column>
+                    <Column :sortable="true" class="text-capitalize" header="delete" width="10%">
+                      <template #body="value">
+                        <div class="form-switch">
+                          <input class="form-check-input" type="checkbox"
+                                 @change="handleRolePermissions" :name='JSON.parse("["+permissions.data.filter(x=>x.table_name===value.data.table_name)[0].total+"]").filter(x=>x.key.includes("delete_"))[0].id'
+                                 v-model='rolePermissions.data.permissions[JSON.parse("["+permissions.data.filter(x=>x.table_name===value.data.table_name)[0].total+"]").filter(x=>x.key.includes("delete_"))[0].id]'>
                         </div>
                       </template>
                     </Column>

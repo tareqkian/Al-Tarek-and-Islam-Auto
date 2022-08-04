@@ -9,6 +9,7 @@ use App\Http\Requests\UpdatePermissionRequest;
 use App\Http\Resources\PermissionResource;
 use App\Models\Role;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class PermissionsController extends Controller
 {
@@ -19,8 +20,15 @@ class PermissionsController extends Controller
    */
   public function index()
   {
-    $permissions = Permission::orderBy('table_name')->get();
-    return PermissionResource::collection($permissions);
+//    $permissions = Permission::groupBy('table_name')->get();
+//    return PermissionResource::collection($permissions);
+
+    $permissions = Permission::select('table_name', Permission::raw("GROUP_CONCAT(JSON_OBJECT('key',`key`,'id',`id`)) total"))
+      ->groupBy('table_name')
+      ->get();
+    return [
+      "data" => $permissions
+    ];
   }
 
   public function current()
