@@ -28,7 +28,6 @@ export const useTranslationStore = defineStore("TranslationStore",()=>{
   const initLanguages = async () => {
     try {
       const { data } = await api.get("/languages")
-      console.log(data.data)
       languages.value = data.data
     } catch (e) {
       throw e.response.data.error
