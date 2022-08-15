@@ -1,5 +1,5 @@
 <template>
-  <page-layout :pageTitle="this.$route.meta.pageTitle">
+  <page-layout :meta="this.$route.meta">
     <!--<button class="btn btn-primary mb-2" @click="roleDialog()">
       <i class="fe fe-plus"></i>
       Add New Role

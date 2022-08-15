@@ -1,6 +1,6 @@
 <template>
-  <PageLayoutVue :pageTitle="this.$route.meta.pageTitle">
-    <button class="btn btn-primary mb-2" @click="userDialog()">
+  <PageLayoutVue :meta="this.$route.meta">
+    <button v-if="$can(`add_${this.$route.meta.permissionsLayout}`)" class="btn btn-primary mb-2" @click="userDialog()">
       <i class="fe fe-plus"></i>
       Add New User
     </button>
@@ -16,27 +16,33 @@
             <Loading />
           </template>
           <template #header>
-            <div class="search-element w-25 ms-auto mx-3 mb-4">
-              <input type="search" class="form-control header-search"
-                     v-model="filters['global'].value" placeholder="Search…"
-                     aria-label="Search" tabindex="1">
-              <i class="feather feather-search position-absolute" style="top: 30%;right: 10px"></i>
+            <div class="row flex-row-reverse justify-content-center justify-content-md-start w-100 m-0">
+              <div class="search-element col-10 col-md-3 mx-3 mb-4 p-0">
+                <input type="search" class="form-control header-search"
+                       v-model="filters['global'].value" placeholder="Search…"
+                       aria-label="Search" tabindex="1">
+                <i class="feather feather-search position-absolute" style="top: 30%;right: 10px"></i>
+              </div>
             </div>
           </template>
           <Column :sortable="true" field="name" header="Name"></Column>
           <Column :sortable="true" field="email" header="Email"></Column>
           <Column field="avatar" header="Avatar">
             <template #body="val">
-                <Image class="w-30" :src="val.data[val.field]" preview/>
+                <Image imageStyle="width: 60px" :src="val.data[val.field]" preview/>
             </template>
           </Column>
-          <Column :sortable="true" field="role.display_name" header="Role"></Column>
+          <Column :sortable="true" field="role.display_name" header="Role">
+            <template #body="val">
+              {{ t(val.data.role,"display_name") }}
+            </template>
+          </Column>
           <Column :sortable="true" field="created_at" header="Created at"></Column>
           <Column :sortable="true" field="updated_at" header="Updated at"></Column>
-          <Column header="Actions">
+          <Column v-if="$can(`edit_${this.$route.meta.permissionsLayout}`) || $can(`delete_${this.$route.meta.permissionsLayout}`)" header="Actions">
             <template #body="val">
-              <i class="fa fa-edit text-info mx-1" @click="userDialog(val.data)"></i>
-              <i class="fa fa-trash text-danger mx-1" @click="userDelete($event,val.data)"></i>
+              <i class="fa fa-edit text-info mx-1" v-if="$can(`edit_${this.$route.meta.permissionsLayout}`)" @click="userDialog(val.data)"></i>
+              <i class="fa fa-trash text-danger mx-1" v-if="$can(`delete_${this.$route.meta.permissionsLayout}`)" @click="userDelete($event,val.data)"></i>
             </template>
           </Column>
         </DataTable>
@@ -44,7 +50,7 @@
     </div>
 
     <handleUser
-      :userDialogShow="userDialogShow"
+      v-model="userDialogShow"
       :loading="loading"
       :errors="errors"
       :defaultImg="defaultImg"
@@ -94,13 +100,13 @@ const userForm = ref({
   Mobile: 0
 })
 const userDialog = (user = {})=>{
-  userDialogShow.value = true
+  userDialogShow.value = !userDialogShow.value
   defaultImg.value = user.avatar || null
   userForm.value.id = user.id || null
   userForm.value.name = user.name || null
   userForm.value.email = user.email || null
-  userForm.value.Desktop = (user.settings ? user.settings.devices[0].count : null)
-  userForm.value.Mobile = (user.settings ? user.settings.devices[1].count : null)
+  userForm.value.Desktop = (user.settings ? JSON.parse(user.settings).devices[0].count : null)
+  userForm.value.Mobile = (user.settings ? JSON.parse(user.settings).devices[1].count : null)
   userForm.value.avatar = null
   userForm.value.role_id = (user.role ? user.role.id : null)
 }
@@ -110,7 +116,7 @@ const handleUserForm = async ()=>{
     errors.value = {}
     if ( userForm.value.id ) await usersStore.updateUser(userForm.value)
     else await usersStore.storeUser(userForm.value)
-    userDialogShow.value = false
+    userDialogShow.value = !userDialogShow.value
     toast.add({
       closable: false,
       severity: "success",
@@ -150,10 +156,3 @@ const userDelete = (event,user)=>{
 }
 </script>
 
-<style lang="scss" scoped>
-::v-deep(.p-paginator) {
-  .p-paginator-current {
-    margin-left: auto;
-  }
-}
-</style>

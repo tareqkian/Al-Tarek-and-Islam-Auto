@@ -26,6 +26,7 @@ class PermissionsController extends Controller
     $permissions = Permission::select('table_name', Permission::raw("GROUP_CONCAT(JSON_OBJECT('key',`key`,'id',`id`)) total"))
       ->groupBy('table_name')
       ->get();
+
     return [
       "data" => $permissions
     ];

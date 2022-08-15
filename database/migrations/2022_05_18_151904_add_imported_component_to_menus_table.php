@@ -14,7 +14,7 @@ class AddImportedComponentToMenusTable extends Migration
     public function up()
     {
         Schema::table('menus', function (Blueprint $table) {
-            $table->string('importedComponent');
+            $table->string('importedComponent')->default('/src/components/Layouts/DefaultLayout.vue');
         });
     }
 

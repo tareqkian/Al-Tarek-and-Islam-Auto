@@ -34,6 +34,7 @@ export const useMenus = defineStore("Menus",()=>{
           c.meta = {
             realTime: `${y.importedComponent.split('/').pop().replace(/.vue/g,'')}Event`,
             pageTitle: c.name,
+            translations: y.translations,
             component: y.importedComponent,
             permissionsLayout: `${y.importedComponent.split('/')[y.importedComponent.split('/').length-2].toLowerCase()}_${y.importedComponent.split('/').pop().replace(/.vue/g,'').toLowerCase()}`
           }
@@ -62,7 +63,7 @@ export const useMenus = defineStore("Menus",()=>{
     try {
       await api.put('/menu/'+payload.id,payload)
     } catch (e) {
-      throw e.response.data.errors
+      throw e.response.data
     }
   }
   const addMenu = async (payload)=>{

@@ -16,7 +16,7 @@ class RolesTableSeeder extends Seeder
   public function run()
   {
     $role = Role::firstOrCreate(["name" => "admin","display_name" => "Administrator"]);
-/*    RoleTranslation::firstOrCreate(["role_id" => $role->id, "locale" => "en", "display_name" => "Administrator"]);
-    RoleTranslation::firstOrCreate(["role_id" => $role->id, "locale" => "ar", "display_name" => "أدمن"]);*/
+    RoleTranslation::firstOrCreate(["role_id" => $role->id, "locale" => "en", "display_name" => "Administrator"]);
+    RoleTranslation::firstOrCreate(["role_id" => $role->id, "locale" => "ar", "display_name" => "مدير"]);
   }
 }

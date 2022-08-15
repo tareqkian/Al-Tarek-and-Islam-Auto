@@ -17,7 +17,7 @@ import Pusher from "pusher-js"
 import api from "./axios";
 
 import { appSettings } from "./appSettings";
-import t from "./translator"
+import t from "./plugins/translator"
 
 window.Pusher = Pusher;
 window.Echo = new Echo({

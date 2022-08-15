@@ -23,16 +23,9 @@ class StoreMenuRequest extends FormRequest
    */
   public function rules()
   {
-
-    $rules = [
-      "name" => 'required|regex:(/)|unique:menus',
-      "importedComponent" => "required"
-    ];
-    $customMessages = [
-      'regex' => ':attribute should start with a `/`.'
-    ];
+    $rules = ["name" => 'required|regex:(/)|unique:menus'];
+    $customMessages = ['regex' => ':attribute should start with a `/`.'];
     $this->validate($rules, $customMessages);
-
     return $rules;
   }
 }

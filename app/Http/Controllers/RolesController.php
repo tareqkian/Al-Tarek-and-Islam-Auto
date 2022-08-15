@@ -42,12 +42,7 @@ class RolesController extends Controller
    */
   public function store(StoreRoleRequest $request)
   {
-    $validate = $request->validated();
-    $validate = array_merge([
-      "en" => ["display_name" => $validate['display_name']],
-      "ar" => ["display_name" => $validate['display_name']]
-    ],$validate);
-    $role = Role::create($validate);
+    $role = Role::create($request->validated());
     broadcast(new RoleAdder(new RoleResource($role)));
     return $role;
     return new RoleResource($role);

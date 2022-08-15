@@ -28,7 +28,7 @@ class UserObserver
    */
   public function updated(User $user)
   {
-    $changes = $user->getChanges();
+/*    $changes = $user->getChanges();
     unset($changes['updated_at']);
     foreach ($changes as $key=>$item) {
       $original = $user->getOriginal($key);
@@ -47,7 +47,7 @@ class UserObserver
           );
         }
       }
-    }
+    }*/
   }
 
   /**

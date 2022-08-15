@@ -44,6 +44,7 @@ class UsersController extends Controller
       [ "device" => "Desktop", "count" => $validated['Desktop'] ],
       [ "device" => "Mobile", "count" => $validated['Mobile'] ]
     ];
+    $validated['settings'] = json_encode($validated['settings']);
     unset($validated['Desktop']);
     unset($validated['Mobile']);
     $user = User::create($validated);

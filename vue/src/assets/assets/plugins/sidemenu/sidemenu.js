@@ -113,7 +113,7 @@ $(document).ready(()=>{
           var ul = parent.find('ul:visible').slideUp(animationSpeed);
           ul.removeClass('open');
           var parent_li = $this.parent();
-          
+
           checkElement.slideDown(animationSpeed, function () {
             checkElement.addClass('open');
             parent.find('li.is-expanded').removeClass('is-expanded');
@@ -511,13 +511,11 @@ $(document).ready(()=>{
     });
 
     $('body').append('<div class="main-navbar-backdrop"></div>');
-    /*$('.main-navbar-backdrop').on('click touchstart', function () {*/
     $(document).on('click touchstart','.main-navbar-backdrop', function () {
       $('body').removeClass('main-navbar-show');
     });
 
     $('body').append('<div class="main-navbar-backdrop"></div>');
-    /*$('.main-navbar-backdrop').on('click touchstart', function () {*/
     $(document).on('click touchstart','.main-navbar-backdrop', function () {
       $('body').removeClass('sidenav-toggled');
     });

@@ -23,9 +23,9 @@ class UpdateMenuRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            "name" => "required|unique:menus,name,{$this->id}",
-            "importedComponent" => "required"
-        ];
+      $rules = ["name" => "required|regex:(/)|unique:menus,name,{$this->id}"];
+      $customMessages = ['regex' => ':attribute should start with a `/`.'];
+      $this->validate($rules, $customMessages);
+      return $rules;
     }
 }

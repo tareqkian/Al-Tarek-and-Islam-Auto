@@ -26,12 +26,12 @@ class StoreMenuItemRequest extends FormRequest
     {
         return [
             "menu_id" => "int|exists:menus,id",
-            /* "title" => "required|unique:menu_items", */
-            "title" => [
+             "title" => "required|unique:menu_item_translations",
+            /*"title" => [
                 "required",
                 Rule::unique('menu_items')
                     ->where(fn ($q) => $q->where('menu_id', $this->menu_id))
-            ],
+            ],*/
             "route" => [
                 "nullable",
                 Rule::unique('menu_items')

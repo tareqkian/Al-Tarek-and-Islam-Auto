@@ -2,6 +2,7 @@ import { useRouter } from "vue-router";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import api from "../axios";
+import {usePermissions} from "./Permissions";
 export const useMenuItems = defineStore("MenuItems",()=>{
   let router = useRouter()
   const currentItems = {
@@ -47,6 +48,7 @@ export const useMenuItems = defineStore("MenuItems",()=>{
           component: () => import(/* @vite-ignore */item.importedComponent),
           meta: {
             pageTitle: item.title,
+            translations: item.translations,
             component: item.importedComponent,
             permissionsLayout: `${item.importedComponent.split('/')[item.importedComponent.split('/').length-2].toLowerCase()}_${item.importedComponent.split('/').pop().replace(/.vue/g,'').toLowerCase()}`
           }
@@ -59,6 +61,7 @@ export const useMenuItems = defineStore("MenuItems",()=>{
           component: () => import(/* @vite-ignore */item.importedComponent),
           meta: {
             pageTitle: item.title,
+            translations: item.translations,
             component: item.importedComponent,
             permissionsLayout: `${item.importedComponent.split('/')[item.importedComponent.split('/').length-2].toLowerCase()}_${item.importedComponent.split('/').pop().replace(/.vue/g,'').toLowerCase()}`
           }
@@ -73,15 +76,29 @@ export const useMenuItems = defineStore("MenuItems",()=>{
         return item;
       })
     } catch (error) {
-      console.log(error)
       throw error.response.data.errors
     }
   }
+
+
+  const generatePermissions = async (item,type="all")=>{
+    try {
+      const permissionsStore = usePermissions()
+      const pathArr = item.importedComponent.split('/');
+      const parent = pathArr[pathArr.length-2];
+      const child = pathArr.pop().replace(/.vue/g,'');
+      await permissionsStore.generatePermissions(parent.toLowerCase()+"_"+child.toLowerCase())
+    } catch (e) {
+      throw e.response.data.error
+    }
+  }
+
 
   const addItems = async (routeMenuID,payload)=>{
     try {
       const { data } = await api.post('/items',payload)
       let item = data.data;
+      generatePermissions(item)
       let MENUID = (payload.menu_id === routeMenuID || false);
       const routes = router.getRoutes()
       const link = routes.some(el=>el.name === item.title)
@@ -92,6 +109,7 @@ export const useMenuItems = defineStore("MenuItems",()=>{
           component: () => import(/* @vite-ignore */item.importedComponent),
           meta: {
             pageTitle: item.title,
+            translations: item.translations,
             component: item.importedComponent,
             permissionsLayout: `${item.importedComponent.split('/')[item.importedComponent.split('/').length-2].toLowerCase()}_${item.importedComponent.split('/').pop().replace(/.vue/g,'').toLowerCase()}`
           }
@@ -103,6 +121,7 @@ export const useMenuItems = defineStore("MenuItems",()=>{
       throw error.response.data.errors
     }
   }
+
 
   const orderItems = async (MENUID,payload)=>{
     try {

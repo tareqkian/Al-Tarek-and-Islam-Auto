@@ -4,7 +4,7 @@
       <!--Page header-->
       <div class="page-header d-lg-flex d-block my-3">
         <div class="page-leftheader">
-          <div class="page-title">{{ pageTitle }}</div>
+          <div class="page-title">{{ t(meta,"title") }}</div>
         </div>
       </div>
       <!--End Page header-->
@@ -14,7 +14,7 @@
 </template>
 <script setup>
 const props = defineProps({
-  pageTitle: String
+  meta: Object
 })
 </script>
 <style scoped>

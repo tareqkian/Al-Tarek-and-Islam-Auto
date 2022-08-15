@@ -2,7 +2,7 @@ import Login from "/src/Views/Auth/Login.vue";
 import e401 from "/src/errorPages/401.vue"
 import {useMenus} from "/src/store/Menus";
 let routes = [
-  {path: '/', meta: {isGuest: true}, component: Login},
+  {path: '/', redirect: "/dashboard", meta: {isGuest: true}, component: Login},
   {path: '/login', name: 'Login',meta: {isGuest: true}, component: Login},
   {path: '/401', name: '401',meta: {isError: true}, component: e401}
 ];

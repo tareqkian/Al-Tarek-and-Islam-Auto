@@ -1,5 +1,5 @@
 <template>
-  <PageLayoutVue :pageTitle="this.$route.meta.pageTitle">
+  <PageLayoutVue :meta="this.$route.meta">
     <button class="btn btn-primary mb-2" @click="resetMenu(true)">
       <i class="fe fe-plus"></i>
       Add New Menu
@@ -20,10 +20,7 @@
                  :key="menu.id"
                  @click="menusBuilder(menu)"
                  role="tab">
-                <div>
-                  {{ menu.name }}
-                  <small class="text-muted ms-3">{{ menu.importedComponent.split('/').at(-1).replace(/.vue/g,"") }}</small>
-                </div>
+                <div> {{ menu.name }} </div>
                 <div>
                   <i class="fa fa-edit text-info mx-1" @click="resetMenu();selectedMenu = menu;"></i>
                   <i class="fa fa-trash text-danger mx-1" @click="removeMenu($event,menu)"></i>
@@ -79,24 +76,6 @@
           <div class="invalid-feedback">
             <ul>
               <li v-for="err in errors.name" :key="err"> {{err}} </li>
-            </ul>
-          </div>
-        </div>
-        <div class="form-floating my-2">
-          <Dropdown
-            v-model="newMenu.importedComponent"
-            :options="leyouts"
-            filter
-            filter-placeholder="Search"
-            option-value="componentImported"
-            option-label="layout"
-            :virtualScrollerOptions="( leyouts.length > 6 ? { itemSize: 38 } : false)"
-            class="form-control d-flex align-items-stretch"
-            placeholder="Select a layout" />
-          <label> Layout </label>
-          <div class="invalid-feedback">
-            <ul>
-              <li v-for="err in errors.importedComponent" :key="err"> {{err}} </li>
             </ul>
           </div>
         </div>
@@ -220,10 +199,11 @@ import { useToast } from "primevue/usetoast"
 import { useMenuItems } from "/src/store/MenuItems"
 import { useMenus } from "/src/store/Menus"
 import { useRoutesStore } from "/src/store/Routes"
-import { usePermissions } from "/src/store/Permissions";
 
-import { computed, ref, watch } from 'vue'
+import {computed, inject, ref, watch} from 'vue'
 import { useRoute, useRouter } from "vue-router"
+
+const t = inject("t");
 
 const confirm = useConfirm()
 const toast = useToast()
@@ -231,7 +211,6 @@ const toast = useToast()
 const menuItemsStore = useMenuItems()
 const menusStore = useMenus()
 const routesStore = useRoutesStore()
-const permissionsStore = usePermissions();
 
 const menuModalShow = ref(false);
 const menuItemModalShow = ref(false);
@@ -245,7 +224,6 @@ const menus = computed(()=>menusStore.menus)
 menusStore.initMENUs()
 
 const routes = computed(()=>routesStore.routes)
-// routes.value.length || routesStore.initROUTES()
 routesStore.initROUTES()
 
 const leyouts = computed(()=>routesStore.layouts)
@@ -336,7 +314,7 @@ const showEditModal = (item)=>{
       route = (componentImported.split('/')[componentImported.split('/').length - 1].replace(/.vue/g,'') || '');
     route = route.charAt(0).toLowerCase() + route.slice(1);
     newMenuItem.value.id = item.id
-    newMenuItem.value.title = item.title
+    newMenuItem.value.title = t(item,'title')
     newMenuItem.value.route = item.route
     newMenuItem.value.icon_class = item.icon_class
     newMenuItem.value.selectedComponent = {route, parent, componentImported}
@@ -403,32 +381,6 @@ const removeMenuItem = (item)=>{
     reject: () => { /* callback */ }
   });
 }
-
-/*const generatePermissions = async (item,type="all")=>{
-  try {
-    const pathArr = item.importedComponent.split('/');
-    const parent = pathArr[pathArr.length-2];
-    const child = pathArr.pop().replace(/.vue/g,'');
-    await permissionsStore.generatePermissions(parent.toLowerCase()+"_"+child.toLowerCase())
-    toast.add({
-      closable: false,
-      severity: 'success',
-      summary: 'Permissions',
-      detail: 'Generated Successfully',
-      life: 3000
-    })
-  } catch (e) {
-    toast.add({
-      closable: false,
-      severity: 'danger',
-      summary: 'Permissions',
-      detail: 'Already Been Generated :)',
-      life: 3000
-    })
-  }
-}*/
-
-
 
 Echo.channel("MenuBuilderEvent")
   .listen(".MenuAdder",(data)=>{

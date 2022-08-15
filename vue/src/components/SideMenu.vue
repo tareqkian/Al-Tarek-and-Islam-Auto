@@ -15,7 +15,7 @@
 -->
 
       <div class="app-sidebar__logo py-0 d-md-flex d-sm-none align-items-center justify-content-center">
-        <router-link :to="{name: 'Dashboard'}" class="header-brand">
+        <router-link :to="{path: '/dashboard'}" class="header-brand">
           <span class="h1 header-brand-img desktop-lgo">
             <img :src="settings('logo')" width="90" alt="">
           </span>

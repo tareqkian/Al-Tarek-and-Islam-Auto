@@ -1,5 +1,5 @@
 <template>
-  <PageLayout :pageTitle="this.$route.meta.pageTitle">
+  <PageLayout :meta="this.$route.meta">
     <button class="btn btn-primary mb-2">
       <i class="fe fe-plus"></i>
       Add New Role

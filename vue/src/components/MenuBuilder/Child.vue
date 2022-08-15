@@ -4,7 +4,7 @@
         class="list-group-item dd-item"
         :data-id="item.id">
       <div class="dd-handle h-100 d-inline-block">
-        {{ index+1 + ' - ' + item.title}}
+        {{ index+1 + ' - ' + t(item,'title')}}
         <small v-if="item.route" class="text-muted ms-3"> {{ `${parentMenu}/${item.route}` }}</small>
         <small v-else class="text-muted ms-3"> # </small>
       </div>

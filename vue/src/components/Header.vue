@@ -3,7 +3,7 @@
     <div class="app-header header sticky">
       <div class="container-fluid main-container">
         <div class="d-flex">
-          <router-link :to="{ name: 'Dashboard' }" class="header-brand">
+          <router-link :to="{ path: '/dashboard' }" class="header-brand">
             <span class="h1 header-brand-img desktop-lgo"> Image Logo </span>
             <span class="h1 header-brand-img dark-logo"> Image Logo </span>
             <span class="h4 header-brand-img mobile-logo"> Logo </span>
@@ -40,7 +40,7 @@
                     </div>
                   </div>
                   <div class="d-flex" v-if="$can('browse_admin_dashboard')">
-                    <router-link :to="{name: 'Admin Dashboard'}"
+                    <router-link :to="{path: '/admin'}"
                                  active-class="active"
                                  class="nav-link icon nav-link-bg">
                       <i class="ti-crown text-yellow"></i>
@@ -53,7 +53,9 @@
                     </a>
                   </div>
                   <div class="dropdown header-notify">
-                    <a class="nav-link icon" @click="visibleLeft = true">
+                    <a class="nav-link icon"
+                       data-bs-toggle="sidebar-right"
+                       data-bs-target=".sidebar-right">
                       <i class="feather feather-bell header-icon"></i>
                       <span class="badge badge-success side-badge"> 2 </span>
                     </a>
@@ -70,7 +72,7 @@
                            class="text-center user pb-0 font-weight-bold">
                           {{ user.name }}
                         </a>
-                        <p class="text-center user-semi-title">
+                        <p class="text-center user-semi-title mb-0">
                           {{ t(user.role,"display_name") }}
                         </p>
                       </div>
@@ -94,38 +96,33 @@
       </div>
     </div>
 
-    <Sidebar v-model:visible="visibleLeft"
-             :baseZIndex="1000"
-             position="right"
-             class="sidebar sidebar-animate" style="overflow: visible !important;">
-      <template #header>
-        <div class="card-header border-bottom pb-5 w-100">
-          <h4 class="card-title"> Notifications </h4>
+    <!--sidebar-right-->
+    <div class="sidebar sidebar-right sidebar-animate">
+      <div class="card-header border-bottom pb-5">
+        <h4 class="card-title">Notifications </h4>
+        <div class="card-options">
+          <a  href="javascript:void(0);" class="btn btn-sm btn-icon btn-light  text-primary"  data-bs-toggle="sidebar-right" data-bs-target=".sidebar-right"><i class="feather feather-x"></i> </a>
         </div>
-      </template>
-      <TabView :scrollable="true">
-        <TabPanel v-for="tab in 10" :key="tab" :header="tab">
-          <div class="list-group-item align-items-center border-0">
-            <div class="d-flex">
-              <span class="avatar avatar-lg brround me-3"></span>
-              <div class="mt-1">
-                <a href="javascript:void(0);" class="font-weight-semibold fs-16">
-                  Liam
-                  <span class="text-muted font-weight-normal">
-                  Sent Message
-                </span>
-                </a>
-                <span class="clearfix"></span>
-                <span class="text-muted fs-13 ms-auto">
-                  <i class="mdi mdi-clock text-muted me-1"></i>
-                  30 mins ago
-                </span>
-              </div>
+      </div>
+      <div class="">
+        <div class="list-group-item align-items-center">
+          <div class="d-flex">
+            <span class="avatar avatar-lg brround me-3"></span>
+            <div class="mt-1">
+              <a href="javascript:void(0);" class="font-weight-semibold fs-16">
+                Liam
+                <span class="text-muted font-weight-normal">Sent Message</span>
+              </a>
+              <span class="clearfix"></span>
+              <span class="text-muted fs-12 ms-auto">
+                <i class="mdi mdi-clock me-1"></i>30 mins ago
+              </span>
             </div>
           </div>
-        </TabPanel>
-      </TabView>
-    </Sidebar>
+        </div>
+      </div>
+    </div>
+    <!--/sidebar-right-->
 
   </div>
 </template>
@@ -152,7 +149,7 @@ const logout = async ()=>{
     await auth.logout()
     await push({name: "Login"})
   } catch (e) {
-    console.log("opps",e)
+    console.log(e)
   }
 }
 
