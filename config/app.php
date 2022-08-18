@@ -179,6 +179,8 @@ return [
     Jenssegers\Agent\AgentServiceProvider::class,
     Rap2hpoutre\LaravelLogViewer\LaravelLogViewerServiceProvider::class,
 
+    /* NumberToArabic */
+    Alkoumi\LaravelArabicNumbers\LaravelArabicNumbersServiceProvider::class,
   ],
 
   /*

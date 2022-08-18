@@ -19,7 +19,6 @@ class CreateAutobanModelsTable extends Migration
             $table->string("model_image");
             $table->timestamps();
 
-            $table->unique(['autoban_brand_id']);
             $table->foreign('autoban_brand_id')->references('id')->on('autoban_brands')->onDelete("cascade");
         });
     }

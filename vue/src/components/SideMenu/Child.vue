@@ -7,7 +7,7 @@
         <i v-if="child.children.length" class="angle fa fa-angle-right"></i>
       </a>
       <router-link v-else-if="child.importedComponent" active-class="active"
-                   :to="{name : child.title}"
+                   :to="{name : t(child,'title','en')}"
                    class="slide-item">
         <span class="side-menu__label"> {{ t(child,'title') }} </span>
       </router-link>

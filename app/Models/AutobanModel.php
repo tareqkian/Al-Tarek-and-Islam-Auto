@@ -10,8 +10,6 @@ use Illuminate\Database\Eloquent\Model;
 class AutobanModel extends Model implements TranslatableAlias
 {
   use HasFactory, Translatable;
-  protected $table = 'autoban_brands';
-  protected $translationForeignKey = 'autoban_brand_id';
   public $translatedAttributes = ['model_title'];
   protected $fillable = ['model_image'];
 

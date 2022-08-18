@@ -14,7 +14,7 @@
         <i v-if="item.children.length" class="angle fa fa-angle-right"></i>
       </a>
       <router-link v-else-if="item.importedComponent" active-class="active"
-                   :to="{name : item.title}"
+                   :to="{name : t(item,'title','en')}"
                    class="side-menu__item">
         <i class="sidemenu_icon" :class="[item.icon_class]"></i>
         <span class="side-menu__label"> {{ t(item,'title') }} </span>

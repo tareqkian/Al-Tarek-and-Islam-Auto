@@ -1,13 +1,13 @@
 import { defineStore } from "pinia";
 import api from "../axios";
 import {ref} from "vue";
+
 export const useMenus = defineStore("Menus",()=>{
   const menuRoutes = ref([]);
   const menus = {
     loading: ref(false),
     data: ref([])
   }
-
   const initROUTES = async ()=>{
     try {
       const { data } = await api.get("/routes")
@@ -29,7 +29,11 @@ export const useMenus = defineStore("Menus",()=>{
         z.children = x.items.map(y=>{
           let c = {}
           c.path = y.route
-          c.name = y.title
+          if ( y.translations.length ) {
+            c.name = y.translations.filter(t=>t.locale==='en')[0].title
+          } else {
+            c.name = y.title
+          }
           c.component = () => import(/* @vite-ignore */y.importedComponent)
           c.meta = {
             realTime: `${y.importedComponent.split('/').pop().replace(/.vue/g,'')}Event`,

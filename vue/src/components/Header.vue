@@ -3,7 +3,7 @@
     <div class="app-header header sticky">
       <div class="container-fluid main-container">
         <div class="d-flex">
-          <router-link :to="{ path: '/dashboard' }" class="header-brand">
+          <router-link :to="{ name: 'Dashboard' }" class="header-brand">
             <span class="h1 header-brand-img desktop-lgo"> Image Logo </span>
             <span class="h1 header-brand-img dark-logo"> Image Logo </span>
             <span class="h4 header-brand-img mobile-logo"> Logo </span>
@@ -40,7 +40,7 @@
                     </div>
                   </div>
                   <div class="d-flex" v-if="$can('browse_admin_dashboard')">
-                    <router-link :to="{path: '/admin'}"
+                    <router-link :to="{name: 'Admin Dashboard'}"
                                  active-class="active"
                                  class="nav-link icon nav-link-bg">
                       <i class="ti-crown text-yellow"></i>

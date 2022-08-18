@@ -16,6 +16,6 @@ class AutobanBrand extends Model implements TranslatableAlias
 
     public function models()
     {
-      return $this->hasMany(AutobanModel::class,'autoban_brand_id');
+      return $this->hasMany(AutobanModel::class);
     }
 }

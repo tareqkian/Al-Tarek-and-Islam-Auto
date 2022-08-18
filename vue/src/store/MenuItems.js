@@ -41,6 +41,7 @@ export const useMenuItems = defineStore("MenuItems",()=>{
       let item = data.data;
       let routes = router.getRoutes()
       let link = routes.some(el=>el.name === item.title)
+      console.log(payload.menu_name)
       if ( !link && item.importedComponent ) {
         router.addRoute(payload.menu_name, {
           path: payload.menu_name+'/'+item.route,

@@ -4,8 +4,217 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "926e6e7465c959a395b32701815b4570",
+    "content-hash": "122b44634e1a1529e4c11e93e5f6768c",
     "packages": [
+        {
+            "name": "alkoumi/laravel-arabic-numbers",
+            "version": "v1.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/alkoumi/laravel-arabic-numbers.git",
+                "reference": "1fcde4f7c4cec6aebbc4ddb84874a927df7e90da"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/alkoumi/laravel-arabic-numbers/zipball/1fcde4f7c4cec6aebbc4ddb84874a927df7e90da",
+                "reference": "1fcde4f7c4cec6aebbc4ddb84874a927df7e90da",
+                "shasum": ""
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Alkoumi\\LaravelArabicNumbers\\LaravelArabicNumbersServiceProvider"
+                    ],
+                    "aliases": {
+                        "Numbers": "Alkoumi\\LaravelArabicNumbers\\Numbers"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Alkoumi\\LaravelArabicNumbers\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mohamed Elkoumi",
+                    "email": "komy66@gmail.com"
+                }
+            ],
+            "description": "Laravel package to handel ANY thing 🥳 about our Amazing 💝 Arabic Numbers Functions { كل ما يهم محبي لارافيل واستخدام الأرقام العربية مثل تفقيط الأرقام والمبالغ المالية والعكس و عرض الأرقام بالعربية والعكس }",
+            "homepage": "https://be.net/komy",
+            "keywords": [
+                "Arabic Indic Digits تحويل الأرقام الهندية إلى الأرقام العربية الشرقية والعكس ليفهمها لارافيل",
+                "Middleware حل مشكلة استقبال المدخلات للأرقام العربية بإستخدام",
+                "Number From String إستخراج الأرقام من اللغة العربية",
+                "Show Arabic Numbers عرض الأرقام العربية بدل الإنجليزية",
+                "Tafqeet Money تفقيط المبالغ",
+                "Tafqeet Money تفقيط المبالغ المالية باللغة العربية الفصحى",
+                "Tafqeet Numbers تفقيط الأرقام",
+                "Tafqeet Numbers تفقيط الأرقام باللغة العربية الفصحى",
+                "laravel arabic indic digits",
+                "laravel arabic numbers",
+                "الأرقام العربية"
+            ],
+            "support": {
+                "issues": "https://github.com/alkoumi/laravel-arabic-numbers/issues",
+                "source": "https://github.com/alkoumi/laravel-arabic-numbers/tree/v1.1.2"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/",
+                    "type": "github"
+                },
+                {
+                    "url": "https://www.patreon.com/mohammadelkoumi",
+                    "type": "patreon"
+                }
+            ],
+            "time": "2021-11-15T07:26:54+00:00"
+        },
+        {
+            "name": "arcanedev/log-viewer",
+            "version": "8.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ARCANEDEV/LogViewer.git",
+                "reference": "8badbc9435d8d73add6f39ec03076e735db90350"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ARCANEDEV/LogViewer/zipball/8badbc9435d8d73add6f39ec03076e735db90350",
+                "reference": "8badbc9435d8d73add6f39ec03076e735db90350",
+                "shasum": ""
+            },
+            "require": {
+                "arcanedev/support": "^8.0",
+                "ext-json": "*",
+                "php": "^7.3|^8.0",
+                "psr/log": "^1.1 || ^2.0"
+            },
+            "require-dev": {
+                "laravel/framework": "^8.74",
+                "mockery/mockery": "^1.4.2",
+                "orchestra/testbench-core": "^6.27",
+                "phpunit/phpunit": "^9.5.10"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-develop": "8.x-dev"
+                },
+                "laravel": {
+                    "providers": [
+                        "Arcanedev\\LogViewer\\LogViewerServiceProvider",
+                        "Arcanedev\\LogViewer\\Providers\\DeferredServicesProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "files": [
+                    "helpers.php"
+                ],
+                "psr-4": {
+                    "Arcanedev\\LogViewer\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "ARCANEDEV",
+                    "email": "arcanedev.maroc@gmail.com",
+                    "homepage": "https://github.com/arcanedev-maroc",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Provides a Log Viewer for Laravel",
+            "homepage": "https://github.com/ARCANEDEV/LogViewer",
+            "keywords": [
+                "arcanedev",
+                "arcanesoft",
+                "laravel",
+                "log",
+                "log viewer",
+                "log-viewer",
+                "logviewer"
+            ],
+            "support": {
+                "issues": "https://github.com/ARCANEDEV/LogViewer/issues",
+                "source": "https://github.com/ARCANEDEV/LogViewer/tree/8.3.0"
+            },
+            "time": "2022-02-09T19:22:29+00:00"
+        },
+        {
+            "name": "arcanedev/support",
+            "version": "8.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ARCANEDEV/Support.git",
+                "reference": "b161c3c080b314e832410295011625721fbd3a2f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ARCANEDEV/Support/zipball/b161c3c080b314e832410295011625721fbd3a2f",
+                "reference": "b161c3c080b314e832410295011625721fbd3a2f",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/contracts": "^8.0",
+                "illuminate/support": "^8.0",
+                "php": "^7.3|^8.0"
+            },
+            "require-dev": {
+                "laravel/framework": "^8.0",
+                "orchestra/testbench": "^6.0",
+                "phpunit/phpunit": "^9.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-develop": "8.x-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "helpers.php"
+                ],
+                "psr-4": {
+                    "Arcanedev\\Support\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "ARCANEDEV",
+                    "email": "arcanedev.maroc@gmail.com",
+                    "homepage": "https://github.com/arcanedev-maroc"
+                }
+            ],
+            "description": "ARCANEDEV Support Helpers",
+            "homepage": "https://github.com/ARCANEDEV/Support",
+            "keywords": [
+                "arcanedev",
+                "arcanesoft",
+                "laravel",
+                "support"
+            ],
+            "support": {
+                "issues": "https://github.com/ARCANEDEV/Support/issues",
+                "source": "https://github.com/ARCANEDEV/Support/tree/8.1.0"
+            },
+            "time": "2020-11-27T17:09:38+00:00"
+        },
         {
             "name": "asm89/stack-cors",
             "version": "v2.1.1",

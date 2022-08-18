@@ -25,7 +25,8 @@ class StoreAutobanBrandRequest extends FormRequest
   {
     return [
       'brand_image' => 'required|string',
-      'brand_title' => 'required|string|unique:autoban_brand_translations'
+      'en.brand_title' => 'required|string|unique:autoban_brand_translations,brand_title',
+      'ar.brand_title' => 'required|string|unique:autoban_brand_translations,brand_title',
     ];
   }
 }

@@ -29,7 +29,7 @@ class AutobanBrandController extends Controller
    */
   public function index()
   {
-    $brands = AutobanBrand::with("translations")->get();
+    $brands = AutobanBrand::with("translations","models.translations")->get();
     return AutobanBrandResource::collection($brands);
   }
 
@@ -41,7 +41,7 @@ class AutobanBrandController extends Controller
    */
   public function store(StoreAutobanBrandRequest $request)
   {
-    $validated = $request->validated();
+    $validated = $request->all();
     $dpPath = $this->saveImage($validated['brand_image']);
     $validated['brand_image'] = $dpPath;
     $brand = AutobanBrand::create($validated);
@@ -69,7 +69,7 @@ class AutobanBrandController extends Controller
    */
   public function update(UpdateAutobanBrandRequest $request, AutobanBrand $autobanBrand)
   {
-    $validated = $request->validated();
+    $validated = $request->all();
     if ( isset($validated['brand_image']) ) {
       if (preg_match('/^data:image\/(\w+);base64,/',$validated['brand_image'],$type)) {
         $dpPath = $this->saveImage($validated['brand_image']);
@@ -100,6 +100,10 @@ class AutobanBrandController extends Controller
     if ( $autobanBrand->brand_image ) {
       $deletePath = public_path($autobanBrand->brand_image);
       File::delete($deletePath);
+      foreach ($autobanBrand->models as $model) {
+        $deletePath = public_path($model->model_image);
+        File::delete($deletePath);
+      }
     }
     broadcast(new BrandDeleter($autobanBrand));
     $autobanBrand->delete();

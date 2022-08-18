@@ -102,10 +102,27 @@ return [
 
     "custom" => [
       "driver" => "single",
-      /*"tap" => [],*/
       "path" => storage_path("logs/custom.log"),
       "level" => "debug"
-    ]
+    ],
+
+    "Brands-Models" => [
+      "driver" => "single",
+      "path" => storage_path("logs/Brands-Models.log"),
+      "level" => "debug"
+    ],
+
+    "Types" => [
+      "driver" => "single",
+      "path" => storage_path("logs/Types.log"),
+      "level" => "debug"
+    ],
+
+    "Years" => [
+      "driver" => "single",
+      "path" => storage_path("logs/Years.log"),
+      "level" => "debug"
+    ],
   ],
 
 ];

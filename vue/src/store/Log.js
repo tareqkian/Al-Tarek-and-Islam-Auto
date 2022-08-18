@@ -33,9 +33,6 @@ export const useLogStore = defineStore("LogStore",()=>{
     }
   }
 
-
-
-
   return {
     logFiles,
     initFiles,

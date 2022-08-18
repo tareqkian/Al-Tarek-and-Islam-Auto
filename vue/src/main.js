@@ -46,11 +46,11 @@ window.Echo = new Echo({
 });
 
 export const app = createApp(App);
+app.use(t)
 
 app.use(abilitiesPlugin, ability, { useGlobalProperties: true });
-app.use(pinia);
+app.use(pinia,'');
 app.provide("Settings",appSettings)
-app.use(t)
 app.use(router);
 // app.use(i18n);
 // app.provide("$i18n",i18n.global);

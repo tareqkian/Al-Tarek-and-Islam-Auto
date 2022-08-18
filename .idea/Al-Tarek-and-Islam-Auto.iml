@@ -146,6 +146,9 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/barryvdh/laravel-cors" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/rap2hpoutre/laravel-log-viewer" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/astrotomic/laravel-translatable" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/arcanedev/log-viewer" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/arcanedev/support" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/alkoumi/laravel-arabic-numbers" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

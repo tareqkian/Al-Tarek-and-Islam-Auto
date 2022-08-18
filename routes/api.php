@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\AutobanBrandController;
+use App\Http\Controllers\AutobanModelController;
+use App\Http\Controllers\AutobanTypeController;
+use App\Http\Controllers\AutobanYearController;
 use App\Http\Controllers\LanguagesController;
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\SettingController;
@@ -48,7 +51,9 @@ Route::middleware('auth:sanctum')->group(function(){
   Route::apiResource('/languages', LanguagesController::class);
 
   Route::apiResource('/autobanBrands', AutobanBrandController::class);
-
+  Route::apiResource('/autobanModels', AutobanModelController::class);
+  Route::apiResource('/autobanTypes', AutobanTypeController::class);
+  Route::apiResource('/autobanYears', AutobanYearController::class);
 
   Route::post('/logout',[AuthController::class,'logout']);
 });

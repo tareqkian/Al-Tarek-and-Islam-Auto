@@ -35,7 +35,6 @@
             <div class="card">
               <div class="card-body">
                 <div class="row text-center">
-
                   <DataTable :loading="log.loading" :value="log.data"
                              :filters="filters" :rows-per-page-options="[15,30,60]"
                              row-group-mode="rowspan" group-rows-by="table_name" paginator :rows="15"
@@ -54,7 +53,6 @@
                            style="top: 30%;right: 10px"></i>
                       </div>
                     </template>
-
                     <Column field="level" header="Level" :sortable="true">
                       <template #body="val">
                         <span :class="`text-${val.data.level_class}`" style="overflow: hidden !important;">
@@ -63,10 +61,12 @@
                         </span>
                       </template>
                     </Column>
-
-                    <Column field="text" header="text" :sortable="true" class="overflow-auto w-70" />
+                    <Column field="text" header="text" :sortable="true" class="overflow-auto w-70">
+                      <template #body="value">
+                        <pre>{{ JSON.parse(value.data.text) }}</pre>
+                      </template>
+                    </Column>
                     <Column field="date" header="date" :sortable="true" />
-
                   </DataTable>
                 </div>
               </div>

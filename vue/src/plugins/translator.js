@@ -1,18 +1,23 @@
 import {ref} from "vue";
-
+import { convertNumbers2Arabic, convertNumbers2English } from "to-arabic-numbers";
 const locale = ref(localStorage.getItem("locale"))
 window.addEventListener('locale-changed', (event) => {
   locale.value = event.detail.storage;
 });
 
 export default {
-  install: (app, options)=>{
-    let t = app.config.globalProperties.t = (base,name = null) => {
-      if ( typeof base === 'object' ) {
+  install: (app, options = null )=>{
+    let t = app.config.globalProperties.t = (base,name = null,defaultLocal = null) => {
+      if ( typeof base === 'object' && Object.keys(base).length ) {
         let result = base[name];
         let trans = base.translations || [];
-        if ( trans.length && trans.some(x=>x[name]&&x["locale"]===locale.value) )
-          result = (base.translations.filter(x=>x.locale===locale.value)[0][name] || '')
+        if ( trans.length && trans.some(x=>x[name]&&x["locale"]===(defaultLocal || locale.value)) )
+          result = (base.translations.filter(x=>x.locale===(defaultLocal || locale.value))[0][name] || '')
+
+        if ( (locale.value === 'ar' && /\d/.test(result)) || (defaultLocal && defaultLocal == 'ar') )
+          result = convertNumbers2Arabic(result)
+        if ( (locale.value === 'en' && /\d/.test(result)) || (defaultLocal && defaultLocal == 'en') )
+          result = convertNumbers2English(result)
         return result;
       }
       if ( typeof base === 'string' ) {

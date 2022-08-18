@@ -26,11 +26,16 @@ class UpdateAutobanBrandRequest extends FormRequest
   {
     return [
       'brand_image' => 'nullable|string',
-      'brand_title' => [
+      'en.brand_title' => [
         'required',
         'string',
-        Rule::unique('autoban_brand_translations')->ignore($this->id, 'autoban_brand_id')
-      ]
+        Rule::unique('autoban_brand_translations','brand_title')->ignore($this->id, 'autoban_brand_id')
+      ],
+      'ar.brand_title' => [
+        'required',
+        'string',
+        Rule::unique('autoban_brand_translations','brand_title')->ignore($this->id, 'autoban_brand_id')
+      ],
     ];
   }
 }
