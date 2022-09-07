@@ -24,7 +24,16 @@ class AutobanModelController extends Controller
    */
   public function index()
   {
-    $models = AutobanModel::with("translations","brand.translations")->get();
+//    $models = AutobanModel::with("translations","brand.translations")->get();
+
+    $models = AutobanModel::with("translations","brand.translations")
+      ->join('autoban_model_translations','autoban_model_translations.autoban_model_id','=','autoban_models.id')->where('autoban_model_translations.locale','en')
+      ->join('autoban_brand_translations','autoban_brand_translations.autoban_brand_id','=','autoban_models.autoban_brand_id')->where('autoban_brand_translations.locale','en')
+
+      ->orderBy('autoban_brand_translations.brand_title')
+      ->orderBy('autoban_model_translations.model_title')
+      ->paginate(5);
+
     return AutobanModelResource::collection($models);
   }
 
@@ -107,7 +116,6 @@ class AutobanModelController extends Controller
     $autobanModel->delete();
     return [ "status" => 204 ];
   }
-
 
   private function saveImage($image)
   {

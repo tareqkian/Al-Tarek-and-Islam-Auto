@@ -16,6 +16,10 @@ class AutobanBrand extends Model implements TranslatableAlias
 
     public function models()
     {
-      return $this->hasMany(AutobanModel::class);
+      return $this->hasMany(AutobanModel::class)->with('translations');
+    }
+    public function task()
+    {
+      return $this->belongsTo(AutobanPriceTask::class,'autoban_brand_id');
     }
 }

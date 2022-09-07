@@ -2,16 +2,20 @@
 
 namespace App\Providers;
 
+use App\Models\Autoban;
 use App\Models\AutobanBrand;
 use App\Models\AutobanBrandTranslation;
 use App\Models\AutobanModel;
 use App\Models\AutobanModelTranslation;
+use App\Models\AutobanPriceTask;
 use App\Models\AutobanType;
 use App\Models\AutobanTypeTranslation;
 use App\Models\AutobanYear;
 use App\Models\AutobanYearTranslation;
 use App\Models\User;
+use App\Observers\AutobanObserver;
 use App\Observers\BrandObserver;
+use App\Observers\TaskObserver;
 use App\Observers\TypeObserver;
 use App\Observers\UserObserver;
 use App\Observers\YearObserver;
@@ -67,5 +71,10 @@ class EventServiceProvider extends ServiceProvider
     ];
     foreach ($autobanYear as $model) $model::observe(YearObserver::class);
 
+    // Autoban Observer
+    $autoban = [Autoban::class,];
+    foreach ($autoban as $model) $model::observe(AutobanObserver::class);
+
+    AutobanPriceTask::observe(TaskObserver::class);
   }
 }

@@ -8,11 +8,7 @@
       <div class="col-xl-3">
         <div class="card">
           <div class="nav flex-column admisetting-tabs" role="tablist" aria-orientation="vertical">
-              <div v-if="menus.loading" class="spinner4 my-3">
-                <div class="bounce1"></div>
-                <div class="bounce2"></div>
-                <div class="bounce3"></div>
-              </div>
+            <Loading v-if="menus.loading" />
               <a v-else
                  class="nav-link d-flex justify-content-between"
                  data-bs-toggle="pill"
@@ -43,7 +39,6 @@
         </div>
         <div class="card">
           <div class="card-body dd" id="#dd">
-<!--            @permissionsGenerator="generatePermissions" -->
             <menu-builder :items="items"
                           :MenuID="selectedMenu.id"
                           :parentMenu="selectedMenu.name"
@@ -107,14 +102,27 @@
               <div class="col-12">
                 <div class="form-floating">
                   <input type="text"
-                         v-model="newMenuItem.title"
+                         v-model="newMenuItem.en.title"
                          class="form-control my-2"
-                         :class="[errors.title ? 'is-invalid' : '']"
+                         :class="[errors['en.title'] ? 'is-invalid' : '']"
                          placeholder="Title">
-                  <label>Title</label>
+                  <label>Title EN</label>
                   <div class="invalid-feedback">
                     <ul>
-                      <li v-for="err in errors.title" :key="err"> {{err}} </li>
+                      <li v-for="err in errors['en.title']" :key="err"> {{err}} </li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="form-floating">
+                  <input type="text"
+                         v-model="newMenuItem.ar.title"
+                         class="form-control my-2"
+                         :class="[errors['ar.title'] ? 'is-invalid' : '']"
+                         placeholder="Title">
+                  <label>Title AR</label>
+                  <div class="invalid-feedback">
+                    <ul>
+                      <li v-for="err in errors['ar.title']" :key="err"> {{err}} </li>
                     </ul>
                   </div>
                 </div>
@@ -188,6 +196,7 @@
 <script setup>
 import PageLayoutVue from '/src/components/Layouts/PageLayout.vue';
 import MenuBuilder from "/src/components/MenuBuilder/MenuBuilder.vue"
+import Loading from "../../components/Loading.vue";
 import Dropdown from "primevue/dropdown"
 import Dialog from 'primevue/dialog';
 import ConfirmPopup from 'primevue/confirmpopup';
@@ -261,7 +270,12 @@ watch(
 )
 let newMenuItem = ref({
   menu_id: null,
-  title: null,
+  en:{
+    title: null
+  },
+  ar: {
+    title: null
+  },
   route: null,
   selectedComponent: null,
   icon_class: null,
@@ -306,7 +320,14 @@ const removeMenu = (event,menu)=>{
 }
 const showEditModal = (item)=>{
   errors.value = {};
-  newMenuItem.value = {}
+  newMenuItem.value = {
+    menu_id: null,
+    en:{title: null},
+    ar: {title: null},
+    route: null,
+    selectedComponent: null,
+    icon_class: null,
+  }
   menuItemModalShow.value = !menuItemModalShow.value
   if (item) {
     let componentImported = (item.importedComponent || ''),
@@ -314,7 +335,8 @@ const showEditModal = (item)=>{
       route = (componentImported.split('/')[componentImported.split('/').length - 1].replace(/.vue/g,'') || '');
     route = route.charAt(0).toLowerCase() + route.slice(1);
     newMenuItem.value.id = item.id
-    newMenuItem.value.title = t(item,'title')
+    newMenuItem.value.en.title = t(item,'title','en')
+    newMenuItem.value.ar.title = t(item,'title','ar')
     newMenuItem.value.route = item.route
     newMenuItem.value.icon_class = item.icon_class
     newMenuItem.value.selectedComponent = {route, parent, componentImported}
@@ -335,9 +357,8 @@ const handelMenuItem = async ()=>{
       await menuItemsStore.addItems(route.meta.menu,newMenuItem.value);
     }
     menuItemModalShow.value = !menuItemModalShow.value
-  } catch (error) {
-    console.log(error)
-    errors.value = error.errors
+  } catch (e) {
+    errors.value = e
   }
   loading.value = false
 }

@@ -20,7 +20,8 @@ class AutobanModelResource extends JsonResource
           'model_image' => URL::to($this->model_image),
           'model_title' => $this->model_title,
           "translations" => TranslationsResource::collection($this->translations)->relationName("autoban_model"),
-          "brand" => new AutobanBrandResource($this->whenLoaded('brand'))
+          "brand" => new AutobanBrandResource($this->whenLoaded('brand')),
+          "autobans" => AutobanResource::collection($this->whenLoaded('autobans')),
         ];
     }
 }

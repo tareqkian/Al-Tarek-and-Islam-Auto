@@ -29,7 +29,18 @@ class AutobanBrandController extends Controller
    */
   public function index()
   {
-    $brands = AutobanBrand::with("translations","models.translations")->get();
+//    $brands = AutobanBrand::with("translations","models.translations")
+//      ->join('autoban_brand_translations','autoban_brand_translations.autoban_brand_id','=','autoban_brands.id')->where('autoban_brand_translations.locale','en')
+//      ->join('autoban_models','autoban_models.autoban_brand_id','=','autoban_brands.id')
+//      ->join('autoban_model_translations','autoban_model_translations.autoban_model_id','=','autoban_models.id')->where('autoban_model_translations.locale','en')
+//
+//      ->orderBy('autoban_brand_translations.brand_title')
+//      ->orderBy('autoban_model_translations.model_title')
+//      ->paginate(1);
+
+    $brands = AutobanBrand::with("translations","models.translations")
+      ->get()
+      ->sortBy(['brand_title']);
     return AutobanBrandResource::collection($brands);
   }
 

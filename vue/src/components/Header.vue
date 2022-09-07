@@ -46,12 +46,6 @@
                       <i class="ti-crown text-yellow"></i>
                     </router-link>
                   </div>
-                  <div class="d-flex">
-                    <a class="nav-link icon theme-layout nav-link-bg layout-setting">
-                      <span class="dark-layout"><i class="fe fe-moon"></i></span>
-                      <span class="light-layout"><i class="fe fe-sun"></i></span>
-                    </a>
-                  </div>
                   <div class="dropdown header-notify">
                     <a class="nav-link icon"
                        data-bs-toggle="sidebar-right"
@@ -87,6 +81,12 @@
                         <div class="mt-1">Sign Out</div>
                       </a>
                     </div>
+                  </div>
+                  <div class="d-flex">
+                    <a class="nav-link icon theme-layout nav-link-bg layout-setting">
+                      <span class="dark-layout"><i class="fe fe-moon"></i></span>
+                      <span class="light-layout"><i class="fe fe-sun"></i></span>
+                    </a>
                   </div>
                 </div>
               </div>

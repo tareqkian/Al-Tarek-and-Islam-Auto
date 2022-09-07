@@ -30,7 +30,7 @@
 </template>
 <script setup>
 import Child from "./Child.vue"
-import { computed, inject, onMounted, onActivated, onUpdated } from "vue"
+import { onMounted } from "vue"
 import { useRouter } from "vue-router"
 
 const router = useRouter()

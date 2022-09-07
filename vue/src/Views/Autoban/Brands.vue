@@ -12,23 +12,17 @@
         </button>
 
         <div class="card">
-          <div class="card-header border-bottom-0">
-            <h4 class="card-title"> Brands - Models </h4>
-          </div>
           <div class="card-body">
             <DataTable :loading="autobanModels.loading"
                        :value="autobanModels.data"
                        :filters="filters"
-                       :rows-per-page-options="[5,15,30]"
+
                        rowGroupMode="rowspan"
                        groupRowsBy="brand.brand_title"
                        sortMode="single"
                        sortField="brand.brand_title"
                        :sortOrder="1"
-                       paginator
-                       :rows="5"
-                       paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                       current-page-report-template="Showing {first} to {last} of {totalRecords}"
+
                        table-class="table table-vcenter text-nowrap border-bottom table-striped table-hover">
               <template #loading>
                 <Loading />
@@ -48,7 +42,6 @@
                 <template #body="value">
                   <Image imageStyle="width: 50px" :src="value.data.brand.brand_image" preview/>
                   <span class="mx-2">{{ t(value.data.brand,'brand_title') }}</span>
-
                   <div class="d-inline-block float-end">
                     <i class="fa fa-edit text-info mx-1"
                        v-if="$can(`edit_${this.$route.meta.permissionsLayout}`)"
@@ -59,8 +52,6 @@
                   </div>
                 </template>
               </Column>
-
-
               <Column field="model_title" header="Model Title">
                 <template #body="value">
                   {{ t(value.data,'model_title') }}
@@ -71,7 +62,6 @@
                   <Image width="80" :src="val.data.model_image" preview/>
                 </template>
               </Column>
-
               <Column v-if="$can(`edit_${this.$route.meta.permissionsLayout}`) || $can(`delete_${this.$route.meta.permissionsLayout}`)" header="Actions">
                 <template #body="val">
                   <i class="fa fa-edit text-info mx-1"
@@ -82,6 +72,15 @@
                      @click="modelDelete($event,val.data)"></i>
                 </template>
               </Column>
+
+              <template #footer>
+                <Paginator :rows="+autobanModels.pagination.per_page"
+                           :totalRecords="autobanModels.pagination.total"
+                           :rowsPerPageOptions="[5,15,30]"
+                           template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                           current-page-report-template="Showing {first} to {last} of {totalRecords}"
+                           @page="AutobanStore.initAutobanModels($event)"></Paginator>
+              </template>
 
             </DataTable>
           </div>
@@ -148,24 +147,9 @@
       :showHeader="false"
       v-model:visible="modelDialogShow">
       <form @submit.prevent="handleModel">
-        <div class="form-floating my-2">
-          <Dropdown
-            v-model="selectedModels.autoban_brand_id"
-            :options="autobanBrands.data"
-            filter
-            filter-placeholder="Search"
-            option-value="id"
-            :option-label="opt=>t(opt,'brand_title')"
-            class="form-control d-flex align-items-stretch"
-            :class="[errors.autoban_brand_id ? 'is-invalid' : '']"
-            placeholder="Brand" />
-          <label> Brand </label>
-          <div class="invalid-feedback">
-            <ul>
-              <li v-for="err in errors.autoban_brand_id" :key="err"> {{err}} </li>
-            </ul>
-          </div>
-        </div>
+
+        <BrandDropDown v-model="selectedModels.autoban_brand_id" :error="errors.autoban_brand_id" />
+
         <a v-if="!selectedModels.id" tabindex="-1" class="btn btn-success btn-sm" @click.prevent="newModel()">
           Add Model
         </a>
@@ -266,10 +250,12 @@ import MyFileUpload from "/src/components/MyFileUpload.vue"
 import Loading from "../../components/Loading.vue";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
+import Paginator from "primevue/paginator";
 import Image from "primevue/image";
 import Dropdown from "primevue/dropdown"
 import Accordion from 'primevue/accordion';
 import AccordionTab from 'primevue/accordiontab';
+import BrandDropDown from "../../components/Autoban/BrandDropDown.vue";
 
 import {useToast} from "primevue/usetoast";
 import {useConfirm} from "primevue/useconfirm";
@@ -278,16 +264,13 @@ import {computed, inject, ref} from "vue";
 import {useAutobanStore} from "../../store/Autoban";
 import {FilterMatchMode} from "primevue/api";
 
+
 const filters = ref({'global': { value: null, matchMode: FilterMatchMode.CONTAINS }})
 const t = inject("t");
 const toast = useToast();
 const confirm = useConfirm();
 
-const expandedRowGroups = ref(null)
-
 const AutobanStore = useAutobanStore()
-const autobanBrands = computed(()=>AutobanStore.autobanBrands)
-AutobanStore.initAutobanBrands()
 
 const autobanModels = computed(()=>AutobanStore.autobanModels)
 AutobanStore.initAutobanModels()
@@ -459,8 +442,8 @@ Echo.channel("BrandsEvent")
     else AutobanStore.autobanBrands.data = [brand]
   })
   .listen('ModelAdder',({model})=>{
-    if ( AutobanStore.autobanModels.data.length ) AutobanStore.autobanModels.data = [...AutobanStore.autobanModels.data, ...model]
-    else AutobanStore.autobanModels.data = [...model]
+    if ( AutobanStore.autobanModels.data.length )
+      AutobanStore.autobanModels.data = [...AutobanStore.autobanModels.data, ...model]
   })
   .listen('BrandEditor',({brand})=>{
     if ( AutobanStore.autobanBrands.data.length ) {
@@ -490,12 +473,12 @@ Echo.channel("BrandsEvent")
   })
   .listen('BrandDeleter',({brand})=>{
     if ( AutobanStore.autobanBrands.data.length ) {
-      const brandIndex = AutobanStore.autobanBrands.data.findIndex(x => x.id === brand.id);
+      const brandIndex = AutobanStore.autobanBrands.data.findIndex(x => +x.id === +brand.id);
       AutobanStore.autobanBrands.data = [
         ...AutobanStore.autobanBrands.data.slice(0,brandIndex),
         ...AutobanStore.autobanBrands.data.slice(brandIndex+1)
       ]
-      AutobanStore.autobanModels.data = AutobanStore.autobanModels.data.filter(x=>x.brand.id!==brand.id)
+      AutobanStore.autobanModels.data = AutobanStore.autobanModels.data.filter(x=>+x.brand.id !== +brand.id)
     }
   })
   .listen('ModelDeleter',({model})=>{

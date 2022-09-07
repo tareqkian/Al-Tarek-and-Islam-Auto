@@ -10,14 +10,19 @@ import "primevue/resources/primevue.min.css";
 import 'primeicons/primeicons.css';
 import BadgeDirective from 'primevue/badgedirective';
 
+import VueBlocksTree from 'vue3-blocks-tree';
+import 'vue3-blocks-tree/dist/vue3-blocks-tree.css';
+
 import { abilitiesPlugin } from "@casl/vue";
 import { ability } from "./services/abilities"
 import Echo from 'laravel-echo'
 import Pusher from "pusher-js"
 import api from "./axios";
 
+
 import { appSettings } from "./appSettings";
 import t from "./plugins/translator"
+import { plugin as Slicksort } from 'vue-slicksort';
 
 window.Pusher = Pusher;
 window.Echo = new Echo({
@@ -45,9 +50,10 @@ window.Echo = new Echo({
   },
 });
 
+
+
 export const app = createApp(App);
 app.use(t)
-
 app.use(abilitiesPlugin, ability, { useGlobalProperties: true });
 app.use(pinia,'');
 app.provide("Settings",appSettings)
@@ -58,4 +64,9 @@ app.use(PrimeVue, {inputStyle: 'filled'});
 app.use(ToastService);
 app.use(ConfirmationService);
 app.directive('badge', BadgeDirective);
+
+app.use(Slicksort)
+
+app.use(VueBlocksTree, {treeName:'blocks-tree'})
+
 app.mount('#app');

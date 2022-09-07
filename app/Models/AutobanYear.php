@@ -11,4 +11,9 @@ class AutobanYear extends Model implements TranslatableAlias
 {
   use HasFactory, Translatable;
   public $translatedAttributes = ['year_number'];
+
+  public function autobans()
+  {
+    return $this->hasMany(Autoban::class,'autoban_year_id');
+  }
 }

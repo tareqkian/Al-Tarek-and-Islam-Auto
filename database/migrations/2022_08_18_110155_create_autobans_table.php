@@ -27,6 +27,12 @@ class CreateAutobansTable extends Migration
         ->unsigned()
         ->references('id')
         ->on('autoban_years');
+      $table->foreignId('autoban_price_id')
+        ->unsigned()
+        ->default(1)
+        ->references('id')
+        ->on('autoban_prices')
+        ->onDelete('cascade');
       $table->integer('order');
       $table->timestamps();
     });

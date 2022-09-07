@@ -81,7 +81,6 @@ export const useMenuItems = defineStore("MenuItems",()=>{
     }
   }
 
-
   const generatePermissions = async (item,type="all")=>{
     try {
       const permissionsStore = usePermissions()
@@ -93,7 +92,6 @@ export const useMenuItems = defineStore("MenuItems",()=>{
       throw e.response.data.error
     }
   }
-
 
   const addItems = async (routeMenuID,payload)=>{
     try {
@@ -122,7 +120,6 @@ export const useMenuItems = defineStore("MenuItems",()=>{
       throw error.response.data.errors
     }
   }
-
 
   const orderItems = async (MENUID,payload)=>{
     try {

@@ -1,13 +1,23 @@
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  /* display: none; <- Crashes Chrome on hover */
+  -webkit-appearance: none;
+  margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+input[type=number] {
+  -moz-appearance:textfield; /* Firefox */
+}
+
 .p-datatable-loading-overlay {
   background-color: #00000030;
 }
 .p-paginator{
-  .p-dropdown {
+  .p-dropdown,.p-multiselect, {
     @extend .btn, .btn-light;
     display: inline-flex !important;
     margin-left: 10px !important;
     margin-right: 10px !important;
-    .p-dropdown-label{
+    .p-dropdown-label,.p-multiselect-label,{
       margin-left: 5px !important;
       margin-right: 5px !important;
     }
@@ -30,32 +40,51 @@
   //background-color: #262b5a !important;
   opacity: 0.3;
 }
-.p-dropdown-items {
+.p-dropdown-items, .p-multiselect-items {
   @extend .dropdown-menu;
   display: unset !important;
   min-width: 55px !important;
   text-align: center !important;
   margin-top: 0 !important;
-  .p-dropdown-item{
+  .p-dropdown-item, .p-multiselect-item {
     @extend .dropdown-item;
+    padding-left: 30px;
+    padding-right: 30px;
+    .p-checkbox {
+      position: absolute;
+      left: 15px;
+      top: 35%;
+    }
+  }
+  .p-highlight {
+    background-color: #262b5a !important;
+    opacity: 1;
   }
 }
+.light-mode .p-dropdown-items {
+  .p-highlight {
+    color: #fff;
+    background-color: #262b5a !important;
+    opacity: 1;
+  }
+}
+
 .p-dialog-mask{
   background: #00000050 !important;
 }
-.p-dropdown-filter-container{
+.p-dropdown-filter-container, .p-multiselect-filter-container {
   padding: 5px 10px;
-  .p-dropdown-filter.p-inputtext{
+  .p-dropdown-filter.p-inputtext, .p-multiselect-filter.p-inputtext{
     @extend .form-control
   }
-  .p-dropdown-filter-icon{
+  .p-dropdown-filter-icon, .p-multiselect-filter-icon{
     right: 30px;
   }
 }
-.dark-mode .p-dropdown-filter-container{
+.dark-mode .p-dropdown-filter-container, .dark-mode .p-multiselect-filter-container {
   background: #25274a;
 }
-.light-mode .p-dropdown-filter-container{
+.light-mode .p-dropdown-filter-container, .light-mode .p-multiselect-filter-container {
   background: #fff;
 }
 
@@ -102,8 +131,13 @@
 .opt.selected{
   background-color: #1a1c35 !important
 }
-.p-dropdown-panel{
+.p-dropdown-panel, .p-multiselect-panel{
   z-index: 99999 !important;
+  .p-multiselect-header {
+    .p-multiselect-close{
+      display: none !important;
+    }
+  }
 }
 .vue-select{
   width: 100% !important
@@ -119,18 +153,14 @@
   color: #fff !important;
   font-size: 14px !important;
 }
-ul.p-dropdown-items {
+
+ul.p-dropdown-items, ul.p-multiselect-items {
   width: 100% !important;
   text-align: start !important;
 }
-.p-dropdown-label {
+.p-dropdown-label, .p-multiselect-label {
   width: 100% !important;
 }
-
-//.p-sidebar-mask {
-//  z-index: 1 !important;
-//  //z-index: unset !important;
-//}
 
 .p-sidebar-close {
   @extend .btn, .btn-outline-light;
@@ -165,9 +195,6 @@ ul.p-dropdown-items {
   background-image: linear-gradient(to left, #00000090 , transparent);
 }
 
-
-
-
 .p-accordion {
   @extend .demo-accordion;
   @extend .accordionjs;
@@ -191,8 +218,67 @@ ul.p-dropdown-items {
   content: "\e901";
 }
 
+.p-dataview-layout-options{
+  @extend .btn-group;
+  .p-button{
+    @extend .btn, .btn-primary
+  }
+}
+.p-grid{
+  @extend .row, .justify-content-center
+}
+.p-overlaypanel{
+  @extend .card;
+  box-shadow: #00000038 0 0 20px;
+  .p-overlaypanel-content{
+    @extend .card-body;
+  }
+  .p-overlaypanel-close{
+    position: absolute;
+    margin: -5px;
+    background-color: #3366ff;
+    padding: 5px;
+    color: #fff;
+    border-radius: 50px;
+  }
+}
+
+.p-column-header-content {
+  .p-column-title{
+    width: 100% !important;
+  }
+}
+
+.toggle-container {
+  width: 150px !important;
+  .toggle{
+    width: 100% !important;
+    .toggle-label{
+      width: 100% !important;
+    }
+  }
+}
+
+.p-dialog{
+  @extend .modal-content,.modal-sm;
+  .p-dialog-header{display: none}
+  .p-dialog-content{@extend .modal-body}
+  .p-dialog-footer{
+    @extend .modal-footer,.flex-row-reverse
+  }
+}
+
+.p-treetable-toggler{
+  visibility: unset !important;
+}
 
 
+.Content{
+  direction: ltr;
+}
+.Flipped{
+  direction: rtl;
+}
 
 .rtl .p-sidebar {
   direction: ltr !important;
@@ -210,4 +296,13 @@ ul.p-dropdown-items {
 }
 .rtl .pi-chevron-right:before{
   content: "\e900";
+}
+.rtl .admisetting-tabs .nav-link::before {
+  margin-left: -3px !important;
+}
+.rtl .Content{
+  direction: rtl;
+}
+.rtl .Flipped{
+  direction: ltr;
 }

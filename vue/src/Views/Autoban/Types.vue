@@ -8,18 +8,10 @@
         </button>
 
         <div class="card">
-          <div class="card-header border-bottom-0">
-            <h4 class="card-title"> Types </h4>
-          </div>
           <div class="card-body">
             <DataTable :loading="autobanTypes.loading"
                        :value="autobanTypes.data"
                        :filters="filters"
-                       :rows-per-page-options="[5,15,30]"
-                       paginator
-                       :rows="5"
-                       paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                       current-page-report-template="Showing {first} to {last} of {totalRecords}"
                        table-class="table table-vcenter text-nowrap border-bottom table-striped table-hover">
               <template #loading>
                 <Loading />
@@ -40,7 +32,6 @@
                   {{ t(value.data,'type_title') }}
                 </template>
               </Column>
-
               <Column v-if="$can(`edit_${this.$route.meta.permissionsLayout}`) || $can(`delete_${this.$route.meta.permissionsLayout}`)" header="Actions">
                 <template #body="val">
                   <i class="fa fa-edit text-info mx-1"
@@ -51,6 +42,15 @@
                      @click="typeDelete($event,val.data)"></i>
                 </template>
               </Column>
+
+              <template #footer v-if="autobanTypes.pagination">
+                <Paginator :rows="+autobanTypes.pagination.per_page"
+                           :totalRecords="autobanTypes.pagination.total"
+                           :rowsPerPageOptions="[10,20,30]"
+                           template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                           current-page-report-template="Showing {first} to {last} of {totalRecords}"
+                           @page="AutobanStore.initAutobanTypes($event)"></Paginator>
+              </template>
 
             </DataTable>
           </div>
@@ -108,6 +108,7 @@ import Dialog from "primevue/dialog";
 import Loading from "../../components/Loading.vue";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
+import Paginator from "primevue/paginator";
 
 import {useToast} from "primevue/usetoast";
 import {useConfirm} from "primevue/useconfirm";

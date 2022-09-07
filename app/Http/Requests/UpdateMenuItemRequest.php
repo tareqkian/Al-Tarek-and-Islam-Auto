@@ -26,16 +26,18 @@ class UpdateMenuItemRequest extends FormRequest
   {
     return [
       "menu_id" => "int|exists:menus,id",
-      'title' => [
+/*      'title' => [
         'required',
         Rule::unique('menu_item_translations')->ignore($this->id, 'menu_item_id')
-      ],
-      /*"title" => [
-          "required",
-          Rule::unique('menu_items')
-              ->where(fn ($q) => $q->where('menu_id', $this->menu_id))
-              ->ignore($this->id)
       ],*/
+      'en.title' => [
+        'required',
+        'string'
+      ],
+      'ar.title' => [
+        'required',
+        'string'
+      ],
       "route" => [
         "nullable",
         Rule::unique('menu_items')

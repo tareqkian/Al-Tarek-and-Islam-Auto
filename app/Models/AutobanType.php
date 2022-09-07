@@ -11,4 +11,8 @@ class AutobanType extends Model implements TranslatableContract
 {
   use HasFactory, Translatable;
   public $translatedAttributes = ['type_title'];
+  public function autobans()
+  {
+    return $this->hasMany(Autoban::class,'autoban_type_id');
+  }
 }

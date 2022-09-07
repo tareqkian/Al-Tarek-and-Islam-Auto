@@ -19,12 +19,12 @@ class BrandObserver
    */
   public function created(Model $model)
   {
-    Log::channel('Types')
+    Log::channel('Brands-Models')
       ->info('',[
         'type' => "create",
         'user' => auth()->user(),
         'table' => $model->getTable(),
-        'originalModel' => $model->getOriginal(),
+        'originalModel' => $model,
       ]);
   }
 
@@ -61,12 +61,12 @@ class BrandObserver
    */
   public function deleted(Model $model)
   {
-    Log::channel('Types')
+    Log::channel('Brands-Models')
       ->info('',[
         'type' => "delete",
         'user' => auth()->user(),
         'table' => $model->getTable(),
-        'originalModel' => $model->getOriginal(),
+        'originalModel' => $model,
       ]);
   }
 }

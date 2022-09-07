@@ -64,7 +64,8 @@
                       <template #body="value">
                         <div class="form-switch">
                           <input class="form-check-input" type="checkbox"
-                                 @change="handleRolePermissions" :name='JSON.parse("["+permissions.data.filter(x=>x.table_name===value.data.table_name)[0].total+"]").filter(x=>x.key.includes("browse_"))[0].id'
+                                 @change="handleRolePermissions"
+                                 :name='JSON.parse("["+permissions.data.filter(x=>x.table_name===value.data.table_name)[0].total+"]").filter(x=>x.key.includes("browse_"))[0].id'
                                  v-model='rolePermissions.data.permissions[JSON.parse("["+permissions.data.filter(x=>x.table_name===value.data.table_name)[0].total+"]").filter(x=>x.key.includes("browse_"))[0].id]'>
                         </div>
                       </template>
@@ -213,6 +214,7 @@ const addNewRole = async ()=>{
   }
 }
 const selectedRole = (role)=>{
+  console.log(role)
   rolesStore.initROLE(role)
   // permissions.value.data.length || permissionsStore.initPERMISSIONS(role)
   permissionsStore.initPERMISSIONS(role)

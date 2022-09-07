@@ -20,7 +20,7 @@ class AutobanTypeController extends Controller
    */
   public function index()
   {
-    $types = AutobanType::with('translations')->get();
+    $types = AutobanType::with('translations')->paginate(10);
     return AutobanTypeResource::collection($types);
   }
 
@@ -32,9 +32,7 @@ class AutobanTypeController extends Controller
    */
   public function store(StoreAutobanTypeRequest $request)
   {
-    $validated = $request->all();
-    unset($validated['id']);
-    $type = AutobanType::create($validated);
+    $type = AutobanType::create($request->validated());
     broadcast(new TypeAdder(new AutobanTypeResource($type)));
     return new AutobanTypeResource($type);
   }

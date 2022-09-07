@@ -13,7 +13,13 @@ class AutobanModel extends Model implements TranslatableAlias
   public $translatedAttributes = ['model_title'];
   protected $fillable = ['model_image'];
 
-  public function brand(){
-    return $this->belongsTo(AutobanBrand::class,'autoban_brand_id');
+  public function brand()
+  {
+    return $this->belongsTo(AutobanBrand::class,'autoban_brand_id')
+      ->with('translations');
+  }
+  public function autobans()
+  {
+    return $this->hasMany(Autoban::class,'autoban_model_id');
   }
 }

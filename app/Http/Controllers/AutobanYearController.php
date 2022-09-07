@@ -20,7 +20,7 @@ class AutobanYearController extends Controller
    */
   public function index()
   {
-    $years = AutobanYear::with('translations')->get();
+    $years = AutobanYear::with('translations')->paginate(10);
     return AutobanYearResource::collection($years);
   }
 
