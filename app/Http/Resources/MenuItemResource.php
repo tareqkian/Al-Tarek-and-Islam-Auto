@@ -30,7 +30,8 @@ class MenuItemResource extends JsonResource
       'target' => $this->target,
       'title' => $this->title,
       'order' => $this->order,
-      'children' => $this->collection($this->children)
+      'children' => $this->collection($this->children),
+      "translations" => TranslationsResource::collection($this->translations)->relationName("menu_item"),
     ];
   }
 }

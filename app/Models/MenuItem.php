@@ -2,20 +2,22 @@
 
 namespace App\Models;
 
+use Astrotomic\Translatable\Contracts\Translatable AS TranslatableContract;
+use Astrotomic\Translatable\Translatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Menu;
 
-class MenuItem extends Model
+class MenuItem extends Model implements TranslatableContract
 {
-    use HasFactory;
+    use HasFactory, Translatable;
 
+    protected $translatedAttributes = ['title'];
     protected $fillable = [
         'icon_class',
         'menu_id',
         'order',
         'route',
-        'title',
         'url',
         'importedComponent'
     ];

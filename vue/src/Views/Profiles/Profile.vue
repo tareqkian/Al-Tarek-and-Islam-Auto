@@ -1,5 +1,5 @@
 <template>
-  <PageLayout :pageTitle="this.$route.meta.pageTitle">
+  <PageLayout :meta="this.$route.meta">
     <div class="main-proifle">
       <div class="row">
         <div class="col-xl-7">
@@ -119,8 +119,8 @@
 
 
     <handleUser
+      v-model="userDialogShow"
       :profile="true"
-      :userDialogShow="userDialogShow"
       :loading="loading"
       :errors="errors"
       :defaultImg="defaultImg"
@@ -219,12 +219,13 @@ const userForm = ref({
 })
 
 const userDialog = ()=>{
-  userDialogShow.value = true
+  userDialogShow.value = !userDialogShow.value
   errors.value = {}
   defaultImg.value = user.value.avatar
   userForm.value.id = user.value.id
   userForm.value.name = user.value.name
   userForm.value.email = user.value.email
+  user.value.settings = ( typeof user.value.settings === 'string' ? JSON.parse(user.value.settings) : user.value.settings)
   userForm.value.Desktop = user.value.settings.devices[0].count
   userForm.value.Mobile = user.value.settings.devices[1].count
   userForm.value.avatar = null
@@ -236,7 +237,7 @@ const handleUserForm = async ()=>{
     loading.value = true
     errors.value = {}
     await usersStore.updateUser(userForm.value)
-    userDialogShow.value = false
+    userDialogShow.value = !userDialogShow.value
     toast.add({
       closable: false,
       severity: "success",
@@ -261,7 +262,7 @@ const newPassword = ref({
 })
 const passwordDialog = ()=>{
   errors.value = {}
-  userDialogShow.value = false
+  // userDialogShow.value = !userDialogShow.value
   passwordDialogShow.value = !passwordDialogShow.value
   newPassword.value = {
     userId: user.value.id,

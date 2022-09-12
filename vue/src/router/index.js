@@ -15,7 +15,11 @@ router.addRoute('/',{
     reqAuth: true,
     isProfile: true,
     pageTitle: "Profile",
-    realTime: "UsersEvent"
+    realTime: "UsersEvent",
+    translations: [
+      {locale: "en", title: "Profile"},
+      {locale: "ar", title: "ملفي الشخصي"}
+    ]
   },
   component: Profile
 })

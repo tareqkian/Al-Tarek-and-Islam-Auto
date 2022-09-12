@@ -11,9 +11,16 @@ use App\Http\Requests\UpdateMenuRequest;
 use App\Http\Resources\MenuItemResource;
 use App\Http\Resources\MenuResource;
 use App\Models\MenuItem;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 
 class MenuController extends Controller
 {
+  public function __construct(Request $request)
+  {
+    App::setLocale($request->header('locale'));
+  }
+
   /**
    * Display a listing of the resource.
    *
@@ -55,7 +62,7 @@ class MenuController extends Controller
   public function initROUTE($fullPath)
   {
     /* return MenuResource::collection(Menu::with('items')->get()); */
-    return MenuItem::where('route',$fullPath)->with("menu")->get()->first();
+    return MenuItem::where('route',$fullPath)->with("menu",'translations')->get()->first();
   }
 
 

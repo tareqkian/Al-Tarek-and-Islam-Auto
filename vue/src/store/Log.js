@@ -22,19 +22,16 @@ export const useLogStore = defineStore("LogStore",()=>{
       throw e.response.data.errors
     }
   }
-  const initLog = async (payload)=>{
+  const initLog = async (payload,folder)=>{
     try {
       log.loading.value = true
-      const { data } = await api.get("/log/"+payload)
+      const { data } = await api.get("/log/"+[payload,folder])
       log.data.value = data
       log.loading.value = false
     } catch (e) {
       throw e.response.data.errors
     }
   }
-
-
-
 
   return {
     logFiles,

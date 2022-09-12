@@ -1,6 +1,6 @@
 <template>
-  <PageLayout :pageTitle="this.$route.meta.pageTitle">
-    <button class="btn btn-primary mb-2" @click="roleDialog()">
+  <PageLayout :meta="this.$route.meta">
+    <button v-if="$can(`add_${this.$route.meta.permissionsLayout}`)" class="btn btn-primary mb-2" @click="roleDialog()">
       <i class="fe fe-plus"></i>
       Add New Role
     </button>
@@ -16,13 +16,11 @@
                @click="selectedRole(role)" :href="`#${roles.data[0].name}`" role="tab">
               <div>
                 {{ t(role,"display_name") }}
-<!--                {{ role.display_name }}-->
-<!--                <small class="text-muted ms-3"> {{ t(role,"name") }} </small>-->
                 <small class="text-muted ms-3"> {{ role.name }} </small>
               </div>
-              <div>
-                <i class="fa fa-edit text-info mx-1" @click="roleDialog(role)"></i>
-                <i class="fa fa-trash text-danger mx-1" @click="roleDelete($event,role)"></i>
+              <div v-if="$can(`edit_${this.$route.meta.permissionsLayout}`) || $can(`delete_${this.$route.meta.permissionsLayout}`)">
+                <i v-if="$can(`edit_${this.$route.meta.permissionsLayout}`)" class="fa fa-edit text-info mx-1" @click="roleDialog(role)"></i>
+                <i v-if="$can(`delete_${this.$route.meta.permissionsLayout}`)" class="fa fa-trash text-danger mx-1" @click="roleDelete($event,role)"></i>
               </div>
             </a>
           </div>
@@ -34,8 +32,10 @@
             <div class="card">
               <div class="card-body">
                 <div class="row text-center">
-                  <DataTable :loading="permissions.loading || rolePermissions.loading" :value="permissions.data"
+                  <DataTable :loading="permissions.loading || rolePermissions.loading"
+                             :value="permissions.data"
                              :filters="filters" :rows-per-page-options="[15,30,60]"
+                             removableSort
                              row-group-mode="rowspan" group-rows-by="table_name" paginator :rows="15"
                              paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                              current-page-report-template="Showing {first} to {last} of {totalRecords}"
@@ -44,31 +44,65 @@
                       <Loading />
                     </template>
                     <template #header>
-                      <div class="search-element w-25 ms-auto mx-3 mb-4">
-                        <input type="search" class="form-control header-search"
-                               v-model="filters['global'].value" placeholder="Search…"
-                               aria-label="Search" tabindex="1">
-                        <i class="feather feather-search position-absolute"
-                           style="top: 30%;right: 10px"></i>
+                      <div class="row flex-row-reverse justify-content-center justify-content-md-start w-100">
+                        <div class="search-element col-10 col-md-3 mx-3 mb-4">
+                          <input type="search" class="form-control header-search"
+                                 v-model="filters['global'].value"
+                                 placeholder="Search…"
+                                 aria-label="Search" tabindex="1">
+                          <i class="feather feather-search position-absolute"
+                             style="top: 30%;right: 10px"></i>
+                        </div>
                       </div>
                     </template>
-
-                    <Column :sortable="true" class="text-capitalize" field="table_name" header="Table Name">
+                    <Column sortable class="text-capitalize" field="table_name" header="Table Name">
                       <template #body="value">
                         {{ value.data[value.field].replace(/_/g,' ') }}
                       </template>
                     </Column>
-                    <Column :sortable="true" class="text-capitalize" field="key" header="Roles" width="10%">
-                      <template #body="value">
-                        {{ value.data[value.field].split('_')[0] }}
-                      </template>
-                    </Column>
-                    <Column :sortable="true" class="text-capitalize" field="key" header="Action">
+                    <Column class="text-capitalize" header="browse" width="10%">
                       <template #body="value">
                         <div class="form-switch">
                           <input class="form-check-input" type="checkbox"
-                                 @change="handleRolePermissions" :name="value.data.id"
-                                 v-model="rolePermissions.data.permissions[value.data.id]">
+                                 @change="handleRolePermissions"
+                                 :name='JSON.parse("["+permissions.data.filter(x=>x.table_name===value.data.table_name)[0].total+"]").filter(x=>x.key.includes("browse_"))[0].id'
+                                 v-model='rolePermissions.data.permissions[JSON.parse("["+permissions.data.filter(x=>x.table_name===value.data.table_name)[0].total+"]").filter(x=>x.key.includes("browse_"))[0].id]'>
+                        </div>
+                      </template>
+                    </Column>
+                    <Column class="text-capitalize" header="read" width="10%">
+                      <template #body="value">
+                        <div class="form-switch">
+                          <input class="form-check-input" type="checkbox"
+                                 @change="handleRolePermissions" :name='JSON.parse("["+permissions.data.filter(x=>x.table_name===value.data.table_name)[0].total+"]").filter(x=>x.key.includes("read_"))[0].id'
+                                 v-model='rolePermissions.data.permissions[JSON.parse("["+permissions.data.filter(x=>x.table_name===value.data.table_name)[0].total+"]").filter(x=>x.key.includes("read_"))[0].id]'>
+                        </div>
+                      </template>
+                    </Column>
+                    <Column class="text-capitalize" header="add" width="10%">
+                      <template #body="value">
+                        <div class="form-switch">
+                          <input class="form-check-input" type="checkbox"
+                                 @change="handleRolePermissions" :name='JSON.parse("["+permissions.data.filter(x=>x.table_name===value.data.table_name)[0].total+"]").filter(x=>x.key.includes("add_"))[0].id'
+                                 v-model='rolePermissions.data.permissions[JSON.parse("["+permissions.data.filter(x=>x.table_name===value.data.table_name)[0].total+"]").filter(x=>x.key.includes("add_"))[0].id]'>
+                        </div>
+                      </template>
+                    </Column>
+                    <Column class="text-capitalize" header="edit" width="10%">
+                      <template #body="value">
+                        <div class="form-switch">
+                          <input class="form-check-input" type="checkbox"
+                                 @change="handleRolePermissions" :name='JSON.parse("["+permissions.data.filter(x=>x.table_name===value.data.table_name)[0].total+"]").filter(x=>x.key.includes("edit_"))[0].id'
+                                 v-model='rolePermissions.data.permissions[JSON.parse("["+permissions.data.filter(x=>x.table_name===value.data.table_name)[0].total+"]").filter(x=>x.key.includes("edit_"))[0].id]'>
+                        </div>
+                      </template>
+                    </Column>
+                    <Column class="text-capitalize" header="delete" width="10%">
+                      <template #body="value">
+                        <div class="form-switch">
+                          <input class="form-check-input" type="checkbox"
+                                 @change="handleRolePermissions" :name='JSON.parse("["+permissions.data.filter(x=>x.table_name===value.data.table_name)[0].total+"]").filter(x=>x.key.includes("delete_"))[0].id'
+                                 v-model='rolePermissions.data.permissions[JSON.parse("["+permissions.data.filter(x=>x.table_name===value.data.table_name)[0].total+"]").filter(x=>x.key.includes("delete_"))[0].id]'>
                         </div>
                       </template>
                     </Column>
@@ -112,16 +146,6 @@
       </form>
     </Dialog>
 
-<!--    <ConfirmPopup>
-      <template #message="data">
-        <div class="popover-arrow" style="position: absolute; left: 0px; transform: translate(129px, 0px);"></div>
-        <h3 class="popover-header">{{ data.message.message.header }}</h3>
-        <div class="popover-body d-flex align-items-center">
-          <i class="fs-5 me-3 text-danger" :class="[data.message.icon]"></i>
-          {{ data.message.message.body }}
-        </div>
-      </template>
-    </ConfirmPopup>-->
   </PageLayout>
 </template>
 
@@ -146,7 +170,12 @@ const rolesStore = useRolesStore();
 const permissionsStore = usePermissions();
 const toast = useToast()
 const confirm = useConfirm()
-const filters = ref({'global': { value: null, matchMode: FilterMatchMode.CONTAINS }})
+const filters = ref({
+  'global': {
+    value: '',
+    matchMode: FilterMatchMode.CONTAINS
+  }
+})
 const roleDialogShow = ref(false);
 
 const roles = computed(()=>rolesStore.roles)
@@ -168,7 +197,6 @@ const roleDialog = (role = {})=>{
   roleDialogShow.value = !roleDialogShow.value
   newRole.id = role.id || null;
   newRole.name = role.name || null;
-  /*newRole.display_name = role.display_name || null;*/
   newRole.display_name = t(role,"display_name") || null;
   errors.value = {}
 }
@@ -186,6 +214,7 @@ const addNewRole = async ()=>{
   }
 }
 const selectedRole = (role)=>{
+  console.log(role)
   rolesStore.initROLE(role)
   // permissions.value.data.length || permissionsStore.initPERMISSIONS(role)
   permissionsStore.initPERMISSIONS(role)
@@ -247,6 +276,10 @@ Echo.channel("RolesEvent")
         ...rolesStore.roles.data,
         data.role
       ]
+    } else {
+      rolesStore.roles.data = [
+        data.role
+      ]
     }
   })
   .listen("RoleEditor",(data)=>{
@@ -270,11 +303,3 @@ Echo.channel("RolesEvent")
   })
 
 </script>
-
-<style lang="scss" scoped>
-::v-deep(.p-paginator) {
-  .p-paginator-current {
-    margin-left: auto;
-  }
-}
-</style>

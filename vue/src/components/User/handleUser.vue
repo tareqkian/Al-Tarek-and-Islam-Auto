@@ -46,7 +46,7 @@
           filter
           filter-placeholder="Search"
           option-value="id"
-          option-label="display_name"
+          :option-label="opt=>t(opt,'display_name')"
           class="form-control d-flex align-items-stretch"
           :class="[errors.role_id ? 'is-invalid' : '']"
           placeholder="Role" />
@@ -76,7 +76,6 @@
       </div>
     </form>
   </Dialog>
-
 </template>
 
 <script setup>
@@ -90,16 +89,19 @@ import {useRolesStore} from "/src/store/Roles";
 
 const props = defineProps({
   profile: Boolean,
-  userDialogShow: Boolean,
+  modelValue: { type: Boolean, default: false },
   loading: Boolean,
   errors: Object,
   defaultImg: String,
   userForm: Object
 })
 
-const emit = defineEmits([
-  'handleUserForm'
-])
+const emit = defineEmits(['handleUserForm', 'update:modelValue' ])
+
+const userDialogShow = computed({
+  get: () => props.modelValue ,
+  set: (value) => emit('update:modelValue', value)
+})
 
 const systemSettingsStore = useSystemSettings();
 const devices = computed(()=>systemSettingsStore.devices)

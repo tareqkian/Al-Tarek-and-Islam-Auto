@@ -2,7 +2,7 @@
 import PageLayout from "../../components/Layouts/PageLayout.vue"
 </script>
 <template>
-  <PageLayout :pageTitle="this.$route.meta.pageTitle">
+  <PageLayout :meta="this.$route.meta">
     <div class="row">
       <div class="col-md-12">
         <div class="card">

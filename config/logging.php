@@ -40,20 +40,17 @@ return [
       'channels' => ['single'],
       'ignore_exceptions' => false,
     ],
-
     'single' => [
       'driver' => 'single',
       'path' => storage_path('logs/laravel.log'),
       'level' => 'debug',
     ],
-
     'daily' => [
       'driver' => 'daily',
       'path' => storage_path('logs/laravel.log'),
       'level' => 'debug',
       'days' => 14,
     ],
-
     'slack' => [
       'driver' => 'slack',
       'url' => env('LOG_SLACK_WEBHOOK_URL'),
@@ -61,7 +58,6 @@ return [
       'emoji' => ':boom:',
       'level' => 'critical',
     ],
-
     'papertrail' => [
       'driver' => 'monolog',
       'level' => 'debug',
@@ -71,7 +67,6 @@ return [
         'port' => env('PAPERTRAIL_PORT'),
       ],
     ],
-
     'stderr' => [
       'driver' => 'monolog',
       'handler' => StreamHandler::class,
@@ -80,32 +75,58 @@ return [
         'stream' => 'php://stderr',
       ],
     ],
-
     'syslog' => [
       'driver' => 'syslog',
       'level' => 'debug',
     ],
-
     'errorlog' => [
       'driver' => 'errorlog',
       'level' => 'debug',
     ],
-
     'null' => [
       'driver' => 'monolog',
       'handler' => NullHandler::class,
     ],
-
     'emergency' => [
       'path' => storage_path('logs/laravel.log'),
     ],
 
-    "custom" => [
-      "driver" => "single",
-      /*"tap" => [],*/
-      "path" => storage_path("logs/custom.log"),
-      "level" => "debug"
-    ]
-  ],
-
+    // Mine
+    "Brands-Models" => [
+      "driver" => "daily",
+      "path" => storage_path("logs/Brands-Models/Brands-Models.log"),
+      "level" => "debug",
+      'days' => 7
+    ],
+    "Types" => [
+      "driver" => "daily",
+      "path" => storage_path("logs/Types/Types.log"),
+      "level" => "debug",
+      'days' => 7
+    ],
+    "Years" => [
+      "driver" => "daily",
+      "path" => storage_path("logs/Years/Years.log"),
+      "level" => "debug",
+      'days' => 7
+    ],
+    "Autobans" => [
+      "driver" => "daily",
+      "path" => storage_path("logs/Autobans/Autobans.log"),
+      "level" => "debug",
+      'days' => 7,
+    ],
+    "Prices" => [
+      "driver" => "daily",
+      "path" => storage_path("logs/Prices/Prices.log"),
+      "level" => "debug",
+      'days' => 7,
+    ],
+    "Tasks" => [
+      "driver" => "daily",
+      "path" => storage_path("logs/Tasks/Tasks.log"),
+      "level" => "debug",
+      'days' => 7,
+    ],
+  ]
 ];

@@ -1,7 +1,19 @@
 <?php
 
+use App\Http\Controllers\AutobanBrandController;
+use App\Http\Controllers\AutobanController;
+use App\Http\Controllers\AutobanModelController;
+use App\Http\Controllers\AutobanPriceController;
+use App\Http\Controllers\AutobanPriceTaskController as AutobanPriceTaskControllerAlias;
+use App\Http\Controllers\AutobanTypeController;
+use App\Http\Controllers\AutobanYearController;
 use App\Http\Controllers\LanguagesController;
 use App\Http\Controllers\LogController;
+use App\Http\Controllers\OptionCategoryController as OptionCategoryControllerAlias;
+use App\Http\Controllers\OptionClassController as OptionClassControllerAlias;
+use App\Http\Controllers\OptionController as OptionControllerAlias;
+use App\Http\Controllers\OptionSubClassController as OptionSubClassControllerAlias;
+use App\Http\Controllers\PricelistController;
 use App\Http\Controllers\SettingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -46,6 +58,19 @@ Route::middleware('auth:sanctum')->group(function(){
   Route::apiResource('/translation',TranslatorController::class);
   Route::apiResource('/languages', LanguagesController::class);
 
+  Route::apiResource('/autobanBrands', AutobanBrandController::class);
+  Route::apiResource('/autobanModels', AutobanModelController::class);
+  Route::apiResource('/autobanTypes', AutobanTypeController::class);
+  Route::apiResource('/autobanYears', AutobanYearController::class);
+  Route::apiResource('/autoban', AutobanController::class);
+  Route::post('/orderAutoban', [AutobanController::class,'reOrder']);
+  Route::apiResource('/pricelist', PricelistController::class);
+  Route::put('/autobanPrices/{id}', [AutobanPriceController::class,'priceUpdate']);
+  Route::apiResource('/autobanPriceTasks', AutobanPriceTaskControllerAlias::class);
+  Route::apiResource('/optionClass', OptionClassControllerAlias::class);
+  Route::apiResource('/optionSubClass', OptionSubClassControllerAlias::class);
+  Route::apiResource('/optionCategory', OptionCategoryControllerAlias::class);
+  Route::apiResource('/options', OptionControllerAlias::class);
 
   Route::post('/logout',[AuthController::class,'logout']);
 });

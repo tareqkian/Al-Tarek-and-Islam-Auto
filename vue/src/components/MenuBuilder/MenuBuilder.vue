@@ -8,7 +8,8 @@
     <li v-for="(item,index) in items.data" :key="index"
         class="list-group-item dd-item" :data-id="item.id">
       <div class="dd-handle h-100 d-inline-block">
-        {{ index+1 + ' - ' + item.title}}
+<!--        {{ index+1 + ' - ' + item.title}}-->
+        {{ index+1 + ' - ' + t(item,'title')}}
         <small v-if="item.route" class="text-muted ms-3"> {{ `${parentMenu}/${item.route}` }}</small>
         <small v-else class="text-muted ms-3"> # </small>
       </div>
@@ -29,7 +30,7 @@
 </template>
 <script setup>
 import Child from "./Child.vue"
-import { computed, inject, onMounted, onActivated, onUpdated } from "vue"
+import { onMounted } from "vue"
 import { useRouter } from "vue-router"
 
 const router = useRouter()
@@ -62,9 +63,6 @@ const child_edit_click = (item)=>{
 const child_remove_click = (item)=>{
   emit("remove_click",item)
 }
-// const child_permissionsGenerator = (item)=>{
-//   emit("permissionsGenerator",item)
-// }
 
 </script>
 <style scoped>

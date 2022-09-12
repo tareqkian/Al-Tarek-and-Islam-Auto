@@ -9,6 +9,8 @@
     "license": "MIT",
     "require": {
         "php": "^7.3",
+        "alkoumi/laravel-arabic-numbers": "^1.1",
+        "arcanedev/log-viewer": "^8.3",
         "astrotomic/laravel-translatable": "^11.9",
         "barryvdh/laravel-cors": "^3.0",
         "beyondcode/laravel-websockets": "^1.13",

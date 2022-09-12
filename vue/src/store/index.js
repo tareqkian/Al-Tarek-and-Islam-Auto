@@ -1,10 +1,15 @@
 import { createPinia } from "pinia";
+import translator from "../plugins/translator";
 
 import { useAuth } from "./Auth";
 import { usePermissions } from "./Permissions";
 
-const pinia = createPinia();
+function t (){
+  return { translator }
+}
 
+const pinia = createPinia();
+pinia.use(t)
 
 const auth = useAuth(pinia);
 !auth.TOKEN || auth.initUSER(); // Fetch User's Data

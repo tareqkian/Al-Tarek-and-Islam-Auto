@@ -10,14 +10,14 @@
     <li v-else class="slide" v-for="item in menuItems.data.filter(x=>$can(`browse_${x.permissionsLayout}`) || x.permissionsLayout === '_')" :key="item.id">
       <a v-if="item.children.filter(x=>$can(`browse_${x.permissionsLayout}`)).length || (!item.importedComponent && item.children.filter(x=>$can(`browse_${x.permissionsLayout}`)).length)" class="side-menu__item" data-bs-toggle="slide" href="javascript:void(0);">
         <i class="sidemenu_icon" :class="[item.icon_class]"></i>
-        <span class="side-menu__label">{{ item.title }}</span>
+        <span class="side-menu__label">{{ t(item,'title') }}</span>
         <i v-if="item.children.length" class="angle fa fa-angle-right"></i>
       </a>
       <router-link v-else-if="item.importedComponent" active-class="active"
-                   :to="{name : item.title}"
+                   :to="{name : t(item,'title','en')}"
                    class="side-menu__item">
         <i class="sidemenu_icon" :class="[item.icon_class]"></i>
-        <span class="side-menu__label"> {{ item.title }} </span>
+        <span class="side-menu__label"> {{ t(item,'title') }} </span>
         <br>
       </router-link>
       <Child v-if="item.children.filter(x=>$can(`browse_${x.permissionsLayout}`)).length" :children="item.children" />

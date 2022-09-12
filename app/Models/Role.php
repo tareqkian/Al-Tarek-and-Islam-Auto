@@ -12,7 +12,7 @@ class Role extends Model implements TranslatableContract
   use HasFactory, Translatable;
 
   protected $translatedAttributes = ["display_name"];
-  protected $fillable = ["name", "display_name"];
+  protected $fillable = ["name"];
 
   public function users()
   {

@@ -1,5 +1,6 @@
 <script setup>
 import ConfirmPopup from "primevue/confirmpopup";
+import ConfirmDialog from "primevue/confirmdialog"
 import MyToast from "./components/CustomPrimeVUE/MyToast.vue";
 import {realTime} from "./real-time";
 realTime();
@@ -15,6 +16,8 @@ realTime();
       </div>
     </template>
   </ConfirmPopup>
+
+  <ConfirmDialog group="dialogConfirmation" />
 
   <MyToast />
   <router-view />

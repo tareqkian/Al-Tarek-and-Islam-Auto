@@ -1,5 +1,5 @@
 <template>
-  <PageLayout :pageTitle="this.$route.meta.pageTitle">
+  <PageLayout :meta="this.$route.meta">
     <button class="btn btn-primary mb-2">
       <i class="fe fe-plus"></i>
       Add New Role
@@ -11,21 +11,33 @@
                role="tablist"
                aria-orientation="vertical">
             <Loading v-if="logFiles.loading" />
-            <a v-else class="nav-link d-flex justify-content-between"
-               data-bs-toggle="pill"
-               role="tab"
-               v-for="(file,index) in logFiles.data"
-               :key="index"
-               @click="fetchLog(file)"
-               href="#pill">
-              <div>
-                {{ file }}
+            <template v-else v-for="(file,index) in logFiles.data.structure" :key="index">
+              <a v-if="typeof file !== 'object'"
+                 class="nav-link d-flex justify-content-between"
+                 data-bs-toggle="pill"
+                 role="tab"
+                 @click="fetchLog(file)"
+                 href="#pill">
+                <div> {{ file }} </div>
+              </a>
+              <div v-else class="nav-link accordion" id="accordionFlush">
+                <div v-for="(folder,indx) in file" :key="indx" class="w-100">
+                  <div class="row justify-content-center" data-bs-toggle="collapse" :data-bs-target="`#flush-collapse${indx}`">
+                    <span class="d-block">{{ index }}</span>
+                  </div>
+                  <div :id="`flush-collapse${indx}`" class="accordion-collapse collapse" data-bs-parent="#accordionFlush">
+                    <a class="nav-link d-flex justify-content-between"
+                       data-bs-toggle="pill"
+                       role="tab"
+                       @click="fetchLog(folder,index)"
+                       href="#pill">
+                      <div> {{ folder }} </div>
+                    </a>
+                  </div>
+                </div>
               </div>
-              <!--<div>
-                <i class="fa fa-edit text-info mx-1"></i>
-                <i class="fa fa-trash text-danger mx-1"></i>
-              </div>-->
-            </a>
+
+            </template>
           </div>
         </div>
       </div>
@@ -35,7 +47,6 @@
             <div class="card">
               <div class="card-body">
                 <div class="row text-center">
-
                   <DataTable :loading="log.loading" :value="log.data"
                              :filters="filters" :rows-per-page-options="[15,30,60]"
                              row-group-mode="rowspan" group-rows-by="table_name" paginator :rows="15"
@@ -54,7 +65,6 @@
                            style="top: 30%;right: 10px"></i>
                       </div>
                     </template>
-
                     <Column field="level" header="Level" :sortable="true">
                       <template #body="val">
                         <span :class="`text-${val.data.level_class}`" style="overflow: hidden !important;">
@@ -63,10 +73,12 @@
                         </span>
                       </template>
                     </Column>
-
-                    <Column field="text" header="text" :sortable="true" class="overflow-auto w-70" />
+                    <Column field="text" header="text" :sortable="true" class="overflow-auto w-70">
+                      <template #body="value">
+                        <pre>{{ JSON.parse(value.data.text) }}</pre>
+                      </template>
+                    </Column>
                     <Column field="date" header="date" :sortable="true" />
-
                   </DataTable>
                 </div>
               </div>
@@ -93,8 +105,8 @@ const logFiles = computed(()=>logStore.logFiles)
 logStore.initFiles();
 
 const log = ref({})
-const fetchLog = async (file)=>{
-  await logStore.initLog(file)
+const fetchLog = async (file,folder = null)=>{
+  await logStore.initLog(file,folder)
   log.value = logStore.log
 }
 
