@@ -10,6 +10,7 @@ use App\Http\Resources\OptionClassResource;
 use App\Models\OptionClass;
 use App\Http\Requests\StoreOptionClassRequest;
 use App\Http\Requests\UpdateOptionClassRequest;
+use Illuminate\Http\Request;
 
 class OptionClassController extends Controller
 {
@@ -34,8 +35,18 @@ class OptionClassController extends Controller
    */
   public function store(StoreOptionClassRequest $request)
   {
-    $optionClass = OptionClass::create($request->validated());
-    $optionClass->load('children.children.children');
+    if ( $request->input('order') ) {
+      foreach ($request->input('order') as $item) {
+        $optionClass = OptionClass::findOrFail($item['id']);
+        $optionClass->update($item);
+      }
+      return;
+    }
+    $validated = $request->validated();
+    $validated['order'] = (OptionClass::order()->order + 1);
+    $optionClass = OptionClass::create($validated);
+
+    $optionClass->load(['sub_classes' => function($x){$x->orderBy('order');}]);
     broadcast(new OptionClassesAdder(new OptionClassResource($optionClass)));
     return new OptionClassResource($optionClass);
   }
@@ -48,7 +59,8 @@ class OptionClassController extends Controller
    */
   public function show(OptionClass $optionClass)
   {
-    //
+    $optionClass->load(['sub_classes' => function($x){$x->orderBy('order');}]);
+    return new OptionClassResource($optionClass);
   }
 
   /**
@@ -60,10 +72,15 @@ class OptionClassController extends Controller
    */
   public function update(UpdateOptionClassRequest $request, OptionClass $optionClass)
   {
-    $optionClass->update($request->safe()->only(['en.option_class_title','ar.option_class_title']));
-    $optionClass->load('children.children.children');
+    $optionClass->update($request->validated());
+    $optionClass->load(['sub_classes' => function($x){$x->orderBy('order');}]);
     broadcast(new OptionClassesEditor(new OptionClassResource($optionClass)));
     return new OptionClassResource($optionClass);
+  }
+
+  public function reorder(Request $request)
+  {
+    return $request->all();
   }
 
   /**

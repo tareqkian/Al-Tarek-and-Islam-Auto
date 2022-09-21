@@ -25,10 +25,10 @@ class UpdateOptionSubClassRequest extends FormRequest
   public function rules()
   {
     return [
-      'id' => 'required|exists:option_sub_classes,id',
-      'option_class_id' => 'required|int|exists:option_classes,id',
+      'id' => 'required_without:order|exists:option_sub_classes,id',
+      'option_class_id' => 'required_without:order|int|exists:option_classes,id',
       'ar.option_sub_class_title' => [
-        'required',
+        'required_without:order',
         'string',
         Rule::unique(
           'option_sub_class_translations',
@@ -36,7 +36,7 @@ class UpdateOptionSubClassRequest extends FormRequest
         )->ignore($this->id,'option_sub_class_id')
       ],
       'en.option_sub_class_title' => [
-        'required',
+        'required_without:order',
         'string',
         Rule::unique(
           'option_sub_class_translations',

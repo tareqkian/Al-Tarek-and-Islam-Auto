@@ -214,7 +214,6 @@ const addNewRole = async ()=>{
   }
 }
 const selectedRole = (role)=>{
-  console.log(role)
   rolesStore.initROLE(role)
   // permissions.value.data.length || permissionsStore.initPERMISSIONS(role)
   permissionsStore.initPERMISSIONS(role)

@@ -25,13 +25,12 @@ class UpdateOptionClassRequest extends FormRequest
   public function rules()
   {
     return [
-      'id' => 'required|exists:option_classes',
-      'en.option_class_title' => ['required', 'string',
+      'en.option_class_title' => ['required_without:order', 'string',
         Rule::unique(
           'option_class_translations',
           'option_class_title',
         )->ignore($this->id,'option_class_id')],
-      'ar.option_class_title' => ['required', 'string',
+      'ar.option_class_title' => ['required_without:order', 'string',
         Rule::unique(
           'option_class_translations',
           'option_class_title',

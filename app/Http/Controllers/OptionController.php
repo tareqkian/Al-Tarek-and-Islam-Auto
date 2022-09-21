@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\OptionAdder;
+use App\Events\OptionDeleter;
+use App\Events\OptionEditor;
 use App\Http\Resources\OptionCategoryResource;
 use App\Http\Resources\OptionClassResource;
 use App\Http\Resources\OptionResource;
@@ -23,7 +26,7 @@ class OptionController extends Controller
 //    $options = Option::with('translations','option_category')
 //      ->paginate($request->perPage ?: 10);
 //    return OptionResource::collection($options);
-    $options = OptionClass::with('children.children.children','translations')
+    $options = OptionClass::with('translations')
       ->get()
       ->sortBy('order');
     return OptionClassResource::collection($options);
@@ -37,9 +40,17 @@ class OptionController extends Controller
    */
   public function store(StoreOptionRequest $request)
   {
+    if ( $request->input('order') ) {
+      foreach ($request->input('order') as $item) {
+        $optionCategory = Option::findOrFail($item['id']);
+        $optionCategory->update($item);
+      }
+      return;
+    }
     $validated = $request->validated();
     $validated['order'] = Option::order($validated['option_category_id'])->order+1;
     $option = Option::create($validated);
+    broadcast(new OptionAdder(new OptionResource($option)));
     return new OptionResource($option);
   }
 
@@ -64,6 +75,7 @@ class OptionController extends Controller
   public function update(UpdateOptionRequest $request, Option $option)
   {
     $option->update($request->validated());
+    broadcast(new OptionEditor(new OptionResource($option)));
     return new OptionResource($option);
   }
 
@@ -75,6 +87,7 @@ class OptionController extends Controller
    */
   public function destroy(Option $option)
   {
+    broadcast(new OptionDeleter($option));
     $option->delete();
     return ['status'=>204];
   }

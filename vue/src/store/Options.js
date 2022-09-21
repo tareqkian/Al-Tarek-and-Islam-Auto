@@ -2,6 +2,22 @@ import { defineStore } from "pinia";
 import {reactive, ref} from "vue";
 import api from "../axios";
 export const useOptionStore = defineStore('Option',()=>{
+
+  const optionSubClass = reactive({
+    loading: false,
+    data: []
+  })
+  const optionCategory = reactive({
+    loading: false,
+    data: [],
+    pagination: {}
+  })
+  const option = reactive({
+    loading: false,
+    data: [],
+    pagination: {}
+  })
+
   const optionClasses = reactive({
     loading: false,
     data: []
@@ -20,6 +36,38 @@ export const useOptionStore = defineStore('Option',()=>{
     data: [],
     pagination: {}
   })
+
+  const initOptionSubClass = async (optionClass)=>{
+    try {
+      optionSubClass.loading = true
+      const { data } = await api.get('/optionClass/'+optionClass.id);
+      optionSubClass.data = data.data.sub_classes
+      optionSubClass.loading = false
+    } catch (e) {
+      throw e.response.data.errors
+    }
+  }
+  const initOptionCategory = async (optionSubClass)=>{
+    try {
+      optionCategory.loading = true
+      const { data } = await api.get('/optionSubClass/'+optionSubClass.id);
+      optionCategory.data = data.data.option_categories
+      optionCategory.loading = false
+    } catch (e) {
+      throw e.response.data.errors
+    }
+  }
+  const initOption = async (optionCategory)=>{
+    try {
+      option.loading = true
+      const { data } = await api.get(`/optionCategory/${optionCategory.id}`);
+      option.data = data.data.options
+      option.pagination = data.meta
+      option.loading = false
+    } catch (e) {
+      throw e.response.data.errors
+    }
+  }
 
   const initOptionClasses = async ()=>{
     try {
@@ -76,7 +124,6 @@ export const useOptionStore = defineStore('Option',()=>{
     try {
       if ( !payload.id ) await api.post('/optionSubClass',payload);
       else await api.put('/optionSubClass/'+payload.id,payload);
-
     } catch (e) {
       throw e.response.data.errors
     }
@@ -128,10 +175,18 @@ export const useOptionStore = defineStore('Option',()=>{
   }
 
   return {
+    optionSubClass,
+    optionCategory,
+    option,
+
     optionClasses,
     optionSubClasses,
     optionCategories,
     options,
+
+    initOptionSubClass,
+    initOptionCategory,
+    initOption,
 
     initOptionClasses,
     initOptionSubClasses,

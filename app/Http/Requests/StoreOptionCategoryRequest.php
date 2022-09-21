@@ -24,11 +24,11 @@ class StoreOptionCategoryRequest extends FormRequest
   public function rules()
   {
     return [
-      'option_sub_class_id' => 'required|int|exists:option_sub_classes,id',
+      'option_sub_class_id' => 'required_without:order|int|exists:option_sub_classes,id',
       'abbreviation' => 'nullable|string|unique:option_categories',
-      'en.option_category_title' => 'required|string|unique:option_category_translations,option_category_title',
-      'ar.option_category_title' => 'required|string|unique:option_category_translations,option_category_title',
-      'input_type' => 'required|string',
+      'en.option_category_title' => 'required_without:order|string|unique:option_category_translations,option_category_title',
+      'ar.option_category_title' => 'required_without:order|string|unique:option_category_translations,option_category_title',
+      'input_type' => 'required_without:order|string',
       'number_format' => 'required_if:input_type,number|regex:(0)'
     ];
   }

@@ -31,8 +31,17 @@ class OptionCategoryController extends Controller
    */
   public function store(StoreOptionCategoryRequest $request)
   {
-    $optionCategory = OptionCategory::create($request->validated());
-    $optionCategory->load('translations','option_sub_class');
+    if ( $request->input('order') ) {
+      foreach ($request->input('order') as $item) {
+        $optionCategory = OptionCategory::findOrFail($item['id']);
+        $optionCategory->update($item);
+      }
+      return;
+    }
+    $validated = $request->validated();
+    $validated['order'] = (OptionCategory::order($request->input('option_sub_class_id'))->order + 1);
+    $optionCategory = OptionCategory::create($validated);
+    $optionCategory->load(['options' => function($x){$x->orderBy('order');}]);
     broadcast(new OptionCategoryAdder(new OptionCategoryResource($optionCategory)));
     return new OptionCategoryResource($optionCategory);
   }
@@ -45,7 +54,8 @@ class OptionCategoryController extends Controller
    */
   public function show(OptionCategory $optionCategory)
   {
-    //
+    $optionCategory->load(['options' => function($x){$x->orderBy('order');}]);
+    return new OptionCategoryResource($optionCategory);
   }
 
   /**
@@ -58,7 +68,7 @@ class OptionCategoryController extends Controller
   public function update(UpdateOptionCategoryRequest $request, OptionCategory $optionCategory)
   {
     $optionCategory->update($request->validated());
-    $optionCategory->load('translations','option_sub_class');
+    $optionCategory->load(['options' => function($x){$x->orderBy('order');}]);
     broadcast(new OptionCategoryEditor(new OptionCategoryResource($optionCategory)));
     return new OptionCategoryResource($optionCategory);
   }

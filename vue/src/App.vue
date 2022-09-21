@@ -16,10 +16,9 @@ realTime();
       </div>
     </template>
   </ConfirmPopup>
-
   <ConfirmDialog group="dialogConfirmation" />
-
   <MyToast />
+
   <router-view />
 </template>
 

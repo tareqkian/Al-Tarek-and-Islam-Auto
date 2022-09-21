@@ -40,6 +40,9 @@ class OptionSubClassesAdder implements ShouldBroadcast
    */
   public function broadcastOn()
   {
-    return new Channel('ClassesEvent');
+    return [
+      new Channel('ClassesEvent'),
+      new Channel('OptionsEvent')
+    ];
   }
 }

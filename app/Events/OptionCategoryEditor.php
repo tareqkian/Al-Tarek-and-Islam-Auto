@@ -40,6 +40,9 @@ class OptionCategoryEditor implements ShouldBroadcast
    */
   public function broadcastOn()
   {
-    return new Channel('CategoriesEvent');
+    return [
+      new Channel('CategoriesEvent'),
+      new Channel('OptionsEvent')
+    ];
   }
 }

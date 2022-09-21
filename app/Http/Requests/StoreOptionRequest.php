@@ -24,9 +24,9 @@ class StoreOptionRequest extends FormRequest
   public function rules()
   {
     return [
-      'option_category_id' => 'required|int|exists:option_categories,id',
-      'en.option_title' => 'required|string|unique:option_translations,option_title',
-      'ar.option_title' => 'required|string|unique:option_translations,option_title',
+      'option_category_id' => 'required_without:order|int|exists:option_categories,id',
+      'en.option_title' => 'required_without:order|string|unique:option_translations,option_title',
+      'ar.option_title' => 'required_without:order|string|unique:option_translations,option_title',
       'abbreviation' => 'nullable|string|unique:options'
     ];
   }

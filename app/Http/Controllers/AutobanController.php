@@ -14,6 +14,7 @@ use App\Models\AutobanBrand;
 use App\Models\AutobanModel;
 use App\Models\AutobanModelTranslation;
 use App\Models\AutobanPrice;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
 class AutobanController extends Controller
@@ -34,13 +35,15 @@ class AutobanController extends Controller
       ->join('autoban_models','autoban_models.id','=','autobans.autoban_model_id')
       ->join('autoban_brand_translations','autoban_brand_translations.autoban_brand_id','=','autoban_models.autoban_brand_id')->where('autoban_brand_translations.locale','en')
       ->join('autoban_year_translations','autoban_year_translations.autoban_year_id','=','autobans.autoban_year_id')->where('autoban_year_translations.locale','en')
-
+      ->whereRaw(
+        "CONCAT(brand_title, ' ', model_title) LIKE ?",
+        ["%{$request->input('filter')}%"]
+      )
       ->orderBy('autoban_brand_translations.brand_title')
       ->orderBy('autoban_model_translations.model_title')
       ->orderBy('autoban_year_translations.year_number')
       ->orderBy('order')
       ->paginate($request->perPage ?: 10);
-
     /*->sortBy(['model.brand.brand_title','model.model_title','year.year_number','order'])*/
     return AutobanResource::collection($autoban);
   }

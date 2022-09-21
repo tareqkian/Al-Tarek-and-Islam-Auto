@@ -40,6 +40,17 @@ class Autoban extends Model
     return $this->belongsToMany(Option::class);
   }
 
+  /**
+   * Get full name.
+   *
+   * @return string
+   */
+  public function getFullNameAttribute()
+  {
+    return "{$this->first_name} {$this->last_name}";
+  }
+
+
   public function latestOrder($autoban_model_id)
   {
     return (Parent::where('autoban_model_id',$autoban_model_id)

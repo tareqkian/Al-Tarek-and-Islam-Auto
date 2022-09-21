@@ -121,11 +121,14 @@
                     <div class="row flex-row-reverse justify-content-center justify-content-md-start w-100 m-0">
                       <div class="search-element col-10 col-md-3 mx-3 mb-4 p-0">
                         <input type="search" class="form-control header-search"
-                               v-model="filters['global'].value" placeholder="Search…"
+                               v-model="filter" placeholder="Search…"
                                aria-label="Search" tabindex="1">
                         <i class="feather feather-search position-absolute" style="top: 30%;right: 10px"></i>
                       </div>
                     </div>
+                  </template>
+                  <template #empty>
+                    <p class="h5 text-center m-0 text-muted"> There is No Data </p>
                   </template>
 
                   <Column field="model.model_title" header="Model" header-style="width: 30%">
@@ -137,7 +140,6 @@
                   </span>
                     </template>
                   </Column>
-
                   <Column field="type" header="Type">
                     <template #body="value">
                       {{ t(value.data.type,'type_title') }}
@@ -148,7 +150,6 @@
                       {{ t(value.data.year,'year_number') }}
                     </template>
                   </Column>
-
                   <Column field="price.official" header="official" header-style="width: 10%">
                     <template #body="value">
                       <InputNumber v-model="value.data.price.official"
@@ -175,7 +176,6 @@
                       <i @click="toggle($event,value.data)" class="text-primary fa fa-calculator"></i>
                     </template>
                   </Column>
-
                   <Column field="market_availability" header="availability" body-class="text-center" header-style="width: 5%">
                     <template #body="value">
                       <div class="form-switch">
@@ -192,7 +192,6 @@
                     </template>
                   </Column>
 
-
                   <template #footer v-if="autoban.pagination">
                     <Paginator v-if="fetchedTask === 'all'"
                                :rows="+autoban.pagination.per_page"
@@ -200,8 +199,7 @@
                                :rowsPerPageOptions="[10,20,30]"
                                template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                                current-page-report-template="Showing {first} to {last} of {totalRecords}"
-                               @page="AutobanStore.initAutobans($event)"></Paginator>
-
+                               @page="AutobanStore.initAutobans($event,filter)"></Paginator>
                     <Paginator v-if="fetchedTask !== 'all'"
                                :rows="+autoban.pagination.per_page"
                                :totalRecords="autoban.pagination.total"
@@ -210,7 +208,6 @@
                                current-page-report-template="Showing {first} to {last} of {totalRecords}"
                                @page="AutobanStore.initAutobanPriceTask(fetchedTask,$event)"></Paginator>
                   </template>
-
                 </DataTable>
 
               </div>
@@ -357,8 +354,16 @@ import {useConfirm} from "primevue/useconfirm";
 import {computed, inject, reactive, ref, watch} from "vue";
 import {useAutobanStore} from "../../store/Autoban";
 import {FilterMatchMode} from "primevue/api";
+import _debounce from "lodash/debounce";
 
 const filters = ref({'global': { value: null, matchMode: FilterMatchMode.CONTAINS }})
+const filter = ref()
+watch(
+  filter,
+  _debounce((val)=>{
+    AutobanStore.initAutobans({},val)
+  },300)
+)
 const t = inject("t");
 const toast = useToast();
 const confirm = useConfirm();

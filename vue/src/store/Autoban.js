@@ -32,10 +32,10 @@ export const useAutobanStore = defineStore("Autoban",()=>{
     data: ref([])
   }
 
-  const initAutobans = async (meta={}) => {
+  const initAutobans = async (meta={},filter = '') => {
     try {
       autobans.loading.value = true
-      const {data} = await api.get(`/autoban?page=${meta.page+1 || 0}&perPage=${meta.rows || 0}`)
+      const {data} = await api.get(`/autoban?page=${meta.page+1 || 0}&perPage=${meta.rows || 0}&filter=${filter}`)
       autobans.data.value = data.data
       autobans.pagination.value = data.meta
       autobans.loading.value = false
@@ -107,7 +107,6 @@ export const useAutobanStore = defineStore("Autoban",()=>{
       throw e.response.data.errors
     }
   }
-
 
   const handleAutobans = async (payload)=>{
     try {

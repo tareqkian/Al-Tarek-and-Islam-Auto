@@ -11,6 +11,7 @@ class OptionClass extends Model implements TranslatableAlias
 {
   use HasFactory, Translatable;
   public $translatedAttributes = ['option_class_title'];
+  protected $fillable = ['order'];
 
   public function sub_classes()
   {
@@ -19,5 +20,11 @@ class OptionClass extends Model implements TranslatableAlias
   public function children()
   {
     return $this->hasMany(OptionSubClass::class,'option_class_id');
+  }
+  public function order()
+  {
+    return Parent::latest('order')
+      ->get('order')
+      ->first() ?: (object) ['order'=>-1];
   }
 }

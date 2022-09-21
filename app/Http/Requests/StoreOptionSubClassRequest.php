@@ -24,9 +24,9 @@ class StoreOptionSubClassRequest extends FormRequest
   public function rules()
   {
     return [
-      'option_class_id' => 'required|int|exists:option_classes,id',
-      'ar.option_sub_class_title' => 'required|string|unique:option_sub_class_translations,option_sub_class_title',
-      'en.option_sub_class_title' => 'required|string|unique:option_sub_class_translations,option_sub_class_title',
+      'option_class_id' => 'required_without:order|int|exists:option_classes,id',
+      'ar.option_sub_class_title' => 'required_without:order|string|unique:option_sub_class_translations,option_sub_class_title',
+      'en.option_sub_class_title' => 'required_without:order|string|unique:option_sub_class_translations,option_sub_class_title',
     ];
   }
 }

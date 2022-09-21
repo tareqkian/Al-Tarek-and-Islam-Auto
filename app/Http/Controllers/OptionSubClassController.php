@@ -33,8 +33,17 @@ class OptionSubClassController extends Controller
    */
   public function store(StoreOptionSubClassRequest $request)
   {
-    $optionSubClass = OptionSubClass::create($request->validated());
-    $optionSubClass->load('option_class');
+    if ( $request->input('order') ) {
+      foreach ($request->input('order') as $item) {
+        $optionSubClass = OptionSubClass::findOrFail($item['id']);
+        $optionSubClass->update($item);
+      }
+      return;
+    }
+    $validated = $request->validated();
+    $validated['order'] = (OptionSubClass::order($request->input('option_class_id'))->order + 1);
+    $optionSubClass = OptionSubClass::create($validated);
+    $optionSubClass->load(['option_categories' => function($x) {$x->orderBy('order');}]);
     broadcast(new OptionSubClassesAdder(new OptionSubClassResource($optionSubClass)));
     return new OptionSubClassResource($optionSubClass);
   }
@@ -47,7 +56,8 @@ class OptionSubClassController extends Controller
    */
   public function show(OptionSubClass $optionSubClass)
   {
-    //
+    $optionSubClass->load(['option_categories' => function($x) {$x->orderBy('order');}]);
+    return new OptionSubClassResource($optionSubClass);
   }
 
   /**
@@ -60,7 +70,7 @@ class OptionSubClassController extends Controller
   public function update(UpdateOptionSubClassRequest $request, OptionSubClass $optionSubClass)
   {
     $optionSubClass->update($request->validated());
-    $optionSubClass->load('option_class');
+    $optionSubClass->load(['option_categories' => function($x) {$x->orderBy('order');}]);
     broadcast(new OptionSubClassesEditor(new OptionSubClassResource($optionSubClass)));
     return new OptionSubClassResource($optionSubClass);
   }
