@@ -175,7 +175,7 @@ const yearDelete = (event,year)=>{
   });
 }
 
-Echo.channel("YearsEvent")
+/*Echo.channel("YearsEvent")
   .listen('YearAdder',({year})=>{
     if ( AutobanStore.autobanYears.data.length ) AutobanStore.autobanYears.data = [...AutobanStore.autobanYears.data, year]
     else AutobanStore.autobanYears.data = [year]
@@ -205,5 +205,5 @@ Echo.channel("YearsEvent")
       ]
       AutobanStore.autobanModels.data = AutobanStore.autobanModels.data.filter(x=>x.year.id!==year.id)
     }
-  })
+  })*/
 </script>

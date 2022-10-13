@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AutobanOption extends Migration
+class CreateAutobanCategoryTable extends Migration
 {
   /**
    * Run the migrations.
@@ -13,9 +13,11 @@ class AutobanOption extends Migration
    */
   public function up()
   {
-    Schema::create('autoban_option',function (Blueprint $table) {
+    Schema::create('autoban_category', function (Blueprint $table) {
+      $table->id();
       $table->foreignId('autoban_id')->constrained();
-      $table->foreignId('option_id')->constrained();
+      $table->foreignId('option_category_id')->constrained();
+      $table->string('option')->nullable();
       $table->timestamps();
     });
   }
@@ -27,6 +29,6 @@ class AutobanOption extends Migration
    */
   public function down()
   {
-    Schema::dropIfExists('autoban_option');
+    Schema::dropIfExists('autoban_category');
   }
 }

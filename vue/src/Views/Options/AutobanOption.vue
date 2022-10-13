@@ -8,37 +8,20 @@
           :autoban="autoban"
           :filters="filters"
           :filter="filter"
+          @autobanOptionDialog="autobanOptionDialog"
           @page="AutobanStore.initAutobans" />
       </div>
     </div>
 
-    <div class="card">
-      <div class="border-bottom">
-        <Loading v-if="optionClasses.loading" />
-        <step-progress v-else icon-class="fa fa-check"
-                       :steps="steps" :current-step="currentStep"
-                       active-color="green" :active-thickness="5"
-                       passive-color="gray" :passive-thickness="2"
-                       :line-thickness="4" />
-      </div>
-      <div class="card-body">
-        <h1 class="text-center">{{ steps[currentStep] }}</h1>
-      </div>
-      <div class="card-footer d-flex justify-content-between">
-        <div>
-          <button class="btn btn-danger" v-if="currentStep" @click="currentStep--"> prev </button>
-        </div>
-        <div>
-          <button class="btn btn-success" v-if="currentStep !== optionClasses.data.map(x=>t(x,'option_class_title')).length" @click="currentStep++"> Next </button>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-body">
-        <pre style="max-height: 400px; overflow: auto">{{autoban}}</pre>
-      </div>
-    </div>
+    <Dialog
+      modal dismissableMask
+      class="modal-content modal-lg" content-class="modal-body"
+      :showHeader="false" v-model:visible="autobanOptionDialogShow">
+      <AutobanOptionController
+        :selectedAutoban="selectedAutoban"
+        @handleAutobanOptions="handleAutobanOptions"
+      />
+    </Dialog>
 
   </PageLayout>
 </template>
@@ -46,15 +29,18 @@
 <script setup>
 import PageLayout from "../../components/Layouts/PageLayout.vue";
 import AutobanTable from "../../components/Autoban/AutobanTable.vue";
-import Loading from "../../components/Loading.vue";
-import StepProgress from 'vue-step-progress';
-import {computed, inject, ref, watch} from "vue";
-import 'vue-step-progress/dist/main.css';
+import AutobanOptionController from "../../components/Option/AutobanOptionController.vue";
+import Dialog from "primevue/dialog";
+
+import {computed, inject, ref} from "vue";
 
 import {useOptionStore} from "../../store/Options";
 import {useAutobanStore} from "../../store/Autoban";
 import {FilterMatchMode} from "primevue/api";
+import {useAutobanOptionsStore} from "../../store/AutobanOptions";
+import {useToast} from "primevue/usetoast";
 
+const toast = useToast();
 const t = inject('t')
 
 const filters = ref({'global': { value: null, matchMode: FilterMatchMode.CONTAINS }})
@@ -64,33 +50,60 @@ const AutobanStore = useAutobanStore()
 const autoban = computed(()=>AutobanStore.autobans)
 AutobanStore.initAutobans()
 
+const errors = ref([])
+const loading = ref(false)
+const selectedAutoban = ref({})
 
+const AutobanOptionsStore = useAutobanOptionsStore()
+const autobanOptionDialogShow = ref(false)
+const autobanOptionDialog = async (autoban = {},modal = true)=>{
+  errors.value = []
+  autobanOptionDialogShow.value = !autobanOptionDialogShow.value
+  selectedAutoban.value = autoban
+}
 
-
-
-
-
-
-const OptionStore = useOptionStore();
-const optionClasses = computed(()=>OptionStore.optionClasses)
-const steps = computed(()=>[...OptionStore.optionClasses.data.map(x=>t(x,'option_class_title')),'Preview'])
-OptionStore.initOptionClasses()
-const currentStep = ref(0)
+const handleAutobanOptions = async (optionModel) => {
+  try {
+    loading.value = true
+    let opModel = Object.keys(optionModel).reduce((a,b)=>{
+      const x = optionModel[b]
+      if ( typeof x === 'object' && x && x.length ) a[b] = x
+      else if (typeof x !== 'object' && typeof x !== 'undefined') a[b] = x
+      return a;
+    },{})
+    await AutobanOptionsStore.handleAutobanOption(selectedAutoban.value,opModel)
+    autobanOptionDialogShow.value = !autobanOptionDialogShow.value
+    toast.add({
+      closable: false,
+      severity: "success",
+      summary: "Options",
+      detail: "Success",
+      life: 3000
+    })
+    loading.value = false
+  } catch (e) {
+    loading.value = false
+    errors.value = e;
+  }
+}
 
 </script>
 
 <style>
-.step-progress__step:after {
-  height: 50px !important;
-  width: 50px !important;
-}
-.step-progress__step-label{
-  top: calc(100% + 15px) !important;
-}
-.step-progress__step span{
-  font-size: 35px !important;
-}
-.rtl .step-progress__wrapper-after {
-  transform-origin: right center;
-}
+  .step-progress__step{
+    cursor: pointer
+  }
+  .step-progress__step:after {
+    height: 50px !important;
+    width: 50px !important;
+  }
+  .step-progress__step-label{
+    top: calc(100% + 15px) !important;
+  }
+  .step-progress__step span{
+    font-size: 35px !important;
+  }
+  .rtl .step-progress__wrapper-after {
+    transform-origin: right center;
+  }
 </style>

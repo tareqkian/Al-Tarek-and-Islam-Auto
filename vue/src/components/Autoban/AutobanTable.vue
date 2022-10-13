@@ -69,7 +69,7 @@
         <div class="form-switch">
           <input class="form-check-input"
                  type="checkbox"
-                 @change="price_list_appearance_market_availability(value.data)"
+                 @change="emits('price_list_appearance_market_availability',value.data)"
                  v-model='value.data.price_list_appearance'>
         </div>
       </template>
@@ -79,19 +79,24 @@
         <div class="form-switch">
           <input class="form-check-input"
                  type="checkbox"
-                 @change="price_list_appearance_market_availability(value.data)"
+                 @change="emits('price_list_appearance_market_availability',value.data)"
                  v-model='value.data.market_availability'>
         </div>
+      </template>
+    </Column>
+    <Column v-if="type === 'options'" header="Options">
+      <template #body="val">
+        <i class="fa fa-edit text-info mx-1" @click="emits('autobanOptionDialog',val.data)"></i>
       </template>
     </Column>
     <Column v-if="type === 'autoban' && ($can(`edit_${this.$route.meta.permissionsLayout}`) || $can(`delete_${this.$route.meta.permissionsLayout}`))" header="Actions">
       <template #body="val">
         <i class="fa fa-edit text-info mx-1"
            v-if="$can(`edit_${this.$route.meta.permissionsLayout}`)"
-           @click="autobanDialog(val.data)"></i>
+           @click="emits('autobanDialog',val.data)"></i>
         <i class="fa fa-trash text-danger mx-1"
            v-if="$can(`delete_${this.$route.meta.permissionsLayout}`)"
-           @click="autobanDelete($event,val.data)"></i>
+           @click="emits('autobanDelete',$event,val.data)"></i>
       </template>
     </Column>
 
@@ -121,7 +126,14 @@ const props = defineProps({
   filters: Object,
   filter: String
 })
-const emits = defineEmits(['onRowReorder', 'page'])
+const emits = defineEmits([
+  'onRowReorder',
+  'page',
+  'autobanDialog',
+  'autobanDelete',
+  'price_list_appearance_market_availability',
+  'autobanOptionDialog'
+])
 watch(
   ()=>props.filter,
   _debounce((val)=>{

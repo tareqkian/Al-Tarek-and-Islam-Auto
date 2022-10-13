@@ -16,6 +16,9 @@
               :filters="filters"
               :filter="filter"
               @onRowReorder="onRowReorder"
+              @autobanDialog="autobanDialog"
+              @autobanDelete="autobanDelete"
+              @price_list_appearance_market_availability="price_list_appearance_market_availability"
               @page="AutobanStore.initAutobans" />
           </div>
         </div>
@@ -104,7 +107,6 @@ import PageLayout from "../../components/Layouts/PageLayout.vue";
 import Dialog from "primevue/dialog";
 import Dropdown from "primevue/dropdown";
 import AutobanTable from "../../components/Autoban/AutobanTable.vue"
-import _debounce from "lodash/debounce"
 
 import {useToast} from "primevue/usetoast";
 import {useConfirm} from "primevue/useconfirm";
@@ -168,6 +170,7 @@ const autobanDialog = (autoban = {})=>{
   AutobanStore.initAutobanModels()
   AutobanStore.initAutobanTypes()
   AutobanStore.initAutobanYears()
+
   selectedAutoban.value.id = autoban.id || null
   selectedAutoban.value.autoban_model_id = (autoban.model ? autoban.model.id : null)
   selectedAutoban.value.autoban_type_id = (autoban.type ? autoban.type.id : null)
@@ -213,6 +216,8 @@ const price_list_appearance_market_availability = async(autoban)=>{
 }
 
 const autobanDelete = (event,autoban)=>{
+  console.log(event)
+  console.log(autoban)
   confirm.require({
     target: event.currentTarget,
     message: {
@@ -247,7 +252,7 @@ const autobanDelete = (event,autoban)=>{
   });
 }
 
-Echo.channel("AutobansEvent")
+/*Echo.channel("AutobansEvent")
   .listen('AutobanAdder',({autoban})=>{
     if ( AutobanStore.autobans.data.length ) {
       AutobanStore.autobans.data = [...AutobanStore.autobans.data, autoban]
@@ -273,6 +278,6 @@ Echo.channel("AutobansEvent")
         ...AutobanStore.autobans.data.slice(autobanIndex+1)
       ]
     }
-  })
+  })*/
 
 </script>

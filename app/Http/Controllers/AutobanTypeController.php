@@ -33,7 +33,7 @@ class AutobanTypeController extends Controller
   public function store(StoreAutobanTypeRequest $request)
   {
     $type = AutobanType::create($request->validated());
-    broadcast(new TypeAdder(new AutobanTypeResource($type)));
+//    broadcast(new TypeAdder(new AutobanTypeResource($type)));
     return new AutobanTypeResource($type);
   }
 
@@ -60,7 +60,7 @@ class AutobanTypeController extends Controller
     $validated = $request->all();
     unset($validated['id']);
     $autobanType->update($validated);
-    broadcast(new TypeEditor(new AutobanTypeResource($autobanType)));
+//    broadcast(new TypeEditor(new AutobanTypeResource($autobanType)));
     return new AutobanTypeResource($autobanType);
   }
 
@@ -72,7 +72,7 @@ class AutobanTypeController extends Controller
    */
   public function destroy(AutobanType $autobanType)
   {
-    broadcast(new TypeDeleter($autobanType));
+//    broadcast(new TypeDeleter($autobanType));
     $autobanType->delete();
     return [ "status" => 204 ];
   }

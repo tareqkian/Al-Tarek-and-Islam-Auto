@@ -34,23 +34,17 @@ class Autoban extends Model
   {
     return $this->belongsTo(AutobanPrice::class,'autoban_price_id')->with('translations');
   }
-
-  public function options()
+  public function pivots()
   {
-    return $this->belongsToMany(Option::class);
+    return $this->hasMany(AutobanCategory::class);
   }
-
-  /**
-   * Get full name.
-   *
-   * @return string
-   */
-  public function getFullNameAttribute()
+  public function autobanCateory()
   {
-    return "{$this->first_name} {$this->last_name}";
+    return $this->belongsToMany(
+      OptionCategory::class,
+      'autoban_category'
+    );
   }
-
-
   public function latestOrder($autoban_model_id)
   {
     return (Parent::where('autoban_model_id',$autoban_model_id)

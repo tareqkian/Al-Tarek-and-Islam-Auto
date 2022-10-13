@@ -612,7 +612,7 @@ const price_list_appearance_market_availability = async(autoban)=>{
   }
 }
 
-Echo.channel("PricesEvent")
+/*Echo.channel("PricesEvent")
   .listen('TaskAdder',(data)=>{
     if ( AutobanStore.autobanPriceTasks.data.length ) {
         AutobanStore.autobanPriceTasks.data = [...AutobanStore.autobanPriceTasks.data, ...data.tasks]
@@ -632,7 +632,7 @@ Echo.channel("PricesEvent")
       ...AutobanStore.autobanPriceTasks.data.slice(0,taskIndex),
       ...AutobanStore.autobanPriceTasks.data.slice(taskIndex+1)
     ]
-  })
+  })*/
 </script>
 
 <style src="@vueform/toggle/themes/default.css"></style>

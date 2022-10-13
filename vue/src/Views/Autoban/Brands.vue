@@ -73,14 +73,14 @@
                 </template>
               </Column>
 
-              <template #footer>
-                <Paginator :rows="+autobanModels.pagination.per_page"
-                           :totalRecords="autobanModels.pagination.total"
-                           :rowsPerPageOptions="[5,15,30]"
-                           template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                           current-page-report-template="Showing {first} to {last} of {totalRecords}"
-                           @page="AutobanStore.initAutobanModels($event)"></Paginator>
-              </template>
+<!--              <template #footer>-->
+<!--                <Paginator :rows="+autobanModels.pagination.per_page"-->
+<!--                           :totalRecords="autobanModels.pagination.total"-->
+<!--                           :rowsPerPageOptions="[5,15,30]"-->
+<!--                           template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"-->
+<!--                           current-page-report-template="Showing {first} to {last} of {totalRecords}"-->
+<!--                           @page="AutobanStore.initAutobanModels($event)"></Paginator>-->
+<!--              </template>-->
 
             </DataTable>
           </div>
@@ -436,9 +436,10 @@ const modelDelete = (event,model)=>{
 }
 
 
-Echo.channel("BrandsEvent")
+/*Echo.channel("BrandsEvent")
   .listen('BrandAdder',({brand})=>{
-    if ( AutobanStore.autobanBrands.data.length ) AutobanStore.autobanBrands.data = [...AutobanStore.autobanBrands.data, brand]
+    if ( AutobanStore.autobanBrands.data.length )
+      AutobanStore.autobanBrands.data = [...AutobanStore.autobanBrands.data, brand]
     else AutobanStore.autobanBrands.data = [brand]
   })
   .listen('ModelAdder',({model})=>{
@@ -489,5 +490,5 @@ Echo.channel("BrandsEvent")
         ...AutobanStore.autobanModels.data.slice(modelIndex+1)
       ]
     }
-  })
+  })*/
 </script>

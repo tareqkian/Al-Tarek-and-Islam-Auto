@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {ref} from "vue";
+import {reactive, ref} from "vue";
 import api from "../axios";
 
 export const useAutobanStore = defineStore("Autoban",()=>{
@@ -31,6 +31,14 @@ export const useAutobanStore = defineStore("Autoban",()=>{
     loading: ref(false),
     data: ref([])
   }
+  const autobansByBrand = reactive({
+    loading: false,
+    data: [],
+  })
+  const fullAutoban = reactive({
+    loading: false,
+    data: []
+  })
 
   const initAutobans = async (meta={},filter = '') => {
     try {
@@ -56,7 +64,8 @@ export const useAutobanStore = defineStore("Autoban",()=>{
   const initAutobanModels = async (meta={}) => {
     try {
       autobanModels.loading.value = true
-      const {data} = await api.get(`/autobanModels?page=${meta.page+1 || 0}&perPage=${meta.rows || 0}`)
+      /*?page=${meta.page+1 || 0}&perPage=${meta.rows || 0}*/
+      const {data} = await api.get(`/autobanModels`)
       autobanModels.data.value = data.data
       autobanModels.pagination.value = data.meta
       autobanModels.loading.value = false
@@ -107,14 +116,41 @@ export const useAutobanStore = defineStore("Autoban",()=>{
       throw e.response.data.errors
     }
   }
+  const initAutobansByBrand = async (autoban) => {
+    try {
+      autobansByBrand.loading = true
+      const {data} = await api.get(`/autobanByBrand/${autoban.id}`)
+      autobansByBrand.data = data.data
+      autobansByBrand.loading = false
+    } catch (e) {
+      throw e.response.data.errors
+    }
+  }
+  const initAutoban = async (autoban) => {
+    try {
+      fullAutoban.loading = true
+      const {data} = await api.get(`/showAutoban/${autoban.id}`)
+      fullAutoban.data = data.data
+      fullAutoban.loading = false
+    } catch (e) {
+      throw e.response.data.errors
+    }
+  }
 
   const handleAutobans = async (payload)=>{
     try {
       if ( !payload.id ) {
         await api.post('/autoban',payload)
+        initAutobans()
       }
       else {
-        await api.put('/autoban/'+payload.id,payload)
+        const {data} = await api.put('/autoban/'+payload.id,payload)
+        const autobanIndex = autobans.data.value.findIndex(x => x.id === data.data.id);
+        autobans.data.value = [
+          ...autobans.data.value.slice(0,autobanIndex),
+          {...data.data},
+          ...autobans.data.value.slice(autobanIndex+1)
+        ]
       }
     } catch (e) {
       throw e.response.data.errors
@@ -122,32 +158,96 @@ export const useAutobanStore = defineStore("Autoban",()=>{
   }
   const handleAutobanBrands = async (payload)=>{
     try {
-      if ( !payload.id ) await api.post('/autobanBrands',payload)
-      else await api.put('/autobanBrands/'+payload.id,payload)
+      if ( !payload.id ) {
+        const {data} = await api.post('/autobanBrands',payload)
+        autobanBrands.data.value = [...autobanBrands.data.value, data.data]
+      }
+      else {
+        const {data} = await api.put('/autobanBrands/'+payload.id,payload)
+        const brandIndex = autobanBrands.data.value.findIndex(x => x.id === data.data.id);
+        autobanBrands.data.value = [
+          ...autobanBrands.data.value.slice(0,brandIndex),
+          {...data.data},
+          ...autobanBrands.data.value.slice(brandIndex+1)
+        ]
+        autobanModels.data.value = autobanModels.data.value.map(x=>{
+          if ( x.brand.id === data.data.id ) {
+            x.brand = {...data.data}
+          }
+          return x;
+        })
+      }
     } catch (e) {
       throw e.response.data.errors
     }
   }
   const handleAutobanModels = async (payload)=>{
     try {
-      if ( !payload.id ) await api.post('/autobanModels',payload)
-      else await api.put('/autobanModels/'+payload.id,payload)
+      if ( !payload.id ) {
+        const {data} = await api.post('/autobanModels', payload)
+        autobanModels.data.value = [...autobanModels.data.value, ...data.data]
+      }
+      else {
+        const {data} = await api.put('/autobanModels/' + payload.id, payload)
+        const modelIndex = autobanModels.data.value.findIndex(x => x.id === data.data.id);
+        autobanModels.data.value = [
+          ...autobanModels.data.value.slice(0,modelIndex),
+          {...data.data},
+          ...autobanModels.data.value.slice(modelIndex+1)
+        ]
+      }
     } catch (e) {
       throw e.response.data.errors
     }
   }
   const handleAutobanTypes = async (payload)=>{
     try {
-      if ( !payload.id ) await api.post('/autobanTypes',payload)
-      else await api.put('/autobanTypes/'+payload.id,payload)
+      if ( !payload.id ) {
+        const {data} = await api.post('/autobanTypes', payload)
+        /*autobanTypes.data.value = [...autobanTypes.data.value, data.data]*/
+        initAutobanTypes()
+      }
+      else {
+        const {data} = await api.put('/autobanTypes/' + payload.id, payload)
+        const typeIndex = autobanTypes.data.value.findIndex(x => x.id === data.data.id);
+        autobanTypes.data.value = [
+          ...autobanTypes.data.value.slice(0,typeIndex),
+          {...data.data},
+          ...autobanTypes.data.value.slice(typeIndex+1)
+        ]
+        autobanModels.data.value = autobanModels.data.value.map(x=>{
+          if ( x.type.id === data.data.id ) {
+            x.type = {...data.data}
+          }
+          return x;
+        })
+      }
     } catch (e) {
       throw e.response.data.errors
     }
   }
   const handleAutobanYears = async (payload)=>{
     try {
-      if ( !payload.id ) await api.post('/autobanYears',payload)
-      else await api.put('/autobanYears/'+payload.id,payload)
+      if ( !payload.id ) {
+        const {data} = await api.post('/autobanYears', payload)
+        /*autobanYears.data.value = [...autobanYears.data.value, data.data]*/
+        initAutobanYears()
+      }
+      else {
+        const {data} = await api.put('/autobanYears/' + payload.id, payload)
+        const yearIndex = autobanYears.data.value.findIndex(x => x.id === data.data.id);
+        autobanYears.data.value = [
+          ...autobanYears.data.value.slice(0,yearIndex),
+          {...data.data},
+          ...autobanYears.data.value.slice(yearIndex+1)
+        ]
+        autobanModels.data.value = autobanModels.data.value.map(x=>{
+          if ( x.year.id === data.data.id ) {
+            x.year = {...data.data}
+          }
+          return x;
+        })
+      }
     } catch (e) {
       throw e.response.data.errors
     }
@@ -161,17 +261,32 @@ export const useAutobanStore = defineStore("Autoban",()=>{
   }
   const handleAutobanPriceTasks = async (payload)=>{
     try {
-      if ( !payload.id ) await api.post('/autobanPriceTasks',payload)
-      else await api.put('/autobanPriceTasks/'+payload.id,payload)
+      if ( !payload.id ) {
+        const {data} = await api.post('/autobanPriceTasks', payload)
+        autobanPriceTasks.data.value = [...autobanPriceTasks.data.value, ...data.data]
+      }
+      else {
+        const {data} = await api.put('/autobanPriceTasks/' + payload.id, payload)
+        const taskIndex = autobanPriceTasks.data.value.findIndex(x => x.id === data.data.id);
+        autobanPriceTasks.data.value = [
+          ...autobanPriceTasks.data.value.slice(0,taskIndex),
+          {...data.data},
+          ...autobanPriceTasks.data.value.slice(taskIndex+1)
+        ]
+      }
     } catch (e) {
       throw e.response.data.errors
     }
   }
 
-
   const distroyAutoban = async (payload)=>{
     try {
       await api.delete('/autoban/'+payload.id)
+      const autobanIndex = autobans.data.value.findIndex(x => x.id === payload.id);
+      autobans.data.value = [
+        ...autobans.data.value.slice(0,autobanIndex),
+        ...autobans.data.value.slice(autobanIndex+1)
+      ]
     } catch (e) {
       throw e.response.data.errors
     }
@@ -179,6 +294,12 @@ export const useAutobanStore = defineStore("Autoban",()=>{
   const distroyAutobanBrand = async (payload)=>{
     try {
       await api.delete('/autobanBrands/'+payload.id)
+      const brandIndex = autobanBrands.data.value.findIndex(x => +x.id === +payload.id);
+      autobanBrands.data.value = [
+        ...autobanBrands.data.value.slice(0,brandIndex),
+        ...autobanBrands.data.value.slice(brandIndex+1)
+      ]
+      autobanModels.data.value = autobanModels.data.value.filter(x=>+x.brand.id !== +payload.id)
     } catch (e) {
       throw e.response.data.errors
     }
@@ -186,6 +307,11 @@ export const useAutobanStore = defineStore("Autoban",()=>{
   const distroyAutobanModel = async (payload)=>{
     try {
       await api.delete('/autobanModels/'+payload.id)
+      const modelIndex = autobanModels.data.value.findIndex(x => x.id === payload.id);
+      autobanModels.data.value = [
+        ...autobanModels.data.value.slice(0,modelIndex),
+        ...autobanModels.data.value.slice(modelIndex+1)
+      ]
     } catch (e) {
       throw e.response.data.errors
     }
@@ -193,6 +319,12 @@ export const useAutobanStore = defineStore("Autoban",()=>{
   const distroyAutobanType = async (payload)=>{
     try {
       await api.delete('/autobanTypes/'+payload.id)
+      const typeIndex = autobanTypes.data.value.findIndex(x => x.id === payload.id);
+      autobanTypes.data.value = [
+        ...autobanTypes.data.value.slice(0,typeIndex),
+        ...autobanTypes.data.value.slice(typeIndex+1)
+      ]
+      autobanModels.data.value = autobanModels.data.value.filter(x=>x.type.id!==payload.id)
     } catch (e) {
       throw e.response.data.errors
     }
@@ -200,6 +332,12 @@ export const useAutobanStore = defineStore("Autoban",()=>{
   const distroyAutobanYear = async (payload)=>{
     try {
       await api.delete('/autobanYears/'+payload.id)
+      const yearIndex = autobanYears.data.value.findIndex(x => x.id === year.id);
+      autobanYears.data.value = [
+        ...autobanYears.data.value.slice(0,yearIndex),
+        ...autobanYears.data.value.slice(yearIndex+1)
+      ]
+      autobanModels.data.value = autobanModels.data.value.filter(x=>x.year.id!==year.id)
     } catch (e) {
       throw e.response.data.errors
     }
@@ -207,6 +345,11 @@ export const useAutobanStore = defineStore("Autoban",()=>{
   const distroyAutobanPriceTask = async (payload)=>{
     try {
       await api.delete('/autobanPriceTasks/'+payload.id)
+      const taskIndex = autobanPriceTasks.data.value.findIndex(x => x.id === payload.id);
+      autobanPriceTasks.data.value = [
+        ...autobanPriceTasks.data.value.slice(0,taskIndex),
+        ...autobanPriceTasks.data.value.slice(taskIndex+1)
+      ]
     } catch (e) {
       throw e.response.data.errors
     }
@@ -227,6 +370,8 @@ export const useAutobanStore = defineStore("Autoban",()=>{
     autobanTypes,
     autobanYears,
     autobanPriceTasks,
+    autobansByBrand,
+    fullAutoban,
 
     initAutobans,
     initAutobanBrands,
@@ -235,6 +380,8 @@ export const useAutobanStore = defineStore("Autoban",()=>{
     initAutobanYears,
     initAutobanPriceTask,
     initAutobanPriceTasks,
+    initAutobansByBrand,
+    initAutoban,
 
     handleAutobans,
     handleAutobanBrands,

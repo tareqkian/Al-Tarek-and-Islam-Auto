@@ -191,9 +191,11 @@ const typeDelete = (event,type)=>{
   });
 }
 
+/*
 Echo.channel("TypesEvent")
   .listen('TypeAdder',({type})=>{
-    if ( AutobanStore.autobanTypes.data.length ) AutobanStore.autobanTypes.data = [...AutobanStore.autobanTypes.data, type]
+    if ( AutobanStore.autobanTypes.data.length )
+      AutobanStore.autobanTypes.data = [...AutobanStore.autobanTypes.data, type]
     else AutobanStore.autobanTypes.data = [type]
   })
   .listen('TypeEditor',({type})=>{
@@ -222,5 +224,6 @@ Echo.channel("TypesEvent")
       AutobanStore.autobanModels.data = AutobanStore.autobanModels.data.filter(x=>x.type.id!==type.id)
     }
   })
+*/
 
 </script>

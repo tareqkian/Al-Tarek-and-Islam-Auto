@@ -26,6 +26,25 @@ class OptionCategory extends Model implements TranslatableAlias
   {
     return $this->hasMany(Option::class);
   }
+
+  /*public function pivotOptions()
+  {
+    return $this->belongsToMany(
+      Option::class,
+      'autoban_category_option',
+      'option_id',
+      'option_id',
+      'pivot.id',
+      'id'
+    );
+  }*/
+
+  public function AutobanCategory()
+  {
+    return $this->hasMany(AutobanCategory::class);
+  }
+
+
   public function order($option_sub_class_id)
   {
     return Parent::where('option_sub_class_id',$option_sub_class_id)

@@ -27,12 +27,12 @@ class AutobanModelController extends Controller
 //    $models = AutobanModel::with("translations","brand.translations")->get();
 
     $models = AutobanModel::with("translations","brand.translations")
+      ->select('*','autoban_models.id as id')
       ->join('autoban_model_translations','autoban_model_translations.autoban_model_id','=','autoban_models.id')->where('autoban_model_translations.locale','en')
       ->join('autoban_brand_translations','autoban_brand_translations.autoban_brand_id','=','autoban_models.autoban_brand_id')->where('autoban_brand_translations.locale','en')
-
       ->orderBy('autoban_brand_translations.brand_title')
       ->orderBy('autoban_model_translations.model_title')
-      ->paginate(5);
+      ->get();
 
     return AutobanModelResource::collection($models);
   }
@@ -52,7 +52,7 @@ class AutobanModelController extends Controller
       $data[$index]['model_image'] = $dpPath;
     }
     $models = $autobanBrand->models()->createMany($data);
-    broadcast(new ModelAdder(AutobanModelResource::collection($models->load('brand'))));
+//    broadcast(new ModelAdder(AutobanModelResource::collection($models->load('brand'))));
     return AutobanModelResource::collection($models->load('brand'));
   }
 
@@ -96,7 +96,7 @@ class AutobanModelController extends Controller
     }
 
     $autobanModel->update($validated);
-    broadcast(new ModelEditor(new AutobanModelResource($autobanModel->load('brand'))));
+//    broadcast(new ModelEditor(new AutobanModelResource($autobanModel->load('brand'))));
     return new AutobanModelResource($autobanModel->load('brand'));
   }
 
@@ -112,7 +112,7 @@ class AutobanModelController extends Controller
       $deletePath = public_path($autobanModel->model_image);
       File::delete($deletePath);
     }
-    broadcast(new ModelDeleter($autobanModel));
+//    broadcast(new ModelDeleter($autobanModel));
     $autobanModel->delete();
     return [ "status" => 204 ];
   }

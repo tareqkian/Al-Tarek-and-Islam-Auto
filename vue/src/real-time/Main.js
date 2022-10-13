@@ -1,16 +1,13 @@
 import {useSettingsStore} from "../store/Settings";
 import {useAuth} from "../store/Auth";
 import {useUsersStore} from "../store/Users";
-
 export const MainEvent = ()=>{
   const settingsStore = useSettingsStore();
   const usersStore = useUsersStore();
-
   Echo.channel("MainEvents")
     .listen("SettingsEditor",async ({settings}) => {
       settingsStore.settings = settings
     })
-
     .listen("UsersAdder",(data)=>{
       if ( usersStore.users.data.length ) {
         usersStore.users.data = [
@@ -50,5 +47,4 @@ export const MainEvent = ()=>{
         ]
       }
     })
-
 }

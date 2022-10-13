@@ -46,14 +46,19 @@
                       <i class="ti-crown text-yellow"></i>
                     </router-link>
                   </div>
+
                   <div class="dropdown header-notify">
                     <a class="nav-link icon"
                        data-bs-toggle="sidebar-right"
-                       data-bs-target=".sidebar-right">
+                       data-bs-target=".header-notify">
                       <i class="feather feather-bell header-icon"></i>
                       <span class="badge badge-success side-badge"> 2 </span>
                     </a>
                   </div>
+
+
+                  <Comparison />
+
                   <div class="dropdown profile-dropdown">
                     <a href="javascript:void(0);" class="nav-link pe-1 ps-0 leading-none" data-bs-toggle="dropdown">
                         <span>
@@ -97,11 +102,11 @@
     </div>
 
     <!--sidebar-right-->
-    <div class="sidebar sidebar-right sidebar-animate">
+    <div class="sidebar sidebar-right header-notify sidebar-animate">
       <div class="card-header border-bottom pb-5">
         <h4 class="card-title">Notifications </h4>
         <div class="card-options">
-          <a  href="javascript:void(0);" class="btn btn-sm btn-icon btn-light  text-primary"  data-bs-toggle="sidebar-right" data-bs-target=".sidebar-right"><i class="feather feather-x"></i> </a>
+          <a href="javascript:void(0);" class="btn btn-sm btn-icon btn-light text-primary" data-bs-toggle="sidebar-right" data-bs-target=".header-notify"><i class="feather feather-x"></i> </a>
         </div>
       </div>
       <div class="">
@@ -131,6 +136,7 @@
 import Sidebar from 'primevue/sidebar';
 import TabView from 'primevue/tabview';
 import TabPanel from 'primevue/tabpanel';
+import Comparison from "./Option/Comparison.vue"
 
 import { useRouter } from "vue-router";
 import { useDir } from "../store/Dir";

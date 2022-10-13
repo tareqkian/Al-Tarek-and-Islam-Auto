@@ -25,6 +25,13 @@ class Option extends Model implements TranslatableAlias
     return $this->belongsToMany(Option::class);
   }
 
+
+  public function pivotAutobans()
+  {
+    return $this->belongsToMany(Autoban::class,'autoban_category_option');
+  }
+
+
   public function order($option_category_id)
   {
     return Parent::where('option_category_id',$option_category_id)

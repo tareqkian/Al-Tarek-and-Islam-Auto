@@ -19,7 +19,7 @@ class OptionCategoryController extends Controller
    */
   public function index()
   {
-    $optionCategory = OptionCategory::with('translations','option_sub_class')->paginate(10);
+    $optionCategory = OptionCategory::with('translations','option_sub_class','options.translations')->get();
     return OptionCategoryResource::collection($optionCategory);
   }
 
@@ -42,7 +42,7 @@ class OptionCategoryController extends Controller
     $validated['order'] = (OptionCategory::order($request->input('option_sub_class_id'))->order + 1);
     $optionCategory = OptionCategory::create($validated);
     $optionCategory->load(['options' => function($x){$x->orderBy('order');}]);
-    broadcast(new OptionCategoryAdder(new OptionCategoryResource($optionCategory)));
+//    broadcast(new OptionCategoryAdder(new OptionCategoryResource($optionCategory)));
     return new OptionCategoryResource($optionCategory);
   }
 
@@ -69,7 +69,7 @@ class OptionCategoryController extends Controller
   {
     $optionCategory->update($request->validated());
     $optionCategory->load(['options' => function($x){$x->orderBy('order');}]);
-    broadcast(new OptionCategoryEditor(new OptionCategoryResource($optionCategory)));
+//    broadcast(new OptionCategoryEditor(new OptionCategoryResource($optionCategory)));
     return new OptionCategoryResource($optionCategory);
   }
 
@@ -81,7 +81,7 @@ class OptionCategoryController extends Controller
    */
   public function destroy(OptionCategory $optionCategory)
   {
-    broadcast(new OptionCategoryDeleter($optionCategory));
+//    broadcast(new OptionCategoryDeleter($optionCategory));
     $optionCategory->delete();
     return ['status'=>204];
   }

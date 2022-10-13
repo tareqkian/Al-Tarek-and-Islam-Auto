@@ -819,6 +819,7 @@ const optionOrder = async (e)=>{
   })
 }
 
+/*
 Echo.channel("OptionsEvent")
   .listen('OptionClassesAdder',({optionClass})=>{
     OptionStore.optionClasses.data = [
@@ -897,5 +898,6 @@ Echo.channel("OptionsEvent")
       OptionStore.options.data = OptionStore.options.data.filter(x=> +x.id !== +option.id)
       OptionStore.option.data = OptionStore.option.data.filter(x=> +x.id !== +option.id)
   })
+*/
 </script>
 

@@ -56,7 +56,7 @@ class AutobanBrandController extends Controller
     $dpPath = $this->saveImage($validated['brand_image']);
     $validated['brand_image'] = $dpPath;
     $brand = AutobanBrand::create($validated);
-    broadcast(new BrandAdder(new AutobanBrandResource($brand)));
+//    broadcast(new BrandAdder(new AutobanBrandResource($brand)));
     return new AutobanBrandResource($brand);
   }
 
@@ -96,7 +96,7 @@ class AutobanBrandController extends Controller
       unset($validated['brand_image']);
     }
     $autobanBrand->update($validated);
-    broadcast(new BrandEditor(new AutobanBrandResource($autobanBrand)));
+//    broadcast(new BrandEditor(new AutobanBrandResource($autobanBrand)));
     return new AutobanBrandResource($autobanBrand);
   }
 
@@ -116,7 +116,7 @@ class AutobanBrandController extends Controller
         File::delete($deletePath);
       }
     }
-    broadcast(new BrandDeleter($autobanBrand));
+//    broadcast(new BrandDeleter($autobanBrand));
     $autobanBrand->delete();
     return [ "status" => 204 ];
   }

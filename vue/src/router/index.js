@@ -40,7 +40,7 @@ router.beforeEach(async (to, from, next) => {
   else next()
 
   /* Real Time Control */
-  if ( from.meta.realTime ) Echo.leave(from.meta.realTime)
+  /*if ( from.meta.realTime ) Echo.leave(from.meta.realTime)*/
 })
 
 export default router;

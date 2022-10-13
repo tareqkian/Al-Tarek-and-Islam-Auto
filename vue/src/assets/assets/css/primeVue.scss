@@ -229,6 +229,7 @@ ul.p-dropdown-items, ul.p-multiselect-items {
 }
 .p-overlaypanel{
   @extend .card;
+  z-index: 998 !important;
   box-shadow: #00000038 0 0 20px;
   .p-overlaypanel-content{
     @extend .card-body;
@@ -272,13 +273,19 @@ ul.p-dropdown-items, ul.p-multiselect-items {
   visibility: unset !important;
 }
 
-
 .Content{
   direction: ltr;
 }
 .Flipped{
   direction: rtl;
 }
+
+
+.p-dropdown-clear-icon {
+  top: 66% !important;
+  right: 35px !important;
+}
+
 
 .rtl .p-sidebar {
   direction: ltr !important;
@@ -294,6 +301,10 @@ ul.p-dropdown-items, ul.p-multiselect-items {
   right: unset !important;
   left: 30px;
 }
+.rtl .p-dropdown-clear-icon {
+  top: 66% !important;
+  left: 35px !important;
+}
 .rtl .pi-chevron-right:before{
   content: "\e900";
 }
@@ -305,4 +316,13 @@ ul.p-dropdown-items, ul.p-multiselect-items {
 }
 .rtl .Flipped{
   direction: ltr;
+}
+.rtl .list-style-disc {
+  padding-left: unset !important;
+  padding-right: 40px;
+}
+
+.rtl .sidebar-right {
+  left: 0;
+  right: 100%;
 }

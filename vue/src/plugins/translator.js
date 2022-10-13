@@ -17,12 +17,10 @@ export default {
         {
           result = (base.translations.filter(x=>x.locale===(defaultLocal || locale.value))[0][name] || '')
         }
-
         if ( price )
         {
           result = numeral(result).format(priceFormat)
         }
-
         if ( (locale.value === 'ar' && /\d/.test(result)) || (defaultLocal && defaultLocal == 'ar') )
         {
           if ( typeof result === 'number' ) result = result.toString()
@@ -33,7 +31,6 @@ export default {
           if ( typeof result === 'number' ) result = result.toString()
           result = convertNumbers2English(result)
         }
-
         return result;
       }
       if ( typeof base === 'string' ) {

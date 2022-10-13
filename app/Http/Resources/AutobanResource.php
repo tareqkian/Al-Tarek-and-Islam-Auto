@@ -24,6 +24,7 @@ class AutobanResource extends JsonResource
       'price_list_appearance' => ($this->price_list_appearance || false),
       'market_availability' => ($this->market_availability || false),
       'order' => $this->order,
+      'pivots' => AutobanCategoryResource::collection($this->whenLoaded('pivots'))
     ];
   }
 }
