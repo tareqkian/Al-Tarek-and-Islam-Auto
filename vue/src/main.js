@@ -2,7 +2,7 @@ import {createApp} from 'vue'
 import pinia from "./store";
 import router from "./router"
 import App from './App.vue'
-// import i18n from './translator';
+
 import PrimeVue from 'primevue/config';
 import ToastService from 'primevue/toastservice';
 import ConfirmationService from 'primevue/confirmationservice';

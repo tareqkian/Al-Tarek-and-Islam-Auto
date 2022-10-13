@@ -7,8 +7,11 @@ let routes = [
   {path: '/login', name: 'Login',meta: {isGuest: true}, component: Login},
   {path: '/401', name: '401',meta: {isError: true}, component: e401}
 ];
+
 const menus = useMenus();
-await menus.initROUTES(); // Fetch Routes
+(async () => {
+  await menus.initROUTES(); // Fetch Routes
+})()
 const menu = computed(()=>menus.menuRoutes);
 routes = [...routes,...menu.value]
 

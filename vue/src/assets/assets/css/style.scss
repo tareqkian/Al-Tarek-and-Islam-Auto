@@ -16555,7 +16555,7 @@ h2.animate {
     display: -moz-inline-stack;
     display: inline-block;
     zoom: 1;
-    *display: inline;
+    display: inline;
 }
 
 .selectize-control.multi .selectize-input>div {
@@ -40180,7 +40180,7 @@ body.active.main-content.main {
 .fc-view.fc-listWeek-view .fc-list-item {
     flex: 0 0 calc(80% - 5px);
     max-width: calc(80% - 5px);
-    dispLay: flex;
+    display: flex;
     flex-direction: column;
     border-left: 4px solid transparent;
     background-color: #fff;
@@ -44553,8 +44553,8 @@ License: MIT
     top: 0;
     left: 0;
     display: inline-block;
-    *display: inline;
-    *zoom: 1;
+    display: inline;
+    zoom: 1;
     z-index: 9999994;
     overflow: hidden;
     -webkit-box-sizing: content-box;
@@ -44780,7 +44780,7 @@ License: MIT
 
 /* Clearfix hack */
 .sp-cf {
-    *zoom: 1;
+    zoom: 1;
 }
 
 .sp-cf:before {
@@ -44936,7 +44936,6 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
 }
 
 .sp-palette .sp-thumb-el {
-    /*display: block;*/
     position: relative;
     float: left;
     width: 24px;
@@ -49707,7 +49706,7 @@ body:not(.lg-from-hash) .lg-outer.lg-start-zoom .lg-item.lg-complete .lg-object 
 }
 
 .group {
-    *zoom: 1;
+    zoom: 1;
 }
 
 .group:before {
@@ -54858,7 +54857,7 @@ li.ui-timepicker-selected .ui-timepicker-duration {
  *????
  */
 .clearfix {
-    *zoom: 1;
+    zoom: 1;
 }
 
 .clearfix:before {
