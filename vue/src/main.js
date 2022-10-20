@@ -2,7 +2,7 @@ import {createApp} from 'vue'
 import pinia from "./store";
 import router from "./router"
 import App from './App.vue'
-
+// import i18n from './translator';
 import PrimeVue from 'primevue/config';
 import ToastService from 'primevue/toastservice';
 import ConfirmationService from 'primevue/confirmationservice';
@@ -29,10 +29,10 @@ window.Echo = new Echo({
   broadcaster: 'pusher',
   key: import.meta.env.VITE_APP_PUSHER_KEY,
   cluster: "mt1",
+  forceTLS: false,
   wsHost: import.meta.env.VITE_APP_PUSHER_SERVER,
   wsPort: `6001`,
   enabledTransports: ['ws'],
-  forceTLS: false,
   enableStats: true,
   authorizer: (channel, options) => {
     return {

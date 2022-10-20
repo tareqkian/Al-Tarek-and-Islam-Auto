@@ -1,6 +1,6 @@
 <template>
-  <PageLayout :meta="this.$route.meta">
-    <button v-if="$can(`add_${this.$route.meta.permissionsLayout}`)" class="btn btn-primary mb-2" @click="roleDialog()">
+  <PageLayout>
+    <button v-if="$can(`add_${route.meta.permissionsLayout}`)" class="btn btn-primary mb-2" @click="roleDialog()">
       <i class="fe fe-plus"></i>
       Add New Role
     </button>
@@ -18,9 +18,9 @@
                 {{ t(role,"display_name") }}
                 <small class="text-muted ms-3"> {{ role.name }} </small>
               </div>
-              <div v-if="$can(`edit_${this.$route.meta.permissionsLayout}`) || $can(`delete_${this.$route.meta.permissionsLayout}`)">
-                <i v-if="$can(`edit_${this.$route.meta.permissionsLayout}`)" class="fa fa-edit text-info mx-1" @click="roleDialog(role)"></i>
-                <i v-if="$can(`delete_${this.$route.meta.permissionsLayout}`)" class="fa fa-trash text-danger mx-1" @click="roleDelete($event,role)"></i>
+              <div v-if="$can(`edit_${route.meta.permissionsLayout}`) || $can(`delete_${route.meta.permissionsLayout}`)">
+                <i v-if="$can(`edit_${route.meta.permissionsLayout}`)" class="fa fa-edit text-info mx-1" @click="roleDialog(role)"></i>
+                <i v-if="$can(`delete_${route.meta.permissionsLayout}`)" class="fa fa-trash text-danger mx-1" @click="roleDelete($event,role)"></i>
               </div>
             </a>
           </div>
@@ -163,9 +163,10 @@ import { FilterMatchMode } from 'primevue/api';
 import { useRolesStore } from "../../store/Roles";
 import { usePermissions } from "../../store/Permissions";
 import {computed, inject, ref} from "vue";
+import { useRoute } from "vue-router";
 
 const t = inject("t")
-
+const route = useRoute();
 const rolesStore = useRolesStore();
 const permissionsStore = usePermissions();
 const toast = useToast()
@@ -268,37 +269,5 @@ const roleDelete = (event,role)=>{
   });
 }
 
-Echo.channel("RolesEvent")
-  .listen("RoleAdder",(data)=>{
-    if ( rolesStore.roles.data.length ) {
-      rolesStore.roles.data = [
-        ...rolesStore.roles.data,
-        data.role
-      ]
-    } else {
-      rolesStore.roles.data = [
-        data.role
-      ]
-    }
-  })
-  .listen("RoleEditor",(data)=>{
-    if ( rolesStore.roles.data.length ) {
-      const roleIndex = rolesStore.roles.data.findIndex(x => x.id === data.role.id);
-      rolesStore.roles.data = [
-        ...rolesStore.roles.data.slice(0,roleIndex),
-        {...data.role},
-        ...rolesStore.roles.data.slice(roleIndex+1)
-      ]
-    }
-  })
-  .listen("RoleDeletor",(data)=>{
-    if ( rolesStore.roles.data.length ) {
-      const roleIndex = rolesStore.roles.data.findIndex(x => x.id === data.role.id);
-      rolesStore.roles.data = [
-        ...rolesStore.roles.data.slice(0,roleIndex),
-        ...rolesStore.roles.data.slice(roleIndex+1)
-      ]
-    }
-  })
 
 </script>

@@ -1,14 +1,14 @@
 <template>
-  <PageLayout :meta="this.$route.meta">
+  <PageLayout>
     <div class="row">
       <div class="col">
-        <button v-if="$can(`add_${this.$route.meta.permissionsLayout}`)"
+        <button v-if="$can(`add_${route.meta.permissionsLayout}`)"
                 class="btn btn-primary mb-2 me-3"
                 @click="classDialog()">
           <i class="fe fe-plus"></i>
           Add Class
         </button>
-        <button v-if="$can(`add_${this.$route.meta.permissionsLayout}`)"
+        <button v-if="$can(`add_${route.meta.permissionsLayout}`)"
                 class="btn btn-primary mb-2 me-3"
                 @click="subClassDialog()">
           <i class="fe fe-plus"></i>
@@ -52,10 +52,10 @@
                   <span class="mx-2">{{ t(value.data.option_class,'option_class_title') }}</span>
                   <div class="d-inline-block float-end">
                     <i class="fa fa-edit text-info mx-1"
-                       v-if="$can(`edit_${this.$route.meta.permissionsLayout}`)"
+                       v-if="$can(`edit_${route.meta.permissionsLayout}`)"
                        @click="classDialog(value.data.option_class)"></i>
                     <i class="fa fa-trash text-danger mx-1"
-                       v-if="$can(`delete_${this.$route.meta.permissionsLayout}`)"
+                       v-if="$can(`delete_${route.meta.permissionsLayout}`)"
                        @click="classDelete($event,value.data.option_class)"></i>
                   </div>
                 </template>
@@ -65,13 +65,13 @@
                   {{ t(value.data,'option_sub_class_title') }}
                 </template>
               </Column>
-              <Column v-if="$can(`edit_${this.$route.meta.permissionsLayout}`) || $can(`delete_${this.$route.meta.permissionsLayout}`)" header="Actions">
+              <Column v-if="$can(`edit_${route.meta.permissionsLayout}`) || $can(`delete_${route.meta.permissionsLayout}`)" header="Actions">
                 <template #body="val">
                   <i class="fa fa-edit text-info mx-1"
-                     v-if="$can(`edit_${this.$route.meta.permissionsLayout}`)"
+                     v-if="$can(`edit_${route.meta.permissionsLayout}`)"
                      @click="subClassDialog(val.data)"></i>
                   <i class="fa fa-trash text-danger mx-1"
-                     v-if="$can(`delete_${this.$route.meta.permissionsLayout}`)"
+                     v-if="$can(`delete_${route.meta.permissionsLayout}`)"
                      @click="subClassDelete($event,val.data)"></i>
                 </template>
               </Column>
@@ -207,12 +207,13 @@ import {useConfirm} from "primevue/useconfirm";
 import {computed, inject, reactive, ref} from "vue";
 import {FilterMatchMode} from "primevue/api";
 import {useOptionStore} from "../../store/Options";
+import {useRoute} from "vue-router";
 
 const filters = ref({'global': { value: null, matchMode: FilterMatchMode.CONTAINS }})
 const t = inject("t");
 const toast = useToast();
 const confirm = useConfirm();
-
+const route = useRoute()
 
 const OptionStore = useOptionStore()
 const optionClasses = computed(()=>OptionStore.optionClasses)
@@ -275,6 +276,13 @@ const handleOptionClass = async()=>{
       OptionStore.initOptionClasses()
       subClassDialogShow.value = !subClassDialogShow.value
     }
+    toast.add({
+      closable: false,
+      severity: "success",
+      summary: "Class",
+      detail: "Success",
+      life: 3000
+    })
     loading.value = false
   } catch (e) {
     errors.value = e
@@ -287,6 +295,13 @@ const handleOptionSubClass = async()=>{
     loading.value = true
     await OptionStore.handleOptionSubClasses(selectedSubClass)
     subClassDialogShow.value = !subClassDialogShow.value
+    toast.add({
+      closable: false,
+      severity: "success",
+      summary: "Sub Class",
+      detail: "Success",
+      life: 3000
+    })
     loading.value = false
   } catch (e) {
     errors.value = e
@@ -364,6 +379,7 @@ const subClassDelete = (event,optionSubClass)=>{
 }
 
 
+/*
 Echo.channel('ClassesEvent')
   .listen('OptionClassesAdder',({optionClass})=>{
     OptionStore.optionClasses.data = [
@@ -424,4 +440,5 @@ Echo.channel('ClassesEvent')
     ]
   })
 
+*/
 </script>

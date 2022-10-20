@@ -24,8 +24,8 @@ class StoreAutobanTypeRequest extends FormRequest
   public function rules()
   {
     return [
-      'en.type_title' => 'required|string|unique:autoban_type_translations,type_title',
-      'ar.type_title' => 'required|string|unique:autoban_type_translations,type_title'
+      'en.type_title' => 'required|string|regex:/^[a-zA-Z0-9\!-_ ]+$/u|unique:autoban_type_translations,type_title',
+      'ar.type_title' => 'required|string|regex:/^[كگچپژیلفقهمو ء-ي 0-9]+$/|unique:autoban_type_translations,type_title'
     ];
   }
 }

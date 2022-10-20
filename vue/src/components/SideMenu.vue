@@ -1,19 +1,6 @@
 <template>
   <div class="sticky">
     <aside class="app-sidebar">
-
-
-<!--
-      <div class="app-sidebar__logo active">
-        <a class="header-brand" href="index.html">
-          <img src="../assets/images/brand/logo.png" class="header-brand-img desktop-lgo" alt="Dayonelogo">
-          <img src="../assets/images/brand/logo-white.png" class="header-brand-img dark-logo" alt="Dayonelogo">
-          <img src="../assets/images/brand/favicon.png" class="header-brand-img mobile-logo" alt="Dayonelogo">
-          <img src="../assets/images/brand/favicon1.png" class="header-brand-img darkmobile-logo" alt="Dayonelogo">
-        </a>
-      </div>
--->
-
       <div class="app-sidebar__logo py-0 d-md-flex d-sm-none align-items-center justify-content-center">
         <router-link :to="{name: 'Dashboard'}" class="header-brand">
           <span class="h1 header-brand-img desktop-lgo">
@@ -58,6 +45,7 @@ import SideMenu from "./SideMenu/SideMenu.vue";
 import { useMenuItems } from "../store/MenuItems";
 import { useRouter } from "vue-router";
 import {computed, inject, ref, watch} from "vue";
+
 const settings = inject('Settings')
 const props = defineProps({
   user: Object,
@@ -65,8 +53,8 @@ const props = defineProps({
 const route = useRouter();
 const parentRoute = computed(()=>route.currentRoute.value.path.split('/')[1] === 'admin' ? 'admin' : 'cms');
 const menuItemsStore = useMenuItems();
-const items = computed(()=> menuItemsStore.currentItems );
-const MENUID = computed(()=> route.currentRoute.value.meta.menu)
+const items = computed(() => menuItemsStore.currentItems );
+const MENUID = computed(() => route.currentRoute.value.meta.menu)
 const menuItems = async()=>{
   await menuItemsStore.initITEMS(MENUID.value);
   const { fullPath } = route.currentRoute.value

@@ -1,6 +1,6 @@
 <template>
-  <PageLayout :meta="this.$route.meta">
-    <button v-if="$can(`add_${this.$route.meta.permissionsLayout}`)"
+  <PageLayout>
+    <button v-if="$can(`add_${route.meta.permissionsLayout}`)"
             class="btn btn-primary mb-2"
             @click="taskDialog()">
       <i class="fe fe-plus"></i>
@@ -35,9 +35,9 @@
                 {{ t(task.brand,"brand_title") }}
                 <small class="text-muted ms-3"> {{ t(task,"lateDate") }} </small>
               </div>
-              <div v-if="$can(`edit_${this.$route.meta.permissionsLayout}`) || $can(`delete_${this.$route.meta.permissionsLayout}`)">
-                <i v-if="$can(`edit_${this.$route.meta.permissionsLayout}`)" class="fa fa-edit text-info mx-1" @click="taskDialog(task)"></i>
-                <i v-if="$can(`delete_${this.$route.meta.permissionsLayout}`)" class="fa fa-trash text-danger mx-1" @click="taskDelete($event,task)"></i>
+              <div v-if="$can(`edit_${route.meta.permissionsLayout}`) || $can(`delete_${route.meta.permissionsLayout}`)">
+                <i v-if="$can(`edit_${route.meta.permissionsLayout}`)" class="fa fa-edit text-info mx-1" @click="taskDialog(task)"></i>
+                <i v-if="$can(`delete_${route.meta.permissionsLayout}`)" class="fa fa-trash text-danger mx-1" @click="taskDelete($event,task)"></i>
               </div>
             </a>
             <span v-if="!lateTasks.length && !tasks.loading" class="ps-3 py-2">
@@ -60,9 +60,9 @@
                 {{ t(task.brand,"brand_title") }}
                 <small class="text-muted ms-3"> {{ t(task,"currentDate") }} </small>
               </div>
-              <div v-if="$can(`edit_${this.$route.meta.permissionsLayout}`) || $can(`delete_${this.$route.meta.permissionsLayout}`)">
-                <i v-if="$can(`edit_${this.$route.meta.permissionsLayout}`)" class="fa fa-edit text-info mx-1" @click="taskDialog(task)"></i>
-                <i v-if="$can(`delete_${this.$route.meta.permissionsLayout}`)" class="fa fa-trash text-danger mx-1" @click="taskDelete($event,task)"></i>
+              <div v-if="$can(`edit_${route.meta.permissionsLayout}`) || $can(`delete_${route.meta.permissionsLayout}`)">
+                <i v-if="$can(`edit_${route.meta.permissionsLayout}`)" class="fa fa-edit text-info mx-1" @click="taskDialog(task)"></i>
+                <i v-if="$can(`delete_${route.meta.permissionsLayout}`)" class="fa fa-trash text-danger mx-1" @click="taskDelete($event,task)"></i>
               </div>
             </a>
             <span v-if="!currentTasks.length && !tasks.loading" class="ps-3 py-2">
@@ -85,9 +85,9 @@
                 {{ t(task.brand,"brand_title") }}
                 <small class="text-muted ms-3"> {{ t(task,"upcomingDate") }} </small>
               </div>
-              <div v-if="$can(`edit_${this.$route.meta.permissionsLayout}`) || $can(`delete_${this.$route.meta.permissionsLayout}`)">
-                <i v-if="$can(`edit_${this.$route.meta.permissionsLayout}`)" class="fa fa-edit text-info mx-1" @click="taskDialog(task)"></i>
-                <i v-if="$can(`delete_${this.$route.meta.permissionsLayout}`)" class="fa fa-trash text-danger mx-1" @click="taskDelete($event,task)"></i>
+              <div v-if="$can(`edit_${route.meta.permissionsLayout}`) || $can(`delete_${route.meta.permissionsLayout}`)">
+                <i v-if="$can(`edit_${route.meta.permissionsLayout}`)" class="fa fa-edit text-info mx-1" @click="taskDialog(task)"></i>
+                <i v-if="$can(`delete_${route.meta.permissionsLayout}`)" class="fa fa-trash text-danger mx-1" @click="taskDelete($event,task)"></i>
               </div>
             </a>
             <span v-if="!upcomingTasks.length && !tasks.loading" class="ps-3 py-2">
@@ -355,6 +355,7 @@ import {computed, inject, reactive, ref, watch} from "vue";
 import {useAutobanStore} from "../../store/Autoban";
 import {FilterMatchMode} from "primevue/api";
 import _debounce from "lodash/debounce";
+import {useRoute} from "vue-router";
 
 const filters = ref({'global': { value: null, matchMode: FilterMatchMode.CONTAINS }})
 const filter = ref()
@@ -367,6 +368,7 @@ watch(
 const t = inject("t");
 const toast = useToast();
 const confirm = useConfirm();
+const route = useRoute();
 
 const priceCalcOriginal = {
   official: ref(0),
@@ -478,6 +480,13 @@ const handleTasks = async () => {
     errors.value = []
     await AutobanStore.handleAutobanPriceTasks(selectedTask.value)
     taskDialogShow.value = !taskDialogShow.value
+    toast.add({
+      closable: false,
+      severity: "success",
+      summary: "Task",
+      detail: "Success",
+      life: 3000
+    })
     loading.value = false
   } catch (e) {
     loading.value = false
@@ -612,27 +621,6 @@ const price_list_appearance_market_availability = async(autoban)=>{
   }
 }
 
-/*Echo.channel("PricesEvent")
-  .listen('TaskAdder',(data)=>{
-    if ( AutobanStore.autobanPriceTasks.data.length ) {
-        AutobanStore.autobanPriceTasks.data = [...AutobanStore.autobanPriceTasks.data, ...data.tasks]
-    }
-  })
-  .listen('TaskEditor',({task})=>{
-    const taskIndex = AutobanStore.autobanPriceTasks.data.findIndex(x => x.id === task.id);
-    AutobanStore.autobanPriceTasks.data = [
-      ...AutobanStore.autobanPriceTasks.data.slice(0,taskIndex),
-      {...task},
-      ...AutobanStore.autobanPriceTasks.data.slice(taskIndex+1)
-    ]
-  })
-  .listen('TaskDeleter',({task})=>{
-    const taskIndex = AutobanStore.autobanPriceTasks.data.findIndex(x => x.id === task.id);
-    AutobanStore.autobanPriceTasks.data = [
-      ...AutobanStore.autobanPriceTasks.data.slice(0,taskIndex),
-      ...AutobanStore.autobanPriceTasks.data.slice(taskIndex+1)
-    ]
-  })*/
 </script>
 
 <style src="@vueform/toggle/themes/default.css"></style>

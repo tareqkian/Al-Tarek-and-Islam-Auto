@@ -1,5 +1,5 @@
 <template>
-  <PageLayout :meta="this.$route.meta">
+  <PageLayout>
 
     <div class="card">
       <div class="card-body">

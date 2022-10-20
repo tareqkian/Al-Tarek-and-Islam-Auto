@@ -25,8 +25,8 @@ class StoreOptionSubClassRequest extends FormRequest
   {
     return [
       'option_class_id' => 'required_without:order|int|exists:option_classes,id',
-      'ar.option_sub_class_title' => 'required_without:order|string|unique:option_sub_class_translations,option_sub_class_title',
-      'en.option_sub_class_title' => 'required_without:order|string|unique:option_sub_class_translations,option_sub_class_title',
+        'en.option_sub_class_title' => 'required_without:order|string|regex:/^[a-zA-Z0-9\!-_ ]+$/u|unique:option_sub_class_translations,option_sub_class_title',
+        'ar.option_sub_class_title' => 'required_without:order|string|regex:/^[كگچپژیلفقهمو ء-ي 0-9]+$/|unique:option_sub_class_translations,option_sub_class_title',
     ];
   }
 }

@@ -41,7 +41,6 @@ export const useMenuItems = defineStore("MenuItems",()=>{
       let item = data.data;
       let routes = router.getRoutes()
       let link = routes.some(el=>el.name === item.title)
-      console.log(payload.menu_name)
       if ( !link && item.importedComponent ) {
         router.addRoute(payload.menu_name, {
           path: payload.menu_name+'/'+item.route,
@@ -95,7 +94,7 @@ export const useMenuItems = defineStore("MenuItems",()=>{
 
   const addItems = async (routeMenuID,payload)=>{
     try {
-      const { data } = await api.post('/items',payload)
+      const { data } = await api.post("/items",payload)
       let item = data.data;
       generatePermissions(item)
       let MENUID = (payload.menu_id === routeMenuID || false);

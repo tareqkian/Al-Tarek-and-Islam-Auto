@@ -24,8 +24,8 @@ class StoreOptionClassRequest extends FormRequest
   public function rules()
   {
     return [
-      'en.option_class_title' => 'required_without:order|string|unique:option_class_translations,option_class_title',
-      'ar.option_class_title' => 'required_without:order|string|unique:option_class_translations,option_class_title'
+      'en.option_class_title' => 'required_without:order|string|regex:/^[a-zA-Z0-9\!-_ ]+$/u|unique:option_class_translations,option_class_title',
+      'ar.option_class_title' => 'required_without:order|string|regex:/^[كگچپژیلفقهمو ء-ي 0-9]+$/|unique:option_class_translations,option_class_title'
     ];
   }
 }

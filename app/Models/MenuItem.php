@@ -34,7 +34,7 @@ class MenuItem extends Model implements TranslatableContract
         ->orderBy('order');
     }
 
-    public function highestOrderMenuItem($data)
+    static function highestOrderMenuItem($data)
     {
         $order = 1;
         $item = MenuItem::where("menu_id",'=',$data['menu_id'])

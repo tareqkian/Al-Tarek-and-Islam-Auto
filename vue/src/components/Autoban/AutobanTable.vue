@@ -89,13 +89,13 @@
         <i class="fa fa-edit text-info mx-1" @click="emits('autobanOptionDialog',val.data)"></i>
       </template>
     </Column>
-    <Column v-if="type === 'autoban' && ($can(`edit_${this.$route.meta.permissionsLayout}`) || $can(`delete_${this.$route.meta.permissionsLayout}`))" header="Actions">
+    <Column v-if="type === 'autoban' && ($can(`edit_${route.meta.permissionsLayout}`) || $can(`delete_${route.meta.permissionsLayout}`))" header="Actions">
       <template #body="val">
         <i class="fa fa-edit text-info mx-1"
-           v-if="$can(`edit_${this.$route.meta.permissionsLayout}`)"
+           v-if="$can(`edit_${route.meta.permissionsLayout}`)"
            @click="emits('autobanDialog',val.data)"></i>
         <i class="fa fa-trash text-danger mx-1"
-           v-if="$can(`delete_${this.$route.meta.permissionsLayout}`)"
+           v-if="$can(`delete_${route.meta.permissionsLayout}`)"
            @click="emits('autobanDelete',$event,val.data)"></i>
       </template>
     </Column>
@@ -120,6 +120,10 @@ import Dropdown from "primevue/dropdown";
 import Image from "primevue/image";
 import {watch} from "vue";
 import _debounce from "lodash/debounce";
+import {useRoute} from "vue-router";
+
+const route = useRoute()
+
 const props = defineProps({
   type: String || null,
   autoban: Object,

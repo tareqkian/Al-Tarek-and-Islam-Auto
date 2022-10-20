@@ -50,7 +50,7 @@ class PricelistController extends Controller
     $brand->load([
       "models.autobans" => function ($query) {
         return $query->where('price_list_appearance',true)
-          ->with('model.brand','type', 'year', 'price');
+          ->with('type', 'year', 'price');
       }
     ]);
     $brand->models = $brand->models->sortBy(function ($val){

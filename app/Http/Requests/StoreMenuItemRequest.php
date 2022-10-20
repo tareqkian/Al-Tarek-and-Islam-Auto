@@ -26,12 +26,12 @@ class StoreMenuItemRequest extends FormRequest
   {
     return [
       "menu_id" => "int|exists:menus,id",
-      "en.title" => "required|string",
-      "ar.title" => "required|string",
+      "en.title" => "required|string|regex:/^[a-zA-Z0-9\!-_ ]+$/u",
+      "ar.title" => "required|string|regex:/^[كگچپژیلفقهمو ء-ي 0-9]+$/",
       "route" => [
         "nullable",
         Rule::unique('menu_items')
-          ->where(fn ($q) => $q->where('menu_id', $this->menu_id))
+          ->where(function($q){$q->where('menu_id', $this->menu_id);})
       ],
       "selectedComponent" => "required_with:route",
       "icon_class" => "nullable"

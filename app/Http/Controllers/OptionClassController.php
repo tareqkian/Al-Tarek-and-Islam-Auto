@@ -47,19 +47,7 @@ class OptionClassController extends Controller
     $optionClass = OptionClass::create($validated);
 
     $optionClass->load(['sub_classes' => function($x){$x->orderBy('order');}]);
-//    broadcast(new OptionClassesAdder(new OptionClassResource($optionClass)));
-    return new OptionClassResource($optionClass);
-  }
-
-  /**
-   * Display the specified resource.
-   *
-   * @param  \App\Models\OptionClass  $optionClass
-   * @return \Illuminate\Http\Response
-   */
-  public function show(OptionClass $optionClass)
-  {
-    $optionClass->load(['sub_classes' => function($x){$x->orderBy('order');}]);
+    broadcast(new OptionClassesAdder(new OptionClassResource($optionClass)));
     return new OptionClassResource($optionClass);
   }
   public function showWithChildrens($id)
@@ -80,6 +68,18 @@ class OptionClassController extends Controller
   }
 
   /**
+   * Display the specified resource.
+   *
+   * @param  \App\Models\OptionClass  $optionClass
+   * @return \Illuminate\Http\Response
+   */
+  public function show(OptionClass $optionClass)
+  {
+    $optionClass->load(['sub_classes' => function($x){$x->orderBy('order');}]);
+    return new OptionClassResource($optionClass);
+  }
+
+  /**
    * Update the specified resource in storage.
    *
    * @param  \App\Http\Requests\UpdateOptionClassRequest  $request
@@ -90,7 +90,7 @@ class OptionClassController extends Controller
   {
     $optionClass->update($request->validated());
     $optionClass->load(['sub_classes' => function($x){$x->orderBy('order');}]);
-//    broadcast(new OptionClassesEditor(new OptionClassResource($optionClass)));
+    broadcast(new OptionClassesEditor(new OptionClassResource($optionClass)));
     return new OptionClassResource($optionClass);
   }
 
@@ -107,7 +107,7 @@ class OptionClassController extends Controller
    */
   public function destroy(OptionClass $optionClass)
   {
-//    broadcast(new OptionClassesDeleter($optionClass));
+    broadcast(new OptionClassesDeleter($optionClass));
     $optionClass->delete();
     return ['status'=>204];
   }

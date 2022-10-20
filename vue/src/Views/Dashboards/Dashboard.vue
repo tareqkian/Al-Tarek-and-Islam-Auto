@@ -1,8 +1,10 @@
 <script setup>
 import PageLayout from "../../components/Layouts/PageLayout.vue"
+import {useRoute} from "vue-router";
+const route = useRoute()
 </script>
 <template>
-  <PageLayout :meta="this.$route.meta">
+  <PageLayout>
     <div class="row">
       <div class="col-md-12">
         <div class="card">

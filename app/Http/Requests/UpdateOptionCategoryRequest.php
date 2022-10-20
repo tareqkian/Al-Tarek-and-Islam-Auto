@@ -30,12 +30,14 @@ class UpdateOptionCategoryRequest extends FormRequest
       'en.option_category_title' => [
         'required_without:order',
         'string',
+          'regex:/^[a-zA-Z0-9\!-_ ]+$/u',
         Rule::unique('option_category_translations','option_category_title')
           ->ignore($this->id,'option_category_id')
       ],
       'ar.option_category_title' => [
         'required_without:order',
         'string',
+          'regex:/^[كگچپژیلفقهمو ء-ي 0-9]+$/',
         Rule::unique('option_category_translations','option_category_title')
           ->ignore($this->id,'option_category_id')
       ],

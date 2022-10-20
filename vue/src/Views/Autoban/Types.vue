@@ -1,8 +1,8 @@
 <template>
-  <PageLayout :meta="this.$route.meta">
+  <PageLayout>
     <div class="row">
       <div class="col">
-        <button type="button" v-if="$can(`add_${this.$route.meta.permissionsLayout}`)" class="btn btn-primary mb-2 me-3" @click="typeDialog()">
+        <button type="button" v-if="$can(`add_${route.meta.permissionsLayout}`)" class="btn btn-primary mb-2 me-3" @click="typeDialog()">
           <i class="fe fe-plus"></i>
           Add Type
         </button>
@@ -32,13 +32,13 @@
                   {{ t(value.data,'type_title') }}
                 </template>
               </Column>
-              <Column v-if="$can(`edit_${this.$route.meta.permissionsLayout}`) || $can(`delete_${this.$route.meta.permissionsLayout}`)" header="Actions">
+              <Column v-if="$can(`edit_${route.meta.permissionsLayout}`) || $can(`delete_${route.meta.permissionsLayout}`)" header="Actions">
                 <template #body="val">
                   <i class="fa fa-edit text-info mx-1"
-                     v-if="$can(`edit_${this.$route.meta.permissionsLayout}`)"
+                     v-if="$can(`edit_${route.meta.permissionsLayout}`)"
                      @click="typeDialog(val.data)"></i>
                   <i class="fa fa-trash text-danger mx-1"
-                     v-if="$can(`delete_${this.$route.meta.permissionsLayout}`)"
+                     v-if="$can(`delete_${route.meta.permissionsLayout}`)"
                      @click="typeDelete($event,val.data)"></i>
                 </template>
               </Column>
@@ -116,11 +116,13 @@ import {useConfirm} from "primevue/useconfirm";
 import {computed, inject, ref} from "vue";
 import {useAutobanStore} from "../../store/Autoban";
 import {FilterMatchMode} from "primevue/api";
+import {useRoute} from "vue-router";
 
 const filters = ref({'global': { value: null, matchMode: FilterMatchMode.CONTAINS }})
 const t = inject("t");
 const toast = useToast();
 const confirm = useConfirm();
+const route = useRoute()
 
 const expandedRowGroups = ref(null)
 const AutobanStore = useAutobanStore()
@@ -150,6 +152,13 @@ const handleType = async()=>{
     loading.value = true
     await AutobanStore.handleAutobanTypes(selectedType.value)
     typeDialogShow.value = !typeDialogShow.value
+    toast.add({
+      closable: false,
+      severity: "success",
+      summary: "Type",
+      detail: "Success",
+      life: 3000
+    })
     loading.value = false
   } catch (e) {
     errors.value = e

@@ -24,6 +24,7 @@
     "primevue": "^3.13.1",
     "select2": "^4.1.0-beta.1",
     "to-arabic-numbers": "^1.0.3",
+    "vite-plugin-dynamic-import": "^1.2.3",
     "vite-plugin-node": "^1.0.0",
     "vite-plugin-require": "^0.0.8",
     "vue": "^3.2.25",

@@ -12,7 +12,6 @@ use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class UsersController extends Controller
@@ -36,7 +35,7 @@ class UsersController extends Controller
   public function store(StoreUserRequest $request)
   {
     $validated = $request->validated();
-    if ( isset($validated['avatar']) ){
+    if ( isset($validated['avatar']) && $validated['avatar'] ){
       $dpPath = $this->saveImage($validated['avatar']);
       $validated['avatar'] = $dpPath;
     }
@@ -73,7 +72,7 @@ class UsersController extends Controller
   public function update(UpdateUserRequest $request, User $user)
   {
     $validated = $request->validated();
-    if ( isset($validated['avatar']) ){
+    if ( isset($validated['avatar']) && $validated['avatar'] ){
       $dpPath = $this->saveImage($validated['avatar']);
       $validated['avatar'] = $dpPath;
       if ( $user->avatar && $user->avatar !== 'users/default.png' ) {
@@ -122,7 +121,7 @@ class UsersController extends Controller
 
   private function saveImage($avatar)
   {
-    if (preg_match('/^data:image\/(\w+);base64,/',$avatar,$type)) {
+    if ($avatar && preg_match('/^data:image\/(\w+);base64,/',$avatar,$type)) {
       $avatar = substr($avatar, strpos($avatar,',')+1);
       $type = strtolower($type[1]);
       if ( !in_array($type, ['jpg','jpeg','gif','png']) ){

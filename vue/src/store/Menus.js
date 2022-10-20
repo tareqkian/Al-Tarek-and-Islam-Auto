@@ -24,7 +24,9 @@ export const useMenus = defineStore("Menus",()=>{
           reqAuth: true,
           menu: x.id,
         }
-        z.component = async () => await import(/* @vite-ignore */x.importedComponent);
+        /*z.component = async () => await import(x.importedComponent);*/
+        const impComp = x.importedComponent.split('/').pop().replace(/.vue/g,'');
+        z.component = async () => await import(`../../src/components/Layouts/${impComp}.vue`);
         x.items = x.items.filter(y=>(y.importedComponent || '').length)
         z.children = x.items.map(y=>{
           let c = {}
@@ -34,7 +36,10 @@ export const useMenus = defineStore("Menus",()=>{
           } else {
             c.name = y.title
           }
-          c.component = () => import(/* @vite-ignore */y.importedComponent)
+          /*c.component = () => import(y.importedComponent)*/
+          const impoCompP = y.importedComponent.split('/')[3].replace(/.vue/g,'');
+          const impoComp = y.importedComponent.split('/').pop().replace(/.vue/g,'');
+          c.component = () => import(`../../src/Views/${impoCompP}/${impoComp}.vue`)
           c.meta = {
             realTime: `${y.importedComponent.split('/').pop().replace(/.vue/g,'')}Event`,
             pageTitle: c.name,

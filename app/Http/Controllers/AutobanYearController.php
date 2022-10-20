@@ -36,7 +36,7 @@ class AutobanYearController extends Controller
     $validated['ar']['year_number'] = $validated['en']['year_number'];
     unset($validated['id']);
     $year = AutobanYear::create($validated);
-//    broadcast(new YearAdder(new AutobanYearResource($year)));
+    broadcast(new YearAdder(new AutobanYearResource($year)));
     return new AutobanYearResource($year);
   }
 
@@ -64,7 +64,7 @@ class AutobanYearController extends Controller
     $validated['ar']['year_number'] = $validated['en']['year_number'];
     unset($validated['id']);
     $autobanYear->update($validated);
-//    broadcast(new YearEditor(new AutobanYearResource($autobanYear)));
+    broadcast(new YearEditor(new AutobanYearResource($autobanYear)));
     return new AutobanYearResource($autobanYear);
   }
 
@@ -76,7 +76,7 @@ class AutobanYearController extends Controller
    */
   public function destroy(AutobanYear $autobanYear)
   {
-//    broadcast(new YearDeleter($autobanYear));
+    broadcast(new YearDeleter($autobanYear));
     $autobanYear->delete();
     return [ "status" => 204 ];
   }

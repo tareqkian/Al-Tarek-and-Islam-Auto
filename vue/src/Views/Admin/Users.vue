@@ -1,6 +1,6 @@
 <template>
-  <PageLayoutVue :meta="this.$route.meta">
-    <button v-if="$can(`add_${this.$route.meta.permissionsLayout}`)" class="btn btn-primary mb-2" @click="userDialog()">
+  <PageLayoutVue>
+    <button v-if="$can(`add_${route.meta.permissionsLayout}`)" class="btn btn-primary mb-2" @click="userDialog()">
       <i class="fe fe-plus"></i>
       Add New User
     </button>
@@ -39,10 +39,10 @@
           </Column>
           <Column :sortable="true" field="created_at" header="Created at"></Column>
           <Column :sortable="true" field="updated_at" header="Updated at"></Column>
-          <Column v-if="$can(`edit_${this.$route.meta.permissionsLayout}`) || $can(`delete_${this.$route.meta.permissionsLayout}`)" header="Actions">
+          <Column v-if="$can(`edit_${route.meta.permissionsLayout}`) || $can(`delete_${route.meta.permissionsLayout}`)" header="Actions">
             <template #body="val">
-              <i class="fa fa-edit text-info mx-1" v-if="$can(`edit_${this.$route.meta.permissionsLayout}`)" @click="userDialog(val.data)"></i>
-              <i class="fa fa-trash text-danger mx-1" v-if="$can(`delete_${this.$route.meta.permissionsLayout}`)" @click="userDelete($event,val.data)"></i>
+              <i class="fa fa-edit text-info mx-1" v-if="$can(`edit_${route.meta.permissionsLayout}`)" @click="userDialog(val.data)"></i>
+              <i class="fa fa-trash text-danger mx-1" v-if="$can(`delete_${route.meta.permissionsLayout}`)" @click="userDelete($event,val.data)"></i>
             </template>
           </Column>
         </DataTable>
@@ -74,13 +74,12 @@ import { useConfirm } from "primevue/useconfirm";
 import { computed, ref } from "vue";
 import { FilterMatchMode } from "primevue/api";
 import { useUsersStore } from "/src/store/Users";
-import { useRolesStore } from "/src/store/Roles";
-import { useSystemSettings } from "/src/store/SystemSettings"
-import {useAuth} from "../../store/Auth";
+import { useRoute } from "vue-router";
 
 const filters = ref({'global': { value: null, matchMode: FilterMatchMode.CONTAINS }})
 const confirm = useConfirm();
 const toast = useToast();
+const route = useRoute();
 
 const usersStore = useUsersStore();
 const users = computed(()=>usersStore.users)

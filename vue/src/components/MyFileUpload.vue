@@ -5,7 +5,7 @@
         <input type="file"
                ref="myFile"
                @change="handleFile"
-               class="myFileUploadFile opacity-0 position-absolute"
+               class="myFileUploadFile opacity-0 position-absolute w-100 h-100"
                accept="image/*">
         <div v-if="!preview" class="text-center">
           <i class="fe fe-upload-cloud fs-50"></i>

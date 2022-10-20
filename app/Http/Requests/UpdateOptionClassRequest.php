@@ -25,12 +25,12 @@ class UpdateOptionClassRequest extends FormRequest
   public function rules()
   {
     return [
-      'en.option_class_title' => ['required_without:order', 'string',
+      'en.option_class_title' => ['required_without:order', 'string', 'regex:/^[a-zA-Z0-9 ]+$/u',
         Rule::unique(
           'option_class_translations',
           'option_class_title',
         )->ignore($this->id,'option_class_id')],
-      'ar.option_class_title' => ['required_without:order', 'string',
+      'ar.option_class_title' => ['required_without:order', 'string', 'regex:/^[كگچپژیلفقهمو ء-ي 0-9]+$/',
         Rule::unique(
           'option_class_translations',
           'option_class_title',

@@ -1,8 +1,8 @@
 <template>
-  <PageLayout :meta="this.$route.meta">
+  <PageLayout>
     <div class="row">
       <div class="col">
-        <button v-if="$can(`add_${this.$route.meta.permissionsLayout}`)" class="btn btn-primary mb-2 me-3" @click="yearDialog()">
+        <button v-if="$can(`add_${route.meta.permissionsLayout}`)" class="btn btn-primary mb-2 me-3" @click="yearDialog()">
           <i class="fe fe-plus"></i>
           Add Year
         </button>
@@ -32,13 +32,13 @@
                   {{ t(value.data,'year_number') }}
                 </template>
               </Column>
-              <Column v-if="$can(`edit_${this.$route.meta.permissionsLayout}`) || $can(`delete_${this.$route.meta.permissionsLayout}`)" header="Actions">
+              <Column v-if="$can(`edit_${route.meta.permissionsLayout}`) || $can(`delete_${route.meta.permissionsLayout}`)" header="Actions">
                 <template #body="val">
                   <i class="fa fa-edit text-info mx-1"
-                     v-if="$can(`edit_${this.$route.meta.permissionsLayout}`)"
+                     v-if="$can(`edit_${route.meta.permissionsLayout}`)"
                      @click="yearDialog(val.data)"></i>
                   <i class="fa fa-trash text-danger mx-1"
-                     v-if="$can(`delete_${this.$route.meta.permissionsLayout}`)"
+                     v-if="$can(`delete_${route.meta.permissionsLayout}`)"
                      @click="yearDelete($event,val.data)"></i>
                 </template>
               </Column>
@@ -102,11 +102,13 @@ import {useConfirm} from "primevue/useconfirm";
 import {computed, inject, ref} from "vue";
 import {useAutobanStore} from "../../store/Autoban";
 import {FilterMatchMode} from "primevue/api";
+import {useRoute} from "vue-router";
 
 const filters = ref({'global': { value: null, matchMode: FilterMatchMode.CONTAINS }})
 const t = inject("t");
 const toast = useToast();
 const confirm = useConfirm();
+const route = useRoute()
 
 const expandedRowGroups = ref(null)
 const AutobanStore = useAutobanStore()
@@ -134,6 +136,13 @@ const handleYear = async()=>{
     loading.value = true
     await AutobanStore.handleAutobanYears(selectedYear.value)
     yearDialogShow.value = !yearDialogShow.value
+    toast.add({
+      closable: false,
+      severity: "success",
+      summary: "Year",
+      detail: "Success",
+      life: 3000
+    })
     loading.value = false
   } catch (e) {
     errors.value = e
@@ -174,36 +183,4 @@ const yearDelete = (event,year)=>{
     }
   });
 }
-
-/*Echo.channel("YearsEvent")
-  .listen('YearAdder',({year})=>{
-    if ( AutobanStore.autobanYears.data.length ) AutobanStore.autobanYears.data = [...AutobanStore.autobanYears.data, year]
-    else AutobanStore.autobanYears.data = [year]
-  })
-  .listen('YearEditor',({year})=>{
-    if ( AutobanStore.autobanYears.data.length ) {
-      const yearIndex = AutobanStore.autobanYears.data.findIndex(x => x.id === year.id);
-      AutobanStore.autobanYears.data = [
-        ...AutobanStore.autobanYears.data.slice(0,yearIndex),
-        {...year},
-        ...AutobanStore.autobanYears.data.slice(yearIndex+1)
-      ]
-      AutobanStore.autobanModels.data = AutobanStore.autobanModels.data.map(x=>{
-        if ( x.year.id === year.id ) {
-          x.year = {...year}
-        }
-        return x;
-      })
-    }
-  })
-  .listen('YearDeleter',({year})=>{
-    if ( AutobanStore.autobanYears.data.length ) {
-      const yearIndex = AutobanStore.autobanYears.data.findIndex(x => x.id === year.id);
-      AutobanStore.autobanYears.data = [
-        ...AutobanStore.autobanYears.data.slice(0,yearIndex),
-        ...AutobanStore.autobanYears.data.slice(yearIndex+1)
-      ]
-      AutobanStore.autobanModels.data = AutobanStore.autobanModels.data.filter(x=>x.year.id!==year.id)
-    }
-  })*/
 </script>

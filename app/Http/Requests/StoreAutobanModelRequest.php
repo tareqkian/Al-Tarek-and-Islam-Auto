@@ -26,8 +26,8 @@ class StoreAutobanModelRequest extends FormRequest
     return [
       'autoban_brand_id' => 'required|int|exists:autoban_brands,id',
       'data.*.model_image' => 'required|string',
-      'data.*.en.model_title' => 'required|string|unique:autoban_model_translations,model_title',
-      'data.*.ar.model_title' => 'required|string|unique:autoban_model_translations,model_title'
+      'data.*.en.model_title' => 'required|string|regex:/^[a-zA-Z0-9\!-_ ]+$/u|unique:autoban_model_translations,model_title',
+      'data.*.ar.model_title' => 'required|string|regex:/^[كگچپژیلفقهمو ء-ي 0-9]+$/|unique:autoban_model_translations,model_title'
     ];
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <PageLayout :meta="this.$route.meta">
+  <PageLayout>
     <div class="row">
       <div class="col-xl-3">
         <div class="card">

@@ -1,9 +1,5 @@
 <template>
-  <page-layout :meta="this.$route.meta">
-    <!--<button class="btn btn-primary mb-2" @click="roleDialog()">
-      <i class="fe fe-plus"></i>
-      Add New Role
-    </button>-->
+  <page-layout>
     <div class="row">
       <div class="col-xl-3">
         <div class="card">
@@ -19,16 +15,13 @@
           </div>
         </div>
       </div>
-
       <div class="col-xl-9">
         <div class="tab-content adminsetting-content" id="setting-tabContent">
-
           <div v-for="(group, index) in settingsGroup"
                :key="index"
                class="tab-pane fade"
                :class="[index || 'show active']"
                :id="`tab-${index}`">
-
             <form @submit.prevent="handleSetting()">
               <div class="card">
                 <div class="card-header border-0">
@@ -66,9 +59,7 @@
                 </div>
               </div>
             </form>
-
           </div>
-
         </div>
       </div>
     </div>

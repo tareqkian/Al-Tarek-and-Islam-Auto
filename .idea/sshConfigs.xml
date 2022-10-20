@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SshConfigs">
+    <configs>
+      <sshConfig authType="PASSWORD" host="altarekandislam-auto.com" id="6128bf9d-14d3-49ea-8d9e-f9528215ec54" port="22" customName="Tareq" nameFormat="CUSTOM" username="tarekabdelazim" useOpenSSHConfig="true">
+        <option name="customName" value="Tareq" />
+      </sshConfig>
+    </configs>
+  </component>
+</project>

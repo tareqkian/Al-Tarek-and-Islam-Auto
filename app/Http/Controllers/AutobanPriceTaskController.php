@@ -47,7 +47,7 @@ class AutobanPriceTaskController extends Controller
       ]);
       $tasks[] = $task->load('brand');
     }
-//    broadcast(new TaskAdder(AutobanPriceTaskResource::collection($tasks)));
+    broadcast(new TaskAdder(AutobanPriceTaskResource::collection($tasks)));
     return AutobanPriceTaskResource::collection($tasks);
   }
 
@@ -87,7 +87,7 @@ class AutobanPriceTaskController extends Controller
       $autobanPriceTask->touch();
     }
     broadcast(new TaskEditor(new AutobanPriceTaskResource($autobanPriceTask->load('brand'))));
-    return new AutobanPriceTaskResource($autobanPriceTask->load('brand'));
+    return new AutobanPriceTaskResource($autobanPriceTask);
   }
 
   /**
@@ -98,7 +98,7 @@ class AutobanPriceTaskController extends Controller
    */
   public function destroy(AutobanPriceTask $autobanPriceTask)
   {
-//    broadcast(new TaskDeleter($autobanPriceTask->load('brand')));
+    broadcast(new TaskDeleter($autobanPriceTask->load('brand')));
     $autobanPriceTask->delete();
     return ['status'=>204];
   }

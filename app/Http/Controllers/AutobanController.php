@@ -26,8 +26,12 @@ class AutobanController extends Controller
    */
   public function index(Request $request)
   {
-    $autoban = Autoban::with('model', 'type', 'year', 'price')
-      ->select('*','autobans.id as id')
+    $autoban = Autoban::with(
+      'model',
+      'type',
+      'year',
+      'price')
+        ->select('autobans.*')
       ->join('autoban_model_translations','autoban_model_translations.autoban_model_id','=','autobans.autoban_model_id')->where('autoban_model_translations.locale','en')
       ->join('autoban_models','autoban_models.id','=','autobans.autoban_model_id')
       ->join('autoban_brand_translations','autoban_brand_translations.autoban_brand_id','=','autoban_models.autoban_brand_id')->where('autoban_brand_translations.locale','en')
@@ -81,7 +85,7 @@ class AutobanController extends Controller
       'price.translations',
     );
 
-//    broadcast(new AutobanAdder(new AutobanResource($autoban)));
+    broadcast(new AutobanAdder(new AutobanResource($autoban)));
     return new AutobanResource($autoban);
   }
 
@@ -105,7 +109,7 @@ class AutobanController extends Controller
   public function showAutoban($id)
   {
     $autoban = Autoban::find($id);
-    return new AutobanResource($autoban->load('model', 'type', 'year', 'price'));
+    return new AutobanResource($autoban->load('pivots.category', 'pivots.options'));
   }
 
   public function showByBrand($id)
@@ -153,7 +157,7 @@ class AutobanController extends Controller
       'year.translations',
       'price.translations'
     );
-//    broadcast(new AutobanEditor(new AutobanResource($autoban)));
+    broadcast(new AutobanEditor(new AutobanResource($autoban)));
     return new AutobanResource($autoban);
   }
 
@@ -183,7 +187,7 @@ class AutobanController extends Controller
    */
   public function destroy(Autoban $autoban)
   {
-//    broadcast(new AutobanDeleter($autoban));
+    broadcast(new AutobanDeleter($autoban));
     $autoban->delete();
     return [ "status" => 204 ];
   }

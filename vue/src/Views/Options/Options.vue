@@ -1,5 +1,5 @@
 <template>
-  <PageLayout :meta="this.$route.meta">
+  <PageLayout >
     <div class="btn-group mb-2" role="group">
       <button v-if="$can(`add_options_classes`)"
               class="btn btn-primary"
@@ -522,6 +522,13 @@ const handleOptionClass = async()=>{
     loading.value = true
     await OptionStore.handleOptionClasses(selectedClass)
     classDialogShow.value = !classDialogShow.value
+    toast.add({
+      closable: false,
+      severity: "success",
+      summary: "Class",
+      detail: "Success",
+      life: 3000
+    })
     loading.value = false
   } catch (e) {
     errors.value = e
@@ -601,6 +608,13 @@ const handleOptionSubClass = async()=>{
     loading.value = true
     await OptionStore.handleOptionSubClasses(selectedSubClass)
     subClassDialogShow.value = !subClassDialogShow.value
+    toast.add({
+      closable: false,
+      severity: "success",
+      summary: "Sub Class",
+      detail: "Success",
+      life: 3000
+    })
     loading.value = false
   } catch (e) {
     errors.value = e
@@ -688,6 +702,13 @@ const handleCategory = async()=>{
     loading.value = true
     await OptionStore.handleOptionCategories(selectedCategory)
     categoryDialogShow.value = !categoryDialogShow.value
+    toast.add({
+      closable: false,
+      severity: "success",
+      summary: "Category",
+      detail: "Success",
+      life: 3000
+    })
     loading.value = false
   } catch (e) {
     errors.value = e
@@ -767,6 +788,13 @@ const handleOptions = async()=>{
     loading.value = true
     await OptionStore.handleOptions(selectedOption)
     optionDialogShow.value = !optionDialogShow.value
+    toast.add({
+      closable: false,
+      severity: "success",
+      summary: "Option",
+      detail: "Success",
+      life: 3000
+    })
     loading.value = false
   } catch (e) {
     errors.value = e

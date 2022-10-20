@@ -29,11 +29,13 @@ class UpdateAutobanBrandRequest extends FormRequest
       'en.brand_title' => [
         'required',
         'string',
+          'regex:/^[a-zA-Z0-9\!-_ ]+$/u'.
         Rule::unique('autoban_brand_translations','brand_title')->ignore($this->id, 'autoban_brand_id')
       ],
       'ar.brand_title' => [
         'required',
         'string',
+          'regex:/^[كگچپژیلفقهمو ء-ي 0-9]+$/'.
         Rule::unique('autoban_brand_translations','brand_title')->ignore($this->id, 'autoban_brand_id')
       ],
     ];

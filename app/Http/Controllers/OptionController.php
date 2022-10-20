@@ -21,19 +21,17 @@ class OptionController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function index()
+  public function index(\Illuminate\Http\Request $request)
   {
-    $options = Option::with('translations')
+//    $options = Option::with('translations','option_category')
+//      ->paginate($request->perPage ?: 10);
+//    return OptionResource::collection($options);
+    $options = OptionClass::with('translations')
       ->get()
       ->sortBy('order');
     return OptionClassResource::collection($options);
   }
 
-  /**
-   * Display a listing of the resource.
-   *
-   * @return \Illuminate\Http\Response
-   */
   public function optionTree()
   {
     $options = OptionClass::with([
@@ -73,7 +71,7 @@ class OptionController extends Controller
     $validated = $request->validated();
     $validated['order'] = Option::order($validated['option_category_id'])->order+1;
     $option = Option::create($validated);
-//    broadcast(new OptionAdder(new OptionResource($option)));
+    broadcast(new OptionAdder(new OptionResource($option)));
     return new OptionResource($option);
   }
 
@@ -98,7 +96,7 @@ class OptionController extends Controller
   public function update(UpdateOptionRequest $request, Option $option)
   {
     $option->update($request->validated());
-//    broadcast(new OptionEditor(new OptionResource($option)));
+    broadcast(new OptionEditor(new OptionResource($option)));
     return new OptionResource($option);
   }
 
@@ -110,7 +108,7 @@ class OptionController extends Controller
    */
   public function destroy(Option $option)
   {
-//    broadcast(new OptionDeleter($option));
+    broadcast(new OptionDeleter($option));
     $option->delete();
     return ['status'=>204];
   }

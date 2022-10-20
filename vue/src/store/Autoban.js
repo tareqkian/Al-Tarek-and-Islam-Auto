@@ -161,6 +161,7 @@ export const useAutobanStore = defineStore("Autoban",()=>{
       if ( !payload.id ) {
         const {data} = await api.post('/autobanBrands',payload)
         autobanBrands.data.value = [...autobanBrands.data.value, data.data]
+        return data.data;
       }
       else {
         const {data} = await api.put('/autobanBrands/'+payload.id,payload)

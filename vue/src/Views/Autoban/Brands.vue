@@ -1,12 +1,12 @@
 <template>
-  <PageLayout :meta="this.$route.meta">
+  <PageLayout>
     <div class="row">
       <div class="col">
-        <button v-if="$can(`add_${this.$route.meta.permissionsLayout}`)" class="btn btn-primary mb-2 me-3" @click="brandDialog()">
+        <button v-if="$can(`add_${route.meta.permissionsLayout}`)" class="btn btn-primary mb-2 me-3" @click="brandDialog()">
           <i class="fe fe-plus"></i>
           Add Brand
         </button>
-        <button v-if="$can(`add_${this.$route.meta.permissionsLayout}`)" class="btn btn-primary mb-2 me-3" @click="modelDialog()">
+        <button v-if="$can(`add_${route.meta.permissionsLayout}`)" class="btn btn-primary mb-2 me-3" @click="modelDialog()">
           <i class="fe fe-plus"></i>
           Add Model
         </button>
@@ -44,10 +44,10 @@
                   <span class="mx-2">{{ t(value.data.brand,'brand_title') }}</span>
                   <div class="d-inline-block float-end">
                     <i class="fa fa-edit text-info mx-1"
-                       v-if="$can(`edit_${this.$route.meta.permissionsLayout}`)"
+                       v-if="$can(`edit_${route.meta.permissionsLayout}`)"
                        @click="brandDialog(value.data.brand)"></i>
                     <i class="fa fa-trash text-danger mx-1"
-                       v-if="$can(`delete_${this.$route.meta.permissionsLayout}`)"
+                       v-if="$can(`delete_${route.meta.permissionsLayout}`)"
                        @click="brandDelete($event,value.data.brand)"></i>
                   </div>
                 </template>
@@ -62,26 +62,16 @@
                   <Image width="80" :src="val.data.model_image" preview/>
                 </template>
               </Column>
-              <Column v-if="$can(`edit_${this.$route.meta.permissionsLayout}`) || $can(`delete_${this.$route.meta.permissionsLayout}`)" header="Actions">
+              <Column v-if="$can(`edit_${route.meta.permissionsLayout}`) || $can(`delete_${route.meta.permissionsLayout}`)" header="Actions">
                 <template #body="val">
                   <i class="fa fa-edit text-info mx-1"
-                     v-if="$can(`edit_${this.$route.meta.permissionsLayout}`)"
+                     v-if="$can(`edit_${route.meta.permissionsLayout}`)"
                      @click="modelDialog(val.data)"></i>
                   <i class="fa fa-trash text-danger mx-1"
-                     v-if="$can(`delete_${this.$route.meta.permissionsLayout}`)"
+                     v-if="$can(`delete_${route.meta.permissionsLayout}`)"
                      @click="modelDelete($event,val.data)"></i>
                 </template>
               </Column>
-
-<!--              <template #footer>-->
-<!--                <Paginator :rows="+autobanModels.pagination.per_page"-->
-<!--                           :totalRecords="autobanModels.pagination.total"-->
-<!--                           :rowsPerPageOptions="[5,15,30]"-->
-<!--                           template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"-->
-<!--                           current-page-report-template="Showing {first} to {last} of {totalRecords}"-->
-<!--                           @page="AutobanStore.initAutobanModels($event)"></Paginator>-->
-<!--              </template>-->
-
             </DataTable>
           </div>
         </div>
@@ -196,42 +186,7 @@
               </div>
             </div>
           </AccordionTab>
-<!--
-          <AccordionTab header="Header I">
-            <div class="form-floating my-2">
-              <input class="form-control"
-                     v-model="selectedModel.en.model_title"
-                     :class="[errors['en.model_title'] ? 'is-invalid' : '']"
-                     placeholder="Brand Title">
-              <label> Model Title EN </label>
-              <div class="invalid-feedback">
-                <ul>
-                  <li v-for="err in errors['en.model_title']" :key="err"> {{err}} </li>
-                </ul>
-              </div>
-            </div>
-            <div class="form-floating my-2">
-              <input class="form-control"
-                     v-model="selectedModel.ar.model_title"
-                     :class="[errors['ar.model_title'] ? 'is-invalid' : '']"
-                     placeholder="Brand Title">
-              <label> Model Title AR </label>
-              <div class="invalid-feedback">
-                <ul>
-                  <li v-for="err in errors['ar.model_title']" :key="err"> {{err}} </li>
-                </ul>
-              </div>
-            </div>
-            <div class="my-2">
-              <MyFileUpload :class="[!errors.model_image || 'text-danger']" v-model="selectedModel.model_image" :defaultImg="selectedModel.model_image || 'asd'" />
-              <div v-if="errors.model_image" class="text-danger mt-2">
-                <ul>
-                  <li v-for="err in errors.model_image" :key="err"> {{err}} </li>
-                </ul>
-              </div>
-            </div>
-          </AccordionTab>
--->
+
         </Accordion>
         <div class="modal-footer d-flex justify-content-center pb-0">
           <button type="submit" class="btn btn-primary" :class="[!loading || 'btn-loading']">Save</button>
@@ -263,12 +218,14 @@ import {useConfirm} from "primevue/useconfirm";
 import {computed, inject, ref} from "vue";
 import {useAutobanStore} from "../../store/Autoban";
 import {FilterMatchMode} from "primevue/api";
+import {useRoute} from "vue-router";
 
 
 const filters = ref({'global': { value: null, matchMode: FilterMatchMode.CONTAINS }})
 const t = inject("t");
 const toast = useToast();
 const confirm = useConfirm();
+const route = useRoute();
 
 const AutobanStore = useAutobanStore()
 
@@ -301,11 +258,19 @@ const handleBrand = async()=>{
   try {
     errors.value = []
     loading.value = true
-    await AutobanStore.handleAutobanBrands(selectedBrand.value)
+    const res = await AutobanStore.handleAutobanBrands(selectedBrand.value)
     brandDialogShow.value = !brandDialogShow.value
     if ( !selectedBrand.value.id ) {
+      selectedModels.value.autoban_brand_id = res.id
       modelDialogShow.value = !modelDialogShow.value
     }
+    toast.add({
+      closable: false,
+      severity: "success",
+      summary: "brand",
+      detail: "Success",
+      life: 3000
+    })
     loading.value = false
   } catch (e) {
     errors.value = e
@@ -394,6 +359,13 @@ const handleModel = async()=>{
     loading.value = true
     await AutobanStore.handleAutobanModels(selectedModels.value)
     modelDialogShow.value = !modelDialogShow.value
+    toast.add({
+      closable: false,
+      severity: "success",
+      summary: "Model",
+      detail: "Success",
+      life: 3000
+    })
     loading.value = false
   } catch (e) {
     errors.value = e

@@ -1,5 +1,5 @@
 <template>
-  <PageLayout :meta="this.$route.meta">
+  <PageLayout>
     <div class="row">
       <div class="col">
         <div class="card">
@@ -134,25 +134,6 @@ const autobans = computed({
   get: () => ComparisonStore.autobans,
   set: (val) => ComparisonStore.autobans = val
 })
-// const autobans = ref([])
-/*watch(
-  ()=>autobans.value,
-  (val)=>{
-    ComparisonStore.updateautobans(val)
-  }
-)*/
-
-/*Echo.channel("PricelistsEvent")
-  .listen('AutobanAdder',({autoban})=>{
-    pricelistStore.pricelistBrands.data = [...pricelistStore.pricelistBrands.data, autoban.model.brand]
-  })
-  .listen('AutobanEditor',({autoban})=>{
-    //
-  })
-  .listen('AutobanDeleter',({autoban})=>{
-    //
-  })*/
-
 </script>
 
 <style scoped>

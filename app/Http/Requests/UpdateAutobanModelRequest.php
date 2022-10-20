@@ -28,11 +28,11 @@ class UpdateAutobanModelRequest extends FormRequest
       'autoban_brand_id' => 'required|int|exists:autoban_brands,id',
       'data.*.model_image' => 'nullable|string',
       'data.*.en.model_title' => [
-        'required', 'string',
+        'required', 'string', 'regex:/^[a-zA-Z0-9\!-_ ]+$/u',
         Rule::unique('autoban_model_translations','model_title')->ignore($this->id, 'autoban_model_id')
       ],
       'data.*.ar.model_title' => [
-        'required', 'string',
+        'required', 'string', 'regex:/^[كگچپژیلفقهمو ء-ي 0-9]+$/',
         Rule::unique('autoban_model_translations','model_title')->ignore($this->id, 'autoban_model_id')
       ],
     ];

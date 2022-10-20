@@ -29,12 +29,14 @@ class UpdateOptionRequest extends FormRequest
       'en.option_title' => [
         'required',
         'string',
+          'regex:/^[a-zA-Z0-9\!-_ ]+$/u',
         Rule::unique('option_translations','option_title')
           ->ignore($this->id,'option_id')
       ],
       'ar.option_title' => [
         'required',
         'string',
+          'regex:/^[كگچپژیلفقهمو ء-ي 0-9]+$/',
         Rule::unique('option_translations','option_title')
           ->ignore($this->id,'option_id')
       ],

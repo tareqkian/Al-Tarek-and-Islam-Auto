@@ -25,8 +25,8 @@ class StoreOptionRequest extends FormRequest
   {
     return [
       'option_category_id' => 'required_without:order|int|exists:option_categories,id',
-      'en.option_title' => 'required_without:order|string|unique:option_translations,option_title',
-      'ar.option_title' => 'required_without:order|string|unique:option_translations,option_title',
+      'en.option_title' => 'required_without:order|string|regex:/^[a-zA-Z0-9\!-_ ]+$/u|unique:option_translations,option_title',
+      'ar.option_title' => 'required_without:order|string|regex:/^[كگچپژیلفقهمو ء-ي 0-9]+$/|unique:option_translations,option_title',
       'abbreviation' => 'nullable|string|unique:options'
     ];
   }

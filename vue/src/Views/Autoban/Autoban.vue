@@ -1,8 +1,8 @@
 <template>
-  <PageLayout :meta="this.$route.meta">
+  <PageLayout>
     <div class="row">
       <div class="col">
-        <button v-if="$can(`add_${this.$route.meta.permissionsLayout}`)"
+        <button v-if="$can(`add_${route.meta.permissionsLayout}`)"
                 class="btn btn-primary mb-2 me-3"
                 @click="autobanDialog()">
           <i class="fe fe-plus"></i>
@@ -110,6 +110,7 @@ import AutobanTable from "../../components/Autoban/AutobanTable.vue"
 
 import {useToast} from "primevue/usetoast";
 import {useConfirm} from "primevue/useconfirm";
+import {useRoute} from "vue-router";
 
 import {computed, inject, ref, watch} from "vue";
 import {useAutobanStore} from "../../store/Autoban";
@@ -121,6 +122,7 @@ const filter = ref('')
 const t = inject("t");
 const toast = useToast();
 const confirm = useConfirm();
+const route = useRoute();
 
 const AutobanStore = useAutobanStore()
 
@@ -184,6 +186,13 @@ const handleAutoban = async()=>{
     loading.value = true
     await AutobanStore.handleAutobans(selectedAutoban.value)
     autobanDialogShow.value = !autobanDialogShow.value
+    toast.add({
+      closable: false,
+      severity: "success",
+      summary: "autoban",
+      detail: "Success",
+      life: 3000
+    })
     loading.value = false
   } catch (e) {
     errors.value = e

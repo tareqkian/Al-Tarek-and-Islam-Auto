@@ -13,9 +13,9 @@ export default {
       if ( typeof base === 'object' && Object.keys(base).length ) {
         let result = base[name];
         let trans = base.translations || [];
-        if ( trans.length && trans.some(x=>x[name]&&x["locale"]===(defaultLocal || locale.value)) )
+        if ( trans.length && trans.some(x=>x[name]&&x["locale"]===(defaultLocal || (locale.value || 'en'))) )
         {
-          result = (base.translations.filter(x=>x.locale===(defaultLocal || locale.value))[0][name] || '')
+          result = (base.translations.filter(x=>x.locale===(defaultLocal || (locale.value || 'en')))[0][name] || '')
         }
         if ( price )
         {

@@ -4,7 +4,7 @@
       <!--Page header-->
       <div class="page-header d-lg-flex d-block my-3">
         <div class="page-leftheader">
-          <div class="page-title">{{ t(meta,"title") }}</div>
+          <div class="page-title">{{ t(route.meta,"title") }}</div>
         </div>
       </div>
       <!--End Page header-->
@@ -13,9 +13,11 @@
   </div>
 </template>
 <script setup>
-const props = defineProps({
-  meta: Object
-})
+import {useRoute} from "vue-router";
+const route = useRoute()
+// const props = defineProps({
+//   meta: Object
+// })
 </script>
 <style scoped>
 .app-content{

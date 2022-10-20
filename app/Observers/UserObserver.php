@@ -34,16 +34,16 @@ class UserObserver
       $original = $user->getOriginal($key);
       if ( $key === 'password' ) {
         Log::channel("custom")->info(
-          auth()->user()->name." Changed his Password"
+          auth()->user()." Changed his Password"
         );
       } else {
         if ( auth()->user() ) {
           Log::channel("custom")->info(
-            auth()->user()->name." changed $key from $original to $item"
+            auth()->user()." changed $key from $original"
           );
         } else {
           Log::channel("custom")->info(
-            "$user->name created his First Password and Logged In"
+            "$user created his First Password and Logged In"
           );
         }
       }
