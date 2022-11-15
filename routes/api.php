@@ -62,6 +62,9 @@ Route::middleware('auth:sanctum')->group(function(){
 
   Route::apiResource('/autobanBrands', AutobanBrandController::class);
   Route::apiResource('/autobanModels', AutobanModelController::class);
+  Route::get('/autobanModel/{id}', [AutobanModelController::class,'indexSingler']);
+  Route::put('/newCarGallery/{id}', [AutobanModelController::class,'Gallery']);
+  Route::delete('/deleteNewCarGallery/{id}', [AutobanModelController::class,'DeleteGallery']);
   Route::apiResource('/autobanTypes', AutobanTypeController::class);
   Route::apiResource('/autobanYears', AutobanYearController::class);
   Route::apiResource('/autoban', AutobanController::class);
@@ -70,6 +73,7 @@ Route::middleware('auth:sanctum')->group(function(){
   Route::apiResource('/autobanOption', AutobanOptionControllerAlias::class);
   Route::post('/orderAutoban', [AutobanController::class,'reOrder']);
   Route::apiResource('/pricelist', PricelistController::class);
+  Route::get('/pricelistDetails/{id}', [PricelistController::class,'showDetails']);
   Route::put('/autobanPrices/{id}', [AutobanPriceController::class,'priceUpdate']);
   Route::apiResource('/autobanPriceTasks', AutobanPriceTaskControllerAlias::class);
 
@@ -79,6 +83,13 @@ Route::middleware('auth:sanctum')->group(function(){
   Route::apiResource('/optionCategory', OptionCategoryControllerAlias::class);
   Route::apiResource('/options', OptionControllerAlias::class);
   Route::get('/optionTree', [OptionControllerAlias::class,'optionTree']);
+
+
+  Route::get('/optionClassCars/{id}', [OptionControllerAlias::class,'optionClassCars']);
+  Route::get('/optionSubClassCars/{id}', [OptionControllerAlias::class,'optionSubClassCars']);
+  Route::get('/optionCategoryCars/{id}', [OptionControllerAlias::class,'optionCategoryCars']);
+  Route::get('/optionCars/{id}', [OptionControllerAlias::class,'optionCars']);
+
 
   Route::apiResource('/autobanComparison', AutobanComparisonControllerAlias::class);
 

@@ -6,22 +6,21 @@
           <i class="fe fe-plus"></i>
           Add Brand
         </button>
-        <button v-if="$can(`add_${route.meta.permissionsLayout}`)" class="btn btn-primary mb-2 me-3" @click="modelDialog()">
+        <button v-if="$can(`add_autoban_models`)" class="btn btn-primary mb-2 me-3" @click="modelDialog()">
           <i class="fe fe-plus"></i>
           Add Model
         </button>
-
         <div class="card">
           <div class="card-body">
             <DataTable :loading="autobanModels.loading"
                        :value="autobanModels.data"
                        :filters="filters"
 
+                       filterDisplay="row"
+
                        rowGroupMode="rowspan"
                        groupRowsBy="brand.brand_title"
                        sortMode="single"
-                       sortField="brand.brand_title"
-                       :sortOrder="1"
 
                        table-class="table table-vcenter text-nowrap border-bottom table-striped table-hover">
               <template #loading>
@@ -31,35 +30,62 @@
                 <div class="row flex-row-reverse justify-content-center justify-content-md-start w-100 m-0">
                   <div class="search-element col-10 col-md-3 mx-3 mb-4 p-0">
                     <input type="search" class="form-control header-search"
-                           v-model="filters['global'].value" placeholder="Search…"
+                           v-model="filter" placeholder="Search…"
                            aria-label="Search" tabindex="1">
                     <i class="feather feather-search position-absolute" style="top: 30%;right: 10px"></i>
                   </div>
                 </div>
               </template>
 
-              <Column :sortable="true" field="brand.brand_title" header="brand title">
+              <Column field="brand.brand_title" header="brand title" :showFilterMenu="false">
                 <template #body="value">
                   <Image imageStyle="width: 50px" :src="value.data.brand.brand_image" preview/>
                   <span class="mx-2">{{ t(value.data.brand,'brand_title') }}</span>
                   <div class="d-inline-block float-end">
                     <i class="fa fa-edit text-info mx-1"
-                       v-if="$can(`edit_${route.meta.permissionsLayout}`)"
+                       v-if="$can(`edit_autoban_models`)"
                        @click="brandDialog(value.data.brand)"></i>
                     <i class="fa fa-trash text-danger mx-1"
-                       v-if="$can(`delete_${route.meta.permissionsLayout}`)"
+                       v-if="$can(`delete_autoban_models`)"
                        @click="brandDelete($event,value.data.brand)"></i>
                   </div>
                 </template>
+                <template #filter="{filterModel}">
+                  <Dropdown
+                    show-clear :loading="autobanBrandsAll.loading"
+                    v-model="filtersCol.brand_title.value" placeholder="Brand"
+                    @change="clear('brand_title')"
+                    :options="autobanBrandsAll.data"
+                    :option-label="opt=>t(opt,'brand_title')"
+                    filter filter-placeholder="Search"
+                    class="form-control d-flex align-items-stretch" />
+                </template>
               </Column>
-              <Column field="model_title" header="Model Title">
+              <Column field="model_title" header="Model Title" :showFilterMenu="false">
                 <template #body="value">
                   {{ t(value.data,'model_title') }}
                 </template>
+
+                <template #filter="{filterModel}">
+                  <Dropdown
+                    show-clear :loading="autobanModelsAll.loading"
+                    v-model="filtersCol.model_title.value" placeholder="Model"
+                    @change="clear('model_title')"
+                    :options="autobanModelsAll.data"
+                    :option-label="opt=>t(opt,'model_title')"
+                    filter filter-placeholder="Search"
+                    class="form-control d-flex align-items-stretch" />
+                </template>
+
               </Column>
               <Column field="model_image" header="model Image">
                 <template #body="val">
                   <Image width="80" :src="val.data.model_image" preview/>
+                </template>
+              </Column>
+              <Column header="Gallery">
+                <template #body="val">
+                  <i class="ti ti-gallery text-info fs-18" @click="galleryDialog(val.data)"></i>
                 </template>
               </Column>
               <Column v-if="$can(`edit_${route.meta.permissionsLayout}`) || $can(`delete_${route.meta.permissionsLayout}`)" header="Actions">
@@ -72,19 +98,24 @@
                      @click="modelDelete($event,val.data)"></i>
                 </template>
               </Column>
+
+              <template #footer v-if="autobanModels.pagination">
+                <Paginator :rows="+autobanModels.pagination.per_page"
+                           :totalRecords="autobanModels.pagination.total"
+                           :rowsPerPageOptions="[10,20,30]"
+                           template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                           current-page-report-template="Showing {first} to {last} of {totalRecords}"
+                           @page="AutobanStore.initAutobanModels($event,filter)"></Paginator>
+              </template>
             </DataTable>
           </div>
         </div>
       </div>
     </div>
 
-
     <Dialog
-      modal
-      dismissableMask
-      class="modal-content modal-lg"
+      modal class="modal-content modal-lg"
       content-class="modal-body"
-      :showHeader="false"
       v-model:visible="brandDialogShow">
       <form @submit.prevent="handleBrand">
         <div class="form-floating my-2">
@@ -128,13 +159,9 @@
         </div>
       </form>
     </Dialog>
-
     <Dialog
-      modal
-      dismissableMask
-      class="modal-content modal-lg"
+      modal class="modal-content modal-lg"
       content-class="modal-body"
-      :showHeader="false"
       v-model:visible="modelDialogShow">
       <form @submit.prevent="handleModel">
 
@@ -194,7 +221,106 @@
         </div>
       </form>
     </Dialog>
+    <Dialog
+      modal class="modal-content modal-lg"
+      content-class="modal-body"
+      v-model:visible="galleryDialogShow">
+      <!--:max-file-size="1000000"-->
+      <FileUpload
+        :multiple="true"
+        accept="image/*"
+        @before-upload="uploadNewCarGallery($event)"
+        @upload="true"
+        @clear="clearGallery"
+        @select="onSelectedFiles">
+        <template #header="{ chooseCallback, uploadCallback, clearCallback, files }">
+          <div class="btn-group">
+            <button
+              @click="chooseCallback()"
+              class="btn btn-sm btn-primary d-flex align-items-center">
+              <i class="bx bx-plus me-1"></i> Choose
+            </button>
+            <button
+              @click="uploadCallback()"
+              :disabled="!files || files.length === 0"
+              class="btn btn-sm btn-success d-flex align-items-center"
+              :class="!loading || `btn-loading`">
+              <i class="bx bx-upload me-1"></i> Upload
+            </button>
+            <button
+              @click="clearCallback()"
+              :disabled="!files || files.length === 0"
+              class="btn btn-sm btn-danger d-flex align-items-center">
+              <i class="pi pi-times me-1"></i> Cancel
+            </button>
+          </div>
+        </template>
+        <template #content="{ files, uploadedFiles, onUploadedFileRemove, onFileRemove, progress, messages }">
+          <div v-for="(msg,index) in messages" class="alert alert-danger my-3" role="alert">
+            <button @click="messages.splice(index, 1)" class="btn-close" aria-hidden="true">×</button>
+            <i class="fa fa-frown-o me-2" aria-hidden="true"></i>
+            {{ msg }}
+          </div>
+          <div v-if="files.length > 0">
+            <h5 class="mt-5 mb-0"> New Images: </h5>
+            <div class="row">
+              <div v-for="(file, index) of files" :key="file.name + file.type + file.size"
+                   class="col-2 text-center card m-3 py-3 d-flex justify-content-between">
+                <div class="d-flex align-items-center justify-content-center">
+                  <Image width="80" :src="file.objectURL" preview/>
+                </div>
+                <div class="pt-4">
+                  <p class="font-semibold border-bottom text-truncate mb-2">{{ file.name }}</p>
+                  <div>{{ t(file,'size',0,1,0) }} KB</div>
+                  <i @click="clearImage(index)" class="fa fa-times-circle text-danger position-absolute" style="top: 0; right: 0;"></i>
+                </div>
+              </div>
+            </div>
+          </div>
 
+          <div v-if="uploadedFiles.length > 0">
+<!--
+            <h5 class="mt-5 mb-0"> Completed: </h5>
+            <div class="row">
+              <div v-for="(file, index) of uploadedFiles" :key="file.name + file.type + file.size"
+                   class="col-2 text-center card m-3 py-3 d-flex justify-content-between">
+                <div class="d-flex align-items-center justify-content-center">
+                  <Image width="80" :src="file.objectURL" preview/>
+                </div>
+                <div class="pt-4">
+                  <p class="font-semibold border-bottom text-truncate mb-2">{{ file.name }}</p>
+                  <div>{{ t(file,'size',0,1,0) }} KB</div>
+                  <i @click="clearImage(index)" class="fa fa-times-circle text-danger position-absolute" style="top: 0; right: 0;"></i>
+                </div>
+              </div>
+            </div>
+-->
+          </div>
+
+          <div v-if="ModelGallery.model.gallery.length > 0">
+            <h4 class="mt-5 mb-0"> Images: </h4>
+            <div class="row">
+              <div v-for="(img, index) of ModelGallery.model.gallery"
+                   :key="img.id"
+                   class="col-2 text-center card m-3 py-3 d-flex justify-content-center">
+                <div class="d-flex align-items-center justify-content-center">
+                  <Image width="80" :src="img.image" preview/>
+                  <i @click="deleteImage($event,img)" class="fa fa-trash text-danger position-absolute" style="top: 0; right: 0;"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </template>
+        <template #empty>
+          <div v-if="!ModelGallery.model.gallery.length" class="text-center">
+            <i class="fe fe-upload-cloud fs-50"></i>
+            <p class="m-0"><strong>Drag and Drop File</strong></p>
+            <p class="m-0"><small class="text-muted">Your File Will be Added Automaticlly</small></p>
+          </div>
+        </template>
+      </FileUpload>
+    </Dialog>
   </PageLayout>
 </template>
 
@@ -208,20 +334,33 @@ import Column from "primevue/column";
 import Paginator from "primevue/paginator";
 import Image from "primevue/image";
 import Dropdown from "primevue/dropdown"
+import MultiSelect from "primevue/multiselect";
 import Accordion from 'primevue/accordion';
 import AccordionTab from 'primevue/accordiontab';
 import BrandDropDown from "../../components/Autoban/BrandDropDown.vue";
+import FileUpload from 'primevue/fileupload';
+import Galleria from 'primevue/galleria';
 
 import {useToast} from "primevue/usetoast";
 import {useConfirm} from "primevue/useconfirm";
 
-import {computed, inject, ref} from "vue";
+import {computed, inject, reactive, ref, watch} from "vue";
 import {useAutobanStore} from "../../store/Autoban";
 import {FilterMatchMode} from "primevue/api";
 import {useRoute} from "vue-router";
+import _debounce from "lodash/debounce";
 
 
-const filters = ref({'global': { value: null, matchMode: FilterMatchMode.CONTAINS }})
+const filters = ref({
+  'brand_title': {value: null},
+  'model_title': {value: null},
+})
+const filtersCol = ref({
+  'brand_title': {value: null},
+  'model_title': {value: null},
+})
+const filter = ref("")
+
 const t = inject("t");
 const toast = useToast();
 const confirm = useConfirm();
@@ -229,8 +368,49 @@ const route = useRoute();
 
 const AutobanStore = useAutobanStore()
 
+watch(
+  ()=>filter.value,
+  _debounce((val)=>{
+    filtersCol.value = {
+      'brand_title': {value: ''},
+      'model_title': {value: ''},
+    }
+    AutobanStore.initAutobanModels({},val)
+  },400)
+)
+
+const clear = (e) => {
+  if ( e === 'brand_title' ) {
+    filtersCol.value.model_title.value = null
+    AutobanStore.initAutobanModels(
+      {},
+      (filtersCol.value[e].value ? filtersCol.value[e].value[e] : ''),
+      'same',
+      e
+    )
+    if ( filtersCol.value[e].value ) AutobanStore.initAutobanModel(filtersCol.value[e].value.id)
+    else AutobanStore.initAutobanModels()
+  }
+  else {
+    AutobanStore.initAutobanModels(
+      {},
+      filtersCol.value.brand_title.value
+        ? filtersCol.value.brand_title.value.brand_title+' '+(filtersCol.value[e].value ? filtersCol.value[e].value[e] : '')
+        : '',
+      'like',
+      e
+    )
+  }
+}
+
 const autobanModels = computed(()=>AutobanStore.autobanModels)
 AutobanStore.initAutobanModels()
+
+const autobanBrandsAll = computed(()=>AutobanStore.autobanBrands)
+AutobanStore.initAutobanBrands()
+
+const autobanModelsAll = computed(()=>AutobanStore.autobanModel)
+AutobanStore.initAutobanModelsAll()
 
 const errors = ref([])
 const loading = ref(false);
@@ -311,7 +491,6 @@ const brandDelete = (event,brand)=>{
     }
   });
 }
-
 
 const modelDialogShow = ref(false)
 const selectedModels = ref({
@@ -407,60 +586,103 @@ const modelDelete = (event,model)=>{
   });
 }
 
+const galleryDialogShow = ref(false);
+const ModelGallery = reactive({
+  model: {},
+  gallery: [],
+  uploads: []
+})
+const galleryDialog = (model)=>{
+  galleryDialogShow.value = !galleryDialogShow.value
+  ModelGallery.model = autobanModels.value.data.find(x=> x.id === model.id)
+  ModelGallery.uploads = []
+  ModelGallery.gallery = []
+}
+const onSelectedFiles = (e) => {
+  ModelGallery.uploads = e.files
+  for (let i = 0; i < e.files.length; i++) {
+    const v = e.files[i]
+    const reader = new FileReader()
+    reader.onload = async ()=>{
+      ModelGallery.gallery.push(reader.result)
+    }
+    reader.readAsDataURL(v)
+  }
+}
+const clearGallery = () => {
+  ModelGallery.uploads = []
+  ModelGallery.gallery = []
+}
+const clearImage = (index) => {
+  ModelGallery.uploads.splice(index, 1)
+  ModelGallery.gallery.splice(index, 1)
+}
+const uploadNewCarGallery = async (e) => {
+  loading.value = true
+  await AutobanStore.handleAutobanModelGallery(ModelGallery)
+  toast.add({
+    closable: false,
+    severity: "success",
+    summary: "Images",
+    detail: "has been Uploaded",
+    life: 3000
+  })
+  loading.value = false
+  ModelGallery.uploads = []
+  ModelGallery.gallery = []
+  ModelGallery.model = autobanModels.value.data.find(x=> x.id === ModelGallery.model.id)
+}
+const index = ref(null)
+const activeIndex = ref(0)
+const displayCustom = ref(false)
+const imageClick = (index) => {
+  activeIndex.value = index;
+  displayCustom.value = true;
+}
 
-/*Echo.channel("BrandsEvent")
-  .listen('BrandAdder',({brand})=>{
-    if ( AutobanStore.autobanBrands.data.length )
-      AutobanStore.autobanBrands.data = [...AutobanStore.autobanBrands.data, brand]
-    else AutobanStore.autobanBrands.data = [brand]
-  })
-  .listen('ModelAdder',({model})=>{
-    if ( AutobanStore.autobanModels.data.length )
-      AutobanStore.autobanModels.data = [...AutobanStore.autobanModels.data, ...model]
-  })
-  .listen('BrandEditor',({brand})=>{
-    if ( AutobanStore.autobanBrands.data.length ) {
-      const brandIndex = AutobanStore.autobanBrands.data.findIndex(x => x.id === brand.id);
-      AutobanStore.autobanBrands.data = [
-        ...AutobanStore.autobanBrands.data.slice(0,brandIndex),
-        {...brand},
-        ...AutobanStore.autobanBrands.data.slice(brandIndex+1)
-      ]
-      AutobanStore.autobanModels.data = AutobanStore.autobanModels.data.map(x=>{
-        if ( x.brand.id === brand.id ) {
-          x.brand = {...brand}
-        }
-        return x;
-      })
+const deleteImage = (event,img) => {
+  confirm.require({
+    target: event.currentTarget,
+    message: {
+      header: 'Are Ya Sure',
+      body: "You won't be able to revert this!"
+    },
+    icon: 'pi pi-exclamation-triangle',
+    acceptLabel: "Yes, delete it!",
+    acceptClass: 'btn btn-sm btn-danger mx-1',
+    rejectLabel: "Cancel",
+    rejectClass: 'btn btn-sm btn-secondary mx-1',
+    accept: async()=>{
+      try {
+        await AutobanStore.distroyAutobanModelGallery(img)
+        toast.add({
+          closable: false,
+          severity: "success",
+          summary: "Image",
+          detail: "has been Deleted",
+          life: 3000
+        })
+      } catch (e) {
+        toast.add({
+          closable: false,
+          severity: "danger",
+          summary: "Image",
+          detail: e,
+          life: 3000
+        })
+      }
     }
-  })
-  .listen('ModelEditor',({model})=>{
-    if ( AutobanStore.autobanModels.data.length ) {
-      const modelIndex = AutobanStore.autobanModels.data.findIndex(x => x.id === model.id);
-      AutobanStore.autobanModels.data = [
-        ...AutobanStore.autobanModels.data.slice(0,modelIndex),
-        {...model},
-        ...AutobanStore.autobanModels.data.slice(modelIndex+1)
-      ]
-    }
-  })
-  .listen('BrandDeleter',({brand})=>{
-    if ( AutobanStore.autobanBrands.data.length ) {
-      const brandIndex = AutobanStore.autobanBrands.data.findIndex(x => +x.id === +brand.id);
-      AutobanStore.autobanBrands.data = [
-        ...AutobanStore.autobanBrands.data.slice(0,brandIndex),
-        ...AutobanStore.autobanBrands.data.slice(brandIndex+1)
-      ]
-      AutobanStore.autobanModels.data = AutobanStore.autobanModels.data.filter(x=>+x.brand.id !== +brand.id)
-    }
-  })
-  .listen('ModelDeleter',({model})=>{
-    if ( AutobanStore.autobanModels.data.length ) {
-      const modelIndex = AutobanStore.autobanModels.data.findIndex(x => x.id === model.id);
-      AutobanStore.autobanModels.data = [
-        ...AutobanStore.autobanModels.data.slice(0,modelIndex),
-        ...AutobanStore.autobanModels.data.slice(modelIndex+1)
-      ]
-    }
-  })*/
+  });
+}
 </script>
+
+<style scoped>
+::v-deep(.p-column-filter-clear-button) {
+  display: none !important;
+}
+::v-deep(.p-dropdown-clear-icon) {
+  top: 51% !important;
+}
+
+
+</style>

@@ -44,7 +44,7 @@ class MenuController extends Controller
     public function store(StoreMenuRequest $request)
     {
         $menu = Menu::create($request->validated());
-        broadcast(new MenuAdder(new MenuResource($menu)));
+//        broadcast(new MenuAdder(new MenuResource($menu)));
         return new MenuResource($menu);
     }
 
@@ -76,7 +76,7 @@ class MenuController extends Controller
     public function update(UpdateMenuRequest $request, Menu $menu)
     {
         $menu->update($request->validated());
-        broadcast(new MenuEditor(new MenuResource($menu)));
+//        broadcast(new MenuEditor(new MenuResource($menu)));
         return new MenuResource($menu);
     }
 
@@ -88,7 +88,7 @@ class MenuController extends Controller
      */
     public function destroy(Menu $menu)
     {
-        broadcast(new MenuDeleter($menu));
+//        broadcast(new MenuDeleter($menu));
         MenuItem::where("menu_id",$menu)->delete();
         $menu->delete();
         return ["status" => 204];

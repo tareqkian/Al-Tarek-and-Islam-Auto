@@ -41,6 +41,11 @@ export const useOptionStore = defineStore('Option',()=>{
     data: []
   })
 
+  const optionCars = reactive({
+    loading: false,
+    data: [],
+  })
+
   const initOptionSubClass = async (optionClass)=>{
     try {
       optionSubClass.loading = true
@@ -131,6 +136,47 @@ export const useOptionStore = defineStore('Option',()=>{
       const { data } = await api.get('/optionTree');
       optionTree.data = data.data
       optionTree.loading = false
+    } catch (e) {
+      throw e.response.data.errors
+    }
+  }
+
+  const initOptionClassCars = async (payload)=>{
+    try {
+      optionCars.loading = true
+      const { data } = await api.get(`/optionClassCars/${payload.id}`)
+      optionCars.data = data.data
+      optionCars.loading = false
+    } catch (e) {
+      throw e.response.data.errors
+    }
+  }
+  const initOptionSubClassCars = async (payload)=>{
+    try {
+      optionCars.loading = true
+      const { data } = await api.get(`/optionSubClassCars/${payload.id}`)
+      optionCars.data = data.data
+      optionCars.loading = false
+    } catch (e) {
+      throw e.response.data.errors
+    }
+  }
+  const initOptionCategoryCars = async (payload)=>{
+    try {
+      optionCars.loading = true
+      const { data } = await api.get(`/optionCategoryCars/${payload.id}`)
+      optionCars.data = data.data
+      optionCars.loading = false
+    } catch (e) {
+      throw e.response.data.errors
+    }
+  }
+  const initOptionCars = async (payload)=>{
+    try {
+      optionCars.loading = true
+      const { data } = await api.get(`/optionCars/${payload.id}`)
+      optionCars.data = data.data
+      optionCars.loading = false
     } catch (e) {
       throw e.response.data.errors
     }
@@ -276,6 +322,8 @@ export const useOptionStore = defineStore('Option',()=>{
     options,
     optionTree,
 
+    optionCars,
+
     initOptionSubClass,
     initOptionSubClassWithChildrens,
     initOptionCategory,
@@ -286,6 +334,11 @@ export const useOptionStore = defineStore('Option',()=>{
     initOptionCategories,
     initOptions,
     initOptionTree,
+
+    initOptionClassCars,
+    initOptionSubClassCars,
+    initOptionCategoryCars,
+    initOptionCars,
 
     handleOptionClasses,
     handleOptionSubClasses,

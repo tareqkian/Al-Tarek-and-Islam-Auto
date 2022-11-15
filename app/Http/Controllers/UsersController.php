@@ -47,7 +47,7 @@ class UsersController extends Controller
     unset($validated['Desktop']);
     unset($validated['Mobile']);
     $user = User::create($validated);
-    broadcast(new UsersAdder(new UserResource($user)));
+//    broadcast(new UsersAdder(new UserResource($user)));
     return new UserResource($user);
   }
 
@@ -89,8 +89,8 @@ class UsersController extends Controller
     unset($validated['Desktop']);
     unset($validated['Mobile']);
     $user->update($validated);
-    broadcast(new MainEvent());
-    broadcast(new UsersEditor(new UserResource($user)));
+//    broadcast(new MainEvent());
+//    broadcast(new UsersEditor(new UserResource($user)));
     return new UserResource($user);
   }
 
@@ -114,7 +114,7 @@ class UsersController extends Controller
       $deletePath = public_path($user->avatar);
       File::delete($deletePath);
     }
-    broadcast(new UsersDeleter($user));
+//    broadcast(new UsersDeleter($user));
     $user->delete();
     return [ "status" => 204 ];
   }

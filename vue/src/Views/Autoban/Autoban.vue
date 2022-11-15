@@ -10,12 +10,13 @@
         </button>
         <div class="card">
           <div class="card-body">
+            <!--@onRowReorder="onRowReorder"-->
             <autoban-table
               type="autoban"
               :autoban="autoban"
               :filters="filters"
-              :filter="filter"
-              @onRowReorder="onRowReorder"
+              :filtera="filter"
+
               @autobanDialog="autobanDialog"
               @autobanDelete="autobanDelete"
               @price_list_appearance_market_availability="price_list_appearance_market_availability"
@@ -24,24 +25,40 @@
         </div>
       </div>
     </div>
+
     <Dialog
-      modal
-      dismissableMask
-      class="modal-content modal-lg"
+      modal class="modal-content modal-lg"
       content-class="modal-body"
-      :showHeader="false"
       v-model:visible="autobanDialogShow">
       <form @submit.prevent="handleAutoban">
+
+        <div class="form-floating my-2">
+          <Dropdown
+            v-model="selectedAutoban.autoban_brand_id"
+            :options="autobanBrands.data"
+            :loading="autobanBrands.loading"
+            filter filter-placeholder="Search"
+            option-value="id"
+            :option-label="opt=>`${t(opt,'brand_title')}`"
+            class="form-control d-flex align-items-stretch"
+            :class="[errors.autoban_brand_id ? 'is-invalid' : '']"
+            @change="initModel"
+            placeholder="Brand" />
+          <label> Brand </label>
+          <div class="invalid-feedback">
+            <ul>
+              <li v-for="err in errors.autoban_brand_id" :key="err"> {{err}} </li>
+            </ul>
+          </div>
+        </div>
 
         <div class="form-floating my-2">
           <Dropdown
             v-model="selectedAutoban.autoban_model_id"
             :options="autobanModels.data"
             :loading="autobanModels.loading"
-            filter
-            filter-placeholder="Search"
-            option-value="id"
-            :option-label="opt=>`${t(opt.brand,'brand_title')} - ${t(opt,'model_title')}`"
+            filter filter-placeholder="Search"
+            option-value="id" :option-label="opt=>`${t(opt,'model_title')}`"
             class="form-control d-flex align-items-stretch"
             :class="[errors.autoban_model_id ? 'is-invalid' : '']"
             placeholder="Model" />
@@ -54,17 +71,22 @@
         </div>
 
         <div class="form-floating my-2">
-          <Dropdown
+          <MultiSelect
             v-model="selectedAutoban.autoban_type_id"
-            :options="autobanTypes.data"
-            :loading="autobanTypes.loading"
-            filter
-            filter-placeholder="Search"
-            option-value="id"
-            :option-label="opt=>t(opt,'type_title')"
+            :options="autobanTypes.data" :loading="autobanTypes.loading"
+            :selectAll="false"
+            filter filter-placeholder="Search"
+            option-value="id" :option-label="opt=>t(opt,'type_title')"
             class="form-control d-flex align-items-stretch"
             :class="[errors.autoban_type_id ? 'is-invalid' : '']"
-            placeholder="Type" />
+            placeholder="Type">
+            <template #option="slotProps">
+              <div class="ms-2 country-item d-flex justify-content-start align-items-center">
+                {{ slotProps.option.type_title }}
+              </div>
+            </template>
+          </MultiSelect>
+
           <label> Type </label>
           <div class="invalid-feedback">
             <ul>
@@ -99,69 +121,94 @@
         </div>
       </form>
     </Dialog>
+
+
+
+
   </PageLayout>
 </template>
-
 <script setup>
 import PageLayout from "../../components/Layouts/PageLayout.vue";
 import Dialog from "primevue/dialog";
 import Dropdown from "primevue/dropdown";
+import MultiSelect from "primevue/multiselect";
 import AutobanTable from "../../components/Autoban/AutobanTable.vue"
+import Loading from "../../components/Loading.vue";
+import BrandDropDown from "../../components/Autoban/BrandDropDown.vue";
 
 import {useToast} from "primevue/usetoast";
 import {useConfirm} from "primevue/useconfirm";
 import {useRoute} from "vue-router";
-
 import {computed, inject, ref, watch} from "vue";
 import {useAutobanStore} from "../../store/Autoban";
 import {FilterMatchMode} from "primevue/api";
 
 const filters = ref({'global': { value: null, matchMode: FilterMatchMode.CONTAINS }})
-const filter = ref('')
-
+const filter = ref(null)
 const t = inject("t");
 const toast = useToast();
 const confirm = useConfirm();
 const route = useRoute();
-
 const AutobanStore = useAutobanStore()
-
-const autobanModels = computed(()=>AutobanStore.autobanModels)
+const autobanBrands = computed(()=>AutobanStore.autobanBrands)
+const autobanModels = computed(()=>AutobanStore.autobanModel)
 const autobanTypes = computed(()=>AutobanStore.autobanTypes)
 const autobanYears = computed(()=>AutobanStore.autobanYears)
 const autoban = computed(()=>AutobanStore.autobans)
 AutobanStore.initAutobans()
 
-const onRowReorder = async (event) => {
-  let z = AutobanStore.autobans.data.filter(x=>JSON.stringify(x).toLowerCase().includes((filters.value.global.value || '').toLowerCase()))
-  let order = 0;
-  for (let index = 0; index < z.length; index++) {
-    let x = event.value[index];
-    if (index && x.model.id !== event.value[index-1].model.id ) order = 0
-    const autobanIndex = AutobanStore.autobans.data.findIndex(z => z.id === x.id);
-    x.order = order
-    AutobanStore.autobans.data[autobanIndex] = {...x}
-    order++
-  }
-  AutobanStore.autobans.data = AutobanStore.autobans.data.sort((a,b) => a.order - b.order);
-  await AutobanStore.reOrder(z)
-  toast.add({
-    closable: false,
-    severity: "success",
-    summary: "autoban",
-    detail: "Ordered",
-    life: 3000
-  })
+
+
+// const meta = ref({})
+// const filtera = ref("")
+
+// const onRowReorder = async (event) => {
+//
+//   let z = AutobanStore.autobans.data.filter(x=>JSON.stringify(x).toLowerCase().includes((filters.value.global.value || '').toLowerCase()))
+//   let order = 0;
+//   for (let index = 0; index < z.length; index++) {
+//     let x = event.value[index];
+//     if (index && x.model.id !== event.value[index-1].model.id ) order = 0
+//     const autobanIndex = AutobanStore.autobans.data.findIndex(z => z.id === x.id);
+//     x.order = order
+//     AutobanStore.autobans.data[autobanIndex] = {...x}
+//     order++
+//   }
+//
+//   /*AutobanStore.autobans.data = event.value;*/
+//
+//
+//   await AutobanStore.reOrder(z)
+//   await AutobanStore.initAutobans(meta.value,filtera.value)
+//
+//   toast.add({
+//     closable: false,
+//     severity: "success",
+//     summary: "autoban",
+//     detail: "Ordered",
+//     life: 3000
+//   })
+// }
+
+/*
+const page = (m,f)=>{
+  AutobanStore.initAutobans(m,f)
+  meta.value = m;
+  filtera.value = f;
 }
+*/
+
+
+
 
 const errors = ref([])
 const loading = ref(false);
-
 const autobanDialogShow = ref(false)
 const selectedAutoban = ref({
   id: null,
+  autoban_brand_id: null,
   autoban_model_id: null,
-  autoban_type_id: null,
+  autoban_type_id: [],
   autoban_year_id: null,
   price_list_appearance: null,
   market_availability: null,
@@ -169,16 +216,26 @@ const selectedAutoban = ref({
 const autobanDialog = (autoban = {})=>{
   errors.value = []
   autobanDialogShow.value = !autobanDialogShow.value
-  AutobanStore.initAutobanModels()
-  AutobanStore.initAutobanTypes()
-  AutobanStore.initAutobanYears()
+  AutobanStore.initAutobanBrands()
+
+  if ( autoban.model ) AutobanStore.initAutobanModel(autoban.model.brand.id)
+
+  AutobanStore.initAutobanTypesAll()
+  AutobanStore.initAutobanYearsAll()
+
+  console.log(autoban)
 
   selectedAutoban.value.id = autoban.id || null
+  selectedAutoban.value.autoban_brand_id = (autoban.model ? autoban.model.brand.id : null)
   selectedAutoban.value.autoban_model_id = (autoban.model ? autoban.model.id : null)
-  selectedAutoban.value.autoban_type_id = (autoban.type ? autoban.type.id : null)
+  selectedAutoban.value.autoban_type_id = (autoban.type ? [autoban.type.id] : [])
   selectedAutoban.value.autoban_year_id = (autoban.year ? autoban.year.id : null)
   selectedAutoban.value.price_list_appearance = (autoban.id ? autoban.price_list_appearance : 1)
   selectedAutoban.value.market_availability = (autoban.id ? autoban.market_availability : 1)
+}
+const initModel = ()=>{
+  console.log(selectedAutoban.value.autoban_brand_id)
+  AutobanStore.initAutobanModel(selectedAutoban.value.autoban_brand_id)
 }
 const handleAutoban = async()=>{
   try {
@@ -199,11 +256,10 @@ const handleAutoban = async()=>{
     loading.value = false
   }
 }
-
 const price_list_appearance_market_availability = async(autoban)=>{
   try {
     autoban.autoban_model_id = autoban.model.id;
-    autoban.autoban_type_id = autoban.type.id;
+    autoban.autoban_type_id = [autoban.type.id];
     autoban.autoban_year_id = autoban.year.id;
     await AutobanStore.handleAutobans(autoban)
     toast.add({
@@ -223,7 +279,6 @@ const price_list_appearance_market_availability = async(autoban)=>{
     })
   }
 }
-
 const autobanDelete = (event,autoban)=>{
   console.log(event)
   console.log(autoban)
@@ -260,33 +315,4 @@ const autobanDelete = (event,autoban)=>{
     }
   });
 }
-
-/*Echo.channel("AutobansEvent")
-  .listen('AutobanAdder',({autoban})=>{
-    if ( AutobanStore.autobans.data.length ) {
-      AutobanStore.autobans.data = [...AutobanStore.autobans.data, autoban]
-    } else {
-      AutobanStore.autobans.data = [autoban]
-    }
-  })
-  .listen('AutobanEditor',({autoban})=>{
-    if ( AutobanStore.autobans.data.length ) {
-      const autobanIndex = AutobanStore.autobans.data.findIndex(x => x.id === autoban.id);
-      AutobanStore.autobans.data = [
-        ...AutobanStore.autobans.data.slice(0,autobanIndex),
-        {...autoban},
-        ...AutobanStore.autobans.data.slice(autobanIndex+1)
-      ]
-    }
-  })
-  .listen('AutobanDeleter',({autoban})=>{
-    if ( AutobanStore.autobans.data.length ) {
-      const autobanIndex = AutobanStore.autobans.data.findIndex(x => x.id === autoban.id);
-      AutobanStore.autobans.data = [
-        ...AutobanStore.autobans.data.slice(0,autobanIndex),
-        ...AutobanStore.autobans.data.slice(autobanIndex+1)
-      ]
-    }
-  })*/
-
 </script>

@@ -17,11 +17,6 @@ use Illuminate\Support\Str;
 
 class AutobanBrandController extends Controller
 {
-  public function __construct(Request $request)
-  {
-    App::setLocale($request->header('locale'));
-  }
-
   /**
    * Display a listing of the resource.
    *
@@ -29,15 +24,6 @@ class AutobanBrandController extends Controller
    */
   public function index()
   {
-//    $brands = AutobanBrand::with("translations","models.translations")
-//      ->join('autoban_brand_translations','autoban_brand_translations.autoban_brand_id','=','autoban_brands.id')->where('autoban_brand_translations.locale','en')
-//      ->join('autoban_models','autoban_models.autoban_brand_id','=','autoban_brands.id')
-//      ->join('autoban_model_translations','autoban_model_translations.autoban_model_id','=','autoban_models.id')->where('autoban_model_translations.locale','en')
-//
-//      ->orderBy('autoban_brand_translations.brand_title')
-//      ->orderBy('autoban_model_translations.model_title')
-//      ->paginate(1);
-
     $brands = AutobanBrand::with("translations","models.translations")
       ->get()
       ->sortBy(['brand_title']);
@@ -56,7 +42,7 @@ class AutobanBrandController extends Controller
     $dpPath = $this->saveImage($validated['brand_image']);
     $validated['brand_image'] = $dpPath;
     $brand = AutobanBrand::create($validated);
-    broadcast(new BrandAdder(new AutobanBrandResource($brand)));
+//    broadcast(new BrandAdder(new AutobanBrandResource($brand)));
     return new AutobanBrandResource($brand);
   }
 
@@ -96,8 +82,8 @@ class AutobanBrandController extends Controller
       unset($validated['brand_image']);
     }
     $autobanBrand->update($validated);
-    broadcast(new BrandEditor(new AutobanBrandResource($autobanBrand)));
-    return new AutobanBrandResource($autobanBrand);
+//    broadcast(new BrandEditor(new AutobanBrandResource($autobanBrand)));
+    return new AutobanBrandResource($autobanBrand->load('translations'));
   }
 
   /**
@@ -116,7 +102,7 @@ class AutobanBrandController extends Controller
         File::delete($deletePath);
       }
     }
-    broadcast(new BrandDeleter($autobanBrand));
+//    broadcast(new BrandDeleter($autobanBrand));
     $autobanBrand->delete();
     return [ "status" => 204 ];
   }

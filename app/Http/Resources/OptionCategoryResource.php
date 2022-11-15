@@ -24,7 +24,7 @@ class OptionCategoryResource extends JsonResource
       'translations' => TranslationsResource::collection($this->whenLoaded('translations'))->relationName('option_category'),
       'abbreviation' => $this->abbreviation,
       'input_type' => $this->input_type,
-      'number_format' => $this->number_format,
+//      'number_format' => $this->number_format,
       'order' => $this->order
     ];
   }

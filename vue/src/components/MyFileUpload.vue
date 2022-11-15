@@ -2,21 +2,28 @@
   <div class="myFileUpload position-relative" style="height: 200px !important;">
     <div class="myFileUploadWrapper position-absolute w-100 top-0 bottom-0 border">
       <label class="myFileUploadLabel w-100 h-100 d-flex align-items-center justify-content-center">
-        <input type="file"
-               ref="myFile"
-               @change="handleFile"
+
+        <input v-if="!multiple" type="file" ref="myFile" @change="handleFile"
                class="myFileUploadFile opacity-0 position-absolute w-100 h-100"
                accept="image/*">
+        <input v-if="multiple" type="file" ref="myFile" @change="handleFile"
+               class="myFileUploadFile opacity-0 position-absolute w-100 h-100"
+               accept="image/*" multiple>
+
         <div v-if="!preview" class="text-center">
           <i class="fe fe-upload-cloud fs-50"></i>
           <p class="m-0"><strong>Drag and Drop File</strong></p>
           <p class="m-0"><small class="text-muted">Your File Will be Added Automaticlly</small></p>
           <span class="btn btn-sm btn-light"> Or Select File </span>
           <br>
-          Or Leave Empty For Default
-          <img style="width: 60px !important;" :src="(defaultImg || 'http://localhost:8000/users/default.png')" class="brround">
+          <div v-if="!multiple">
+            Or Leave Empty For Default
+            <img style="width: 60px !important;" :src="(defaultImg || 'http://localhost:8000/users/default.png')" class="brround">
+          </div>
         </div>
-        <img v-else :src="preview" class="h-100">
+        <div v-else class="h-100">
+          <img :src="preview" class="h-100">
+        </div>
       </label>
     </div>
   </div>
@@ -24,10 +31,14 @@
 
 <script setup>
 import {ref} from "vue";
-const props = defineProps([
-  'modelValue',
-  'defaultImg'
-])
+const props = defineProps({
+  'modelValue': null,
+  'defaultImg': null,
+  'multiple': {
+    type: Boolean,
+    default: false
+  }
+})
 const emits = defineEmits([
   'update:modelValue'
 ])

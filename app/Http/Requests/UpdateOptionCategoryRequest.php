@@ -37,12 +37,12 @@ class UpdateOptionCategoryRequest extends FormRequest
       'ar.option_category_title' => [
         'required_without:order',
         'string',
-          'regex:/^[كگچپژیلفقهمو ء-ي 0-9]+$/',
+          'regex:/^[كگچپژیلفقهموى ء-ي \!-_0-9]+$/',
         Rule::unique('option_category_translations','option_category_title')
           ->ignore($this->id,'option_category_id')
       ],
       'input_type' => 'required_without:order|string',
-      'number_format' => 'required_if:input_type,number|regex:(0)'
+//      'number_format' => 'required_if:input_type,number|regex:(0)'
     ];
   }
 }

@@ -30,7 +30,7 @@ class UpdateAutobanTypeRequest extends FormRequest
         Rule::unique('autoban_type_translations','type_title')->ignore($this->id, 'autoban_type_id')
       ],
       'ar.type_title' => [
-        'required', 'string', 'regex:/^[كگچپژیلفقهمو ء-ي 0-9]+$/',
+        'required', 'string', 'regex:/^[كگچپژیلفقهموى ء-ي \!-_0-9]+$/',
         Rule::unique('autoban_type_translations','type_title')->ignore($this->id, 'autoban_type_id')
       ],
     ];

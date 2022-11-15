@@ -25,7 +25,7 @@ class StoreOptionClassRequest extends FormRequest
   {
     return [
       'en.option_class_title' => 'required_without:order|string|regex:/^[a-zA-Z0-9\!-_ ]+$/u|unique:option_class_translations,option_class_title',
-      'ar.option_class_title' => 'required_without:order|string|regex:/^[كگچپژیلفقهمو ء-ي 0-9]+$/|unique:option_class_translations,option_class_title'
+      'ar.option_class_title' => 'required_without:order|string|regex:/^[كگچپژیلفقهموى ء-ي \!-_0-9]+$/|unique:option_class_translations,option_class_title'
     ];
   }
 }

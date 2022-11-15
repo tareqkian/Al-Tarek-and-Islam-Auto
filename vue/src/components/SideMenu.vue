@@ -22,7 +22,7 @@
           <div class="app-sidebar__user">
             <div class="dropdown user-pro-body text-center">
               <div class="user-pic">
-                <img :src="user.avatar" alt="user-img" class="avatar-xxl rounded-circle mb-1">
+                <img :src="user.avatar !== BASE_URL ? user.avatar : `${BASE_URL}/users/default.png`" alt="user-img" class="avatar-xxl rounded-circle mb-1">
               </div>
               <div class="user-info">
                 <h5 class=" mb-2">{{ user.name }}</h5>
@@ -45,6 +45,8 @@ import SideMenu from "./SideMenu/SideMenu.vue";
 import { useMenuItems } from "../store/MenuItems";
 import { useRouter } from "vue-router";
 import {computed, inject, ref, watch} from "vue";
+
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const settings = inject('Settings')
 const props = defineProps({

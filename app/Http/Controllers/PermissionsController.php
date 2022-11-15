@@ -46,7 +46,7 @@ class PermissionsController extends Controller
   public function store(StorePermissionRequest $request)
   {
     $permissions = Permission::generateFor($request->input('name'));
-    broadcast(new PermissionsGenerator(PermissionResource::collection($permissions)));
+//    broadcast(new PermissionsGenerator(PermissionResource::collection($permissions)));
 
     $role = Role::where('name', 'admin')->firstOrFail();
     $permissions = Permission::all();

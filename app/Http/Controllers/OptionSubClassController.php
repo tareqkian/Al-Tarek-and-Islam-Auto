@@ -44,7 +44,7 @@ class OptionSubClassController extends Controller
     $validated['order'] = (OptionSubClass::order($request->input('option_class_id'))->order + 1);
     $optionSubClass = OptionSubClass::create($validated);
     $optionSubClass->load(['option_categories' => function($x) {$x->orderBy('order');}]);
-    broadcast(new OptionSubClassesAdder(new OptionSubClassResource($optionSubClass)));
+//    broadcast(new OptionSubClassesAdder(new OptionSubClassResource($optionSubClass)));
     return new OptionSubClassResource($optionSubClass);
   }
 
@@ -71,7 +71,7 @@ class OptionSubClassController extends Controller
   {
     $optionSubClass->update($request->validated());
     $optionSubClass->load(['option_categories' => function($x) {$x->orderBy('order');}]);
-    broadcast(new OptionSubClassesEditor(new OptionSubClassResource($optionSubClass)));
+//    broadcast(new OptionSubClassesEditor(new OptionSubClassResource($optionSubClass)));
     return new OptionSubClassResource($optionSubClass);
   }
 
@@ -83,7 +83,7 @@ class OptionSubClassController extends Controller
    */
   public function destroy(OptionSubClass $optionSubClass)
   {
-    broadcast(new OptionSubClassesDeleter($optionSubClass));
+//    broadcast(new OptionSubClassesDeleter($optionSubClass));
     $optionSubClass->delete();
     return ['status'=>204];
   }

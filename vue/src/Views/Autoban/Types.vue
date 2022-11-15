@@ -20,7 +20,7 @@
                 <div class="row flex-row-reverse justify-content-center justify-content-md-start w-100 m-0">
                   <div class="search-element col-10 col-md-3 mx-3 mb-4 p-0">
                     <input type="search" class="form-control header-search"
-                           v-model="filters['global'].value" placeholder="Search…"
+                           v-model="filter" placeholder="Search…"
                            aria-label="Search" tabindex="1">
                     <i class="feather feather-search position-absolute" style="top: 30%;right: 10px"></i>
                   </div>
@@ -49,7 +49,7 @@
                            :rowsPerPageOptions="[10,20,30]"
                            template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                            current-page-report-template="Showing {first} to {last} of {totalRecords}"
-                           @page="AutobanStore.initAutobanTypes($event)"></Paginator>
+                           @page="AutobanStore.initAutobanTypes($event,filter)"></Paginator>
               </template>
 
             </DataTable>
@@ -59,11 +59,8 @@
     </div>
 
     <Dialog
-      modal
-      dismissableMask
-      class="modal-content modal-lg"
+      modal class="modal-content modal-lg"
       content-class="modal-body"
-      :showHeader="false"
       v-model:visible="typeDialogShow">
       <form @submit.prevent="handleType">
         <div class="form-floating my-2">
@@ -113,12 +110,15 @@ import Paginator from "primevue/paginator";
 import {useToast} from "primevue/usetoast";
 import {useConfirm} from "primevue/useconfirm";
 
-import {computed, inject, ref} from "vue";
+import {computed, inject, ref, watch} from "vue";
 import {useAutobanStore} from "../../store/Autoban";
 import {FilterMatchMode} from "primevue/api";
 import {useRoute} from "vue-router";
+import _debounce from "lodash/debounce";
 
 const filters = ref({'global': { value: null, matchMode: FilterMatchMode.CONTAINS }})
+const filter = ref('')
+
 const t = inject("t");
 const toast = useToast();
 const confirm = useConfirm();
@@ -126,6 +126,15 @@ const route = useRoute()
 
 const expandedRowGroups = ref(null)
 const AutobanStore = useAutobanStore()
+
+
+watch(
+  ()=>filter.value,
+  _debounce((val)=>{
+    AutobanStore.initAutobanTypes({},val)
+  },400)
+)
+
 
 const autobanTypes = computed(()=>AutobanStore.autobanTypes)
 AutobanStore.initAutobanTypes()

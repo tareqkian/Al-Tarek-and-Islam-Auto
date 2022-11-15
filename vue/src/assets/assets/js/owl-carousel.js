@@ -1,6 +1,5 @@
 (function($) {
 	'use strict'
-	
 	var owl = $('.owl-carousel-icons2');
 	owl.owlCarousel({
 		loop: true,
@@ -8,7 +7,6 @@
 		margin: 25,
 		animateIn: 'fadeInDowm',
 		animateOut: 'fadeOutDown',
-		autoplay: false,
 		autoplayTimeout: 5000, // set value to change speed
 		autoplayHoverPause: true,
 		dots: false,
@@ -31,9 +29,7 @@
 		}
 	})
 	owlRtl()
-	
 })(jQuery);
-
 function owlRtl(){
 	var carousel = $('.rtl .owl-carousel');
 			$.each(carousel ,function( index, element)  {

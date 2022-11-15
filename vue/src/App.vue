@@ -5,6 +5,7 @@ import MyToast from "./components/CustomPrimeVUE/MyToast.vue";
 import {realTime} from "./real-time";
 realTime();
 </script>
+
 <template>
   <ConfirmPopup>
     <template #message="data">
@@ -21,4 +22,3 @@ realTime();
 
   <router-view />
 </template>
-

@@ -59,11 +59,8 @@
     </div>
 
     <Dialog
-      modal
-      dismissableMask
-      class="modal-content modal-lg"
+      modal class="modal-content modal-lg"
       content-class="modal-body"
-      :showHeader="false"
       v-model:visible="yearDialogShow">
       <form @submit.prevent="handleYear">
         <div class="form-floating my-2">

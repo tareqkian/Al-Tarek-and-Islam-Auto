@@ -14,9 +14,8 @@
     </div>
 
     <Dialog
-      modal dismissableMask
-      class="modal-content modal-lg" content-class="modal-body"
-      :showHeader="false" v-model:visible="autobanOptionDialogShow">
+      modal class="modal-content modal-lg" content-class="modal-body"
+      v-model:visible="autobanOptionDialogShow">
       <AutobanOptionController
         :selectedAutoban="selectedAutoban"
         @handleAutobanOptions="handleAutobanOptions"

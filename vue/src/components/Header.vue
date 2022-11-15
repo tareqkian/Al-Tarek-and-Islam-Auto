@@ -27,14 +27,14 @@
                   <div class="d-flex align-items-center">
                     <div class="btn-group">
                       <a class="nav-link icon" data-bs-toggle="dropdown">
-                        <img :src="`/src/assets/assets/images/flags/${currentLocale || 'en'}.svg`" alt="img" class="h-24">
+                        <img :src="`${BASE_URL}/flags/${currentLocale || 'en'}.svg`" alt="img" class="h-24">
                       </a>
                       <ul class="dropdown-menu" style="width: 57px !important;min-width: 10px !important;">
                         <li v-for="(lang,index) in languages"
                             :key="index"
                             @click.prevent="currentLocale = index;changeLocale()"
                             class="py-2 px-1 text-center">
-                          <img :src="`/src/assets/assets/images/flags/${index}.svg`" alt="img" class="h-24">
+                          <img :src="`${BASE_URL}/flags/${index}.svg`" alt="img" class="h-24">
                         </li>
                       </ul>
                     </div>
@@ -62,7 +62,7 @@
                   <div class="dropdown profile-dropdown">
                     <a href="javascript:void(0);" class="nav-link pe-1 ps-0 leading-none" data-bs-toggle="dropdown">
                         <span>
-                          <img :src="user.avatar" alt="img" class="avatar avatar-md bradius">
+                          <img :src="user.avatar !== BASE_URL ? user.avatar : `${BASE_URL}/users/default.png`" alt="img" class="avatar avatar-md bradius">
                         </span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow animated">
@@ -143,6 +143,8 @@ import { useDir } from "../store/Dir";
 import { useAuth } from "../store/Auth";
 import {computed, ref} from "vue";
 import {useTranslationStore} from "../store/Translation";
+
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const visibleLeft = ref(false);
 const props = defineProps({

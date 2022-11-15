@@ -21,8 +21,8 @@ class CreateMenuTable extends Migration
         Schema::create('menu_items', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('menu_id')->nullable();
-            $table->string('title');
-            $table->string('url');
+            /*$table->string('title')->nullable();*/
+            $table->string('url')->nullable();
             $table->string('target')->default('_self');
             $table->string('icon_class')->nullable();
             $table->string('color')->nullable();

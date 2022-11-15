@@ -48,7 +48,7 @@ class AutobanPriceController extends Controller
       'price.translations',
     )->get()->first();
 
-    broadcast(new AutobanEditor(new AutobanResource($autoban)));
+//    broadcast(new AutobanEditor(new AutobanResource($autoban)));
 
     Log::channel("Prices")
       ->info('',[

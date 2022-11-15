@@ -22,4 +22,9 @@ class AutobanModel extends Model implements TranslatableAlias
   {
     return $this->hasMany(Autoban::class,'autoban_model_id');
   }
+
+  public function gallery()
+  {
+    return $this->hasMany(NewCarGallery::class,'autoban_model_id');
+  }
 }

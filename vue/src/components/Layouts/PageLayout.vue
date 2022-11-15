@@ -23,4 +23,7 @@ const route = useRoute()
 .app-content{
   overflow: unset !important ;
 }
+.main-content {
+  position: relative !important;
+}
 </style>

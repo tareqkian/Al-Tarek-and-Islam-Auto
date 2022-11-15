@@ -19,6 +19,7 @@ class AutobanPriceResource extends JsonResource
           'official' => $this->official,
           'commercial' => $this->commercial,
           'sale' => $this->sale,
+          'updated_at' => $this->updated_at->format('d/m/Y'),
           'translations' => TranslationsResource::collection($this->translations)->relationName('autoban_price')
         ];
     }

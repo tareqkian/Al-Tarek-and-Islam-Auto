@@ -18,6 +18,7 @@ class AutobanModelResource extends JsonResource
         return [
           'id' => $this->id,
           'model_image' => URL::to($this->model_image),
+          'gallery' => newCarGalleryResource::collection($this->whenLoaded("gallery")),
           'model_title' => $this->model_title,
           "translations" => TranslationsResource::collection($this->translations)->relationName("autoban_model"),
           "brand" => new AutobanBrandResource($this->whenLoaded('brand')),

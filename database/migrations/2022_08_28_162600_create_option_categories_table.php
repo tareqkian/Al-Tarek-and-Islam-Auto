@@ -22,7 +22,6 @@ class CreateOptionCategoriesTable extends Migration
         ->onDelete('cascade');
       $table->string('abbreviation')->nullable();
       $table->string('input_type');
-      $table->string('number_format')->nullable();
       $table->timestamps();
     });
   }

@@ -1,5 +1,5 @@
 <template>
-  <div class="spinner4 my-3">
+  <div class="spinner4" style="margin: 10px auto">
     <div class="bounce1"></div>
     <div class="bounce2"></div>
     <div class="bounce3"></div>

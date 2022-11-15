@@ -65,7 +65,7 @@ class AutobanPriceTaskController extends Controller
 //      ->sortBy(['model.brand.brand_title','model.model_title','year.year_number','order']);
     $autoban = Autoban::with('model', 'type', 'year', 'price')
       ->whereRelation('model.brand','id',$autobanPriceTask->autoban_brand_id)
-      ->join('autoban_model_translations','autoban_model_translations.autoban_model_id','=','autobans.autoban_model_id')->where('autoban_model_translations.locale','en')
+      ->join('autoban_model_translations','autoban_model_translations.autoban_model_id','=','autobans.autoban_model_id')->where('autoban_model_translations.locale', app()->getLocale())
       ->orderBy('autoban_model_translations.model_title')
       ->paginate(10);
 

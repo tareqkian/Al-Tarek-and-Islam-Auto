@@ -34,7 +34,7 @@ class UpdateMenuItemRequest extends FormRequest
       'ar.title' => [
         'required',
         'string',
-          'regex:/^[كگچپژیلفقهمو ء-ي 0-9]+$/'
+          'regex:/^[كگچپژیلفقهموى ء-ي \!-_0-9]+$/'
       ],
       "route" => [
         "nullable",

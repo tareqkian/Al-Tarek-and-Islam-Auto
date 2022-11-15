@@ -11,7 +11,6 @@ class AutobanPrice extends Model implements TranslatableAlias
 {
     use HasFactory, Translatable;
     public $translatedAttributes = ["official", "commercial", "sale"];
-
     public function autoban()
     {
       return $this->belongsTo(Autoban::class,'id');

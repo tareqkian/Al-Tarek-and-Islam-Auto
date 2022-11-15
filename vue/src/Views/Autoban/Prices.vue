@@ -6,9 +6,9 @@
       <i class="fe fe-plus"></i>
       Add New Task
     </button>
+
     <div class="row">
       <div class="col-xl-3 Flipped" style="max-height: 700px; overflow: auto">
-
         <div class="card Content">
           <div class="nav flex-column admisetting-tabs"
                role="tablist"
@@ -96,119 +96,21 @@
 
           </div>
         </div>
-
       </div>
       <div class="col-xl-9">
         <div class="tab-content">
           <div role="tabpanel">
             <div class="card">
               <div class="card-body">
-                <DataTable :loading="autoban.loading"
-                           :value="autoban.data"
-                           :filters="filters"
-
-                           rowGroupMode="rowspan"
-                           groupRowsBy="model.model_title"
-                           sortMode="single"
-                           :sortField="opt => `${opt.model.brand.brand_title} - ${opt.model.model_title} - ${opt.year.year_number} - ${opt.order}`"
-                           :sortOrder="1"
-
-                           table-class="table table-vcenter text-nowrap border-bottom table-striped table-hover">
-                  <template #loading>
-                    <Loading />
-                  </template>
-                  <template #header>
-                    <div class="row flex-row-reverse justify-content-center justify-content-md-start w-100 m-0">
-                      <div class="search-element col-10 col-md-3 mx-3 mb-4 p-0">
-                        <input type="search" class="form-control header-search"
-                               v-model="filter" placeholder="Search…"
-                               aria-label="Search" tabindex="1">
-                        <i class="feather feather-search position-absolute" style="top: 30%;right: 10px"></i>
-                      </div>
-                    </div>
-                  </template>
-                  <template #empty>
-                    <p class="h5 text-center m-0 text-muted"> There is No Data </p>
-                  </template>
-
-                  <Column field="model.model_title" header="Model" header-style="width: 30%">
-                    <template #body="value">
-                      <Image width="50" :src="value.data.model.brand.brand_image" preview/>
-                      <Image width="80" :src="value.data.model.model_image" preview/>
-                      <span class="mx-2">
-                    {{ `${t(value.data.model.brand,'brand_title')} - ${t(value.data.model,'model_title')}` }}
-                  </span>
-                    </template>
-                  </Column>
-                  <Column field="type" header="Type">
-                    <template #body="value">
-                      {{ t(value.data.type,'type_title') }}
-                    </template>
-                  </Column>
-                  <Column field="year" header="year" header-style="width: 5%">
-                    <template #body="value">
-                      {{ t(value.data.year,'year_number') }}
-                    </template>
-                  </Column>
-                  <Column field="price.official" header="official" header-style="width: 10%">
-                    <template #body="value">
-                      <InputNumber v-model="value.data.price.official"
-                                   input-class="form-control form-control-sm"
-                                   mode="decimal" />
-                    </template>
-                  </Column>
-                  <Column field="price.commercial" header="commercial" header-style="width: 10%">
-                    <template #body="value">
-                      <InputNumber v-model="value.data.price.commercial"
-                                   input-class="form-control form-control-sm"
-                                   mode="decimal" />
-                    </template>
-                  </Column>
-                  <Column field="price.sale" header="sale" header-style="width: 10%">
-                    <template #body="value">
-                      <InputNumber v-model="value.data.price.sale"
-                                   input-class="form-control form-control-sm"
-                                   mode="decimal" />
-                    </template>
-                  </Column>
-                  <Column header-style="width: 3%" body-class="px-2">
-                    <template #body="value">
-                      <i @click="toggle($event,value.data)" class="text-primary fa fa-calculator"></i>
-                    </template>
-                  </Column>
-                  <Column field="market_availability" header="availability" body-class="text-center" header-style="width: 5%">
-                    <template #body="value">
-                      <div class="form-switch">
-                        <input class="form-check-input"
-                               type="checkbox"
-                               @change="price_list_appearance_market_availability(value.data)"
-                               v-model='value.data.market_availability'>
-                      </div>
-                    </template>
-                  </Column>
-                  <Column header="Action" body-class="text-end" header-class="text-end">
-                    <template #body="value">
-                      <button @click.prevent="priceChange(value.data)" type="submit" class="btn btn-sm btn-primary">Confirm</button>
-                    </template>
-                  </Column>
-
-                  <template #footer v-if="autoban.pagination">
-                    <Paginator v-if="fetchedTask === 'all'"
-                               :rows="+autoban.pagination.per_page"
-                               :totalRecords="autoban.pagination.total"
-                               :rowsPerPageOptions="[10,20,30]"
-                               template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                               current-page-report-template="Showing {first} to {last} of {totalRecords}"
-                               @page="AutobanStore.initAutobans($event,filter)"></Paginator>
-                    <Paginator v-if="fetchedTask !== 'all'"
-                               :rows="+autoban.pagination.per_page"
-                               :totalRecords="autoban.pagination.total"
-                               :rowsPerPageOptions="[10,20,30]"
-                               template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                               current-page-report-template="Showing {first} to {last} of {totalRecords}"
-                               @page="AutobanStore.initAutobanPriceTask(fetchedTask,$event)"></Paginator>
-                  </template>
-                </DataTable>
+                <autoban-table
+                  type="prices"
+                  :autoban="autoban"
+                  :filters="filters"
+                  :filter="filter"
+                  @toggle="toggle"
+                  @priceChange="priceChange"
+                  @price_list_appearance_market_availability="price_list_appearance_market_availability"
+                  @page="AutobanStore.initAutobans" />
 
               </div>
             </div>
@@ -216,12 +118,10 @@
         </div>
       </div>
     </div>
+
     <Dialog
-      modal
-      dismissableMask
-      class="modal-content modal-lg"
+      modal class="modal-content modal-lg"
       content-class="modal-body"
-      :showHeader="false"
       v-model:visible="taskDialogShow">
       <form @submit.prevent="handleTasks">
         <div v-if="!selectedTask.id" class="form-floating my-2">
@@ -283,10 +183,11 @@
         </div>
       </form>
     </Dialog>
-    <OverlayPanel ref="op"
-                  :showCloseIcon="true"
-                  :style="{width: '400px'}"
-                  :breakpoints="{'960px': '75vw', '640px': '90vw'}">
+    <OverlayPanel
+      ref="op"
+      :showCloseIcon="true"
+      :style="{width: '400px'}"
+      :breakpoints="{'960px': '75vw', '640px': '90vw'}">
       <div class="card-header pt-2 ps-1 mb-5">
         <img width="40" :src="priceCalc.currentWatch.model.brand.brand_image" :alt="priceCalc.currentWatch.model.brand.brand_title">
         <img width="40" :src="priceCalc.currentWatch.model.model_image" :alt="priceCalc.currentWatch.model.model_title">
@@ -346,7 +247,7 @@ import MultiSelect from 'primevue/multiselect';
 import dayjs from 'dayjs';
 import OverlayPanel from 'primevue/overlaypanel';
 import Toggle from '@vueform/toggle'
-
+import AutobanTable from "../../components/Autoban/AutobanTable.vue"
 
 import {useToast} from "primevue/usetoast";
 import {useConfirm} from "primevue/useconfirm";
@@ -379,6 +280,7 @@ const priceCalcOriginal = {
 }
 const priceCalc = reactive({...priceCalcOriginal});
 const resetPriceCalc = ()=>Object.assign(reactive(priceCalc),priceCalcOriginal)
+
 const op = ref();
 const toggle = async (event,data) => {
   await op.value.hide();
@@ -599,8 +501,11 @@ const priceChange = async (price)=>{
 
 const price_list_appearance_market_availability = async(autoban)=>{
   try {
+
+    console.log(autoban)
+
     autoban.autoban_model_id = autoban.model.id;
-    autoban.autoban_type_id = autoban.type.id;
+    autoban.autoban_type_id = [autoban.type.id];
     autoban.autoban_year_id = autoban.year.id;
     await AutobanStore.handleAutobans(autoban)
     toast.add({

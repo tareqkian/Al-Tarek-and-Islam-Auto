@@ -27,7 +27,7 @@ class StoreMenuItemRequest extends FormRequest
     return [
       "menu_id" => "int|exists:menus,id",
       "en.title" => "required|string|regex:/^[a-zA-Z0-9\!-_ ]+$/u",
-      "ar.title" => "required|string|regex:/^[كگچپژیلفقهمو ء-ي 0-9]+$/",
+      "ar.title" => "required|string|regex:/^[كگچپژیلفقهموى ء-ي \!-_0-9]+$/",
       "route" => [
         "nullable",
         Rule::unique('menu_items')

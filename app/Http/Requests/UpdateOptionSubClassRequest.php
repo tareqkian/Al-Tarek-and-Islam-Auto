@@ -39,7 +39,7 @@ class UpdateOptionSubClassRequest extends FormRequest
             'ar.option_sub_class_title' => [
                 'required_without:order',
                 'string',
-                'regex:/^[كگچپژیلفقهمو ء-ي 0-9]+$/',
+                'regex:/^[كگچپژیلفقهموى ء-ي \!-_0-9]+$/',
                 Rule::unique(
                     'option_sub_class_translations',
                     'option_sub_class_title'

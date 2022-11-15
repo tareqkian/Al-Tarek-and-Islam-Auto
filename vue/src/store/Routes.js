@@ -15,8 +15,10 @@ export const useRoutesStore = defineStore('RoutesStore',()=>{
           ...routes.value,
           {
             route: fileName.replace(/.vue/g,''),
-            parent: el.default.__file.split('/')[el.default.__file.split('/').length - 2],
-            componentImported: el.default.__file.split('/vue')[1]
+            /*parent: el.default.__file.split('/')[el.default.__file.split('/').length - 2],*/
+            parent: key.split('/')[key.split('/').length - 2],
+            /*componentImported: el.default.__file.split('/vue')[1]*/
+            componentImported: key.replace('../','/src/')
           }
         ]
       }
@@ -40,7 +42,8 @@ export const useRoutesStore = defineStore('RoutesStore',()=>{
           ...layouts.value,
           {
             layout: fileName.replace(/.vue/g,''),
-            componentImported: el.default.__file.split('/vue')[1]
+            /*componentImported: el.default.__file.split('/vue')[1]*/
+            componentImported: key.replace('../','/src/')
           }
         ]
       }

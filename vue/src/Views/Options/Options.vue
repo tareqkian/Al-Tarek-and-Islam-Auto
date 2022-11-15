@@ -1,5 +1,11 @@
 <template>
   <PageLayout >
+    <step-progress
+      icon-class="fa fa-check"
+      :steps="['Class','Sub Class','Category','Option']" :current-step="-1"
+      active-color="green" :active-thickness="5"
+      passive-color="gray" :passive-thickness="2"
+      :line-thickness="4" />
     <div class="btn-group mb-2" role="group">
       <button v-if="$can(`add_options_classes`)"
               class="btn btn-primary"
@@ -7,25 +13,8 @@
         <i class="fe fe-plus"></i>
         Add Class
       </button>
-      <button v-if="$can(`add_options_sub_classes`)"
-              class="btn btn-primary"
-              @click="subClassDialog()">
-        <i class="fe fe-plus"></i>
-        Add Sub Class
-      </button>
-      <button v-if="$can(`add_options_categories`)"
-              class="btn btn-primary"
-              @click="categoryDialog()">
-        <i class="fe fe-plus"></i>
-        Add Category
-      </button>
-      <button v-if="$can(`add_options_options`)"
-              class="btn btn-primary"
-              @click="optionDialog()">
-        <i class="fe fe-plus"></i>
-        Add Option
-      </button>
     </div>
+
     <div class="row">
       <div class="col-sm-12 col-xl">
         <div class="card">
@@ -46,7 +35,15 @@
                 <div>
                   <i class="feather-move p-1" style="cursor: move"></i> {{ t(element,"option_class_title") }}
                 </div>
-                <div v-if="$can(`edit_options_classes`) || $can(`delete_options_classes`)">
+                <div v-if="$can(`read_options_classes`) || $can(`edit_options_classes`) || $can(`delete_options_classes`) || $can(`add_options_sub_classes`)" style="width: 105px;" class="text-end">
+                  <i class="fa fa-eye text-warning mx-1"
+                     v-if="$can(`read_options_classes`)"
+                     @click="optionClassCars(element)"></i>
+
+
+                  <i class="fa fa-plus-square text-success mx-1"
+                     v-if="$can(`add_options_sub_classes`)"
+                     @click="subClassDialog({option_class_id: element.id})"></i>
                   <i class="fa fa-edit text-info mx-1"
                      v-if="$can(`edit_options_classes`)"
                      @click="classDialog(element)"></i>
@@ -80,7 +77,16 @@
                     <div>
                       <i class="feather-move p-1" style="cursor: move"></i> {{ t(element,"option_sub_class_title") }}
                     </div>
-                    <div v-if="$can(`edit_options_sub_classes`) || $can(`delete_options_sub_classes`)">
+                    <div v-if="$can(`read_options_sub_classes`) || $can(`edit_options_sub_classes`) || $can(`delete_options_sub_classes`) || $can(`add_options_categories`)" style="width: 105px;" class="text-end">
+                      <i class="fa fa-eye text-warning mx-1"
+                         v-if="$can(`read_options_sub_classes`)"
+                         @click="optionSubClassCars(element)"></i>
+
+
+
+                      <i class="fa fa-plus-square text-success mx-1"
+                         v-if="$can(`add_options_categories`)"
+                         @click="categoryDialog({option_sub_class_id: element.id})"></i>
                       <i class="fa fa-edit text-info mx-1"
                          v-if="$can(`edit_options_sub_classes`)"
                          @click="subClassDialog(element)"></i>
@@ -117,7 +123,16 @@
                       <i class="feather-move handle p-1" style="cursor: move"></i> {{ t(element,"option_category_title") }}
                       <small class="text-muted ms-3"> {{ element.abbreviation }} </small>
                     </div>
-                    <div v-if="$can(`edit_options_categories`) || $can(`delete_options_categories`)">
+                    <div v-if="$can(`read_options_categories`) || $can(`edit_options_categories`) || $can(`delete_options_categories`) || $can(`add_options_options`)" style="width: 105px;" class="text-end">
+                      <i class="fa fa-eye text-warning mx-1"
+                         v-if="$can(`read_options_categories`)"
+                         @click="optionCategoryCars(element)"></i>
+
+
+
+                      <i class="fa fa-plus-square text-success mx-1"
+                         v-if="$can(`add_options_options`) && ['select','multiple select'].includes(element.input_type)"
+                         @click="optionDialog({option_category_id: element.id})"></i>
                       <i class="fa fa-edit text-info mx-1"
                          v-if="$can(`edit_options_categories`)"
                          @click="categoryDialog(element)"></i>
@@ -152,7 +167,11 @@
                       <i class="feather-move handle p-1" style="cursor: move"></i> {{ t(element,'option_title') }}
                       <small class="text-muted ms-3"> {{ element.abbreviation }} </small>
                     </div>
-                    <div v-if="$can(`edit_options_options`) || $can(`delete_options_options`)">
+                    <div v-if="$can(`read_options_options`) || $can(`edit_options_options`) || $can(`delete_options_options`)">
+                      <i class="fa fa-eye text-warning mx-1"
+                         v-if="$can(`read_options_options`)"
+                         @click="optionCars(element)"></i>
+
                       <i class="fa fa-edit text-info mx-1"
                          v-if="$can(`edit_options_options`)"
                          @click="optionDialog(element)"></i>
@@ -170,11 +189,8 @@
     </div>
 
     <Dialog
-      modal
-      dismissableMask
-      class="modal-content modal-lg"
+      modal class="modal-content modal-lg"
       content-class="modal-body"
-      :showHeader="false"
       v-model:visible="classDialogShow">
       <form @submit.prevent="handleOptionClass">
         <div class="form-floating my-2">
@@ -210,13 +226,9 @@
       </form>
     </Dialog>
     <Dialog
-      modal
-      dismissableMask
-      class="modal-content modal-lg"
+      modal class="modal-content modal-lg"
       content-class="modal-body"
-      :showHeader="false"
       v-model:visible="subClassDialogShow">
-
       <form @submit.prevent="handleOptionSubClass">
         <div class="form-floating my-2">
           <Dropdown
@@ -268,11 +280,8 @@
 
     </Dialog>
     <Dialog
-      modal
-      dismissableMask
-      class="modal-content modal-lg"
+      modal class="modal-content modal-lg"
       content-class="modal-body"
-      :showHeader="false"
       v-model:visible="categoryDialogShow">
       <form @submit.prevent="handleCategory">
 
@@ -350,7 +359,7 @@
           </div>
         </div>
 
-        <div class="form-floating my-2" v-if="selectedCategory.input_type === 'number'">
+<!--        <div class="form-floating my-2" v-if="selectedCategory.input_type === 'number'">
           <input class="form-control"
                  v-model="selectedCategory.number_format"
                  :class="[errors.number_format ? 'is-invalid' : '']"
@@ -361,7 +370,7 @@
               <li v-for="err in errors.number_format" :key="err"> {{err}} </li>
             </ul>
           </div>
-        </div>
+        </div>-->
 
         <div class="modal-footer d-flex justify-content-center pb-0">
           <button type="submit" class="btn btn-primary" :class="[!loading || 'btn-loading']">Save</button>
@@ -370,11 +379,8 @@
       </form>
     </Dialog>
     <Dialog
-      modal
-      dismissableMask
-      class="modal-content modal-lg"
+      modal class="modal-content modal-lg"
       content-class="modal-body"
-      :showHeader="false"
       v-model:visible="optionDialogShow">
       <form @submit.prevent="handleOptions">
 
@@ -442,10 +448,46 @@
         </div>
       </form>
     </Dialog>
+
+
+
+
+
+    <Dialog
+      modal class="modal-content modal-lg" dismissable-mask
+      content-class="modal-body" style="width: 400px !important;border-radius: 15px"
+      v-model:visible="rightOthersDialogComputed">
+      <div class="card-body pt-0 px-0">
+        <Loading v-if="autobans.loading" />
+        <MoreAutoban
+          v-else
+          :array="autobans.data"
+          @getNewDetails="getNewDetails"
+        />
+      </div>
+    </Dialog>
+    <Dialog
+      modal class="modal-content modal-lg" dismissable-mask
+      content-class="modal-body"
+      v-model:visible="autobanOption">
+      <div class="card-body pt-0 px-0">
+        <AutobanOptionController
+          :selectedAutoban="selectedAutoban"
+          :optionTree="false"
+          :step="step"
+          @handleAutobanOptions="handleAutobanOptions"
+        />
+      </div>
+    </Dialog>
+
+
+
   </PageLayout>
 </template>
 
 <script setup>
+import 'vue-step-progress/dist/main.css';
+import StepProgress from 'vue-step-progress';
 import PageLayout from "../../components/Layouts/PageLayout.vue";
 import Dialog from "primevue/dialog";
 import Loading from "../../components/Loading.vue";
@@ -455,13 +497,17 @@ import Dropdown from "primevue/dropdown";
 import numeral from "numeral";
 import Paginator from 'primevue/paginator';
 import draggable from 'vuedraggable'
+import _debounce from "lodash/debounce"
+import MoreAutoban from "../../components/Autoban/MoreAutoban.vue";
+import AutobanOptionController from "../../components/Option/AutobanOptionController.vue";
 
 import {useToast} from "primevue/usetoast";
 import {useConfirm} from "primevue/useconfirm";
 
-import {computed, inject, reactive, ref} from "vue";
+import {computed, inject, onMounted, reactive, ref, watch} from "vue";
 import {useOptionStore} from "../../store/Options";
 import {FilterMatchMode} from "primevue/api";
+import {useAutobanOptionsStore} from "../../store/AutobanOptions";
 
 const filters = ref({'global': { value: null, matchMode: FilterMatchMode.CONTAINS }})
 
@@ -473,6 +519,7 @@ const expandedRowGroups = ref(null)
 const OptionStore = useOptionStore()
 
 const optionClasses = computed(()=>OptionStore.optionClasses)
+
 OptionStore.initOptionClasses()
 
 const optionSubClass = computed(()=>OptionStore.optionSubClass)
@@ -591,15 +638,14 @@ const selectedSubClassOriginal = {
 const selectedSubClass = reactive({...selectedSubClassOriginal})
 const selectedSubClassReset = ()=>Object.assign(selectedSubClass,selectedSubClassOriginal)
 const subClassDialog = (optionSubClass = {})=>{
-  /*OptionStore.initOptionClasses()*/
   selectedSubClassReset()
   errors.value = []
   subClassDialogShow.value = !subClassDialogShow.value
   Object.assign(selectedSubClass,{
     id: optionSubClass.id || null,
     option_class_id: optionSubClass.option_class_id || null,
-    en: {option_sub_class_title: t(optionSubClass,'option_sub_class_title','en') || null},
-    ar: {option_sub_class_title: t(optionSubClass,'option_sub_class_title','ar') || null}
+    en: {option_sub_class_title: optionSubClass.option_sub_class_title ? t(optionSubClass,'option_sub_class_title','en') : null},
+    ar: {option_sub_class_title: optionSubClass.option_sub_class_title ? t(optionSubClass,'option_sub_class_title','ar') : null}
   })
 }
 const handleOptionSubClass = async()=>{
@@ -677,7 +723,7 @@ const selectedCategoryOriginal = {
   ar: {option_category_title: null,},
   abbreviation: null,
   input_type: null,
-  number_format: null
+  // number_format: null
 }
 const selectedCategory = reactive({...selectedCategoryOriginal})
 const selectedCategoryReset = ()=>Object.assign(selectedCategory,selectedCategoryOriginal)
@@ -689,11 +735,11 @@ const categoryDialog = (category = {})=>{
   Object.assign(selectedCategory,{
     id: category.id || null,
     option_sub_class_id: (category.option_sub_class_id || null),
-    en:{option_category_title: t(category,'option_category_title','en') || null},
-    ar:{option_category_title: t(category,'option_category_title','ar') || null},
+    en:{option_category_title: category.option_category_title ? t(category,'option_category_title','en') : null},
+    ar:{option_category_title: category.option_category_title ? t(category,'option_category_title','ar') : null},
     abbreviation: category.abbreviation || null,
     input_type: category.input_type || null,
-    number_format: category.number_format || null
+    // number_format: category.number_format || null
   })
 }
 const handleCategory = async()=>{
@@ -777,8 +823,8 @@ const optionDialog = (option = {})=>{
   Object.assign(selectedOption,{
     id: option.id || null,
     option_category_id: (option.option_category_id || null),
-    en:{option_title: t(option,'option_title','en') || null},
-    ar:{option_title: t(option,'option_title','ar') || null},
+    en:{option_title: option.option_title ? t(option,'option_title','en') : null},
+    ar:{option_title: option.option_title ? t(option,'option_title','ar') : null},
     abbreviation: option.abbreviation || null,
   })
 }
@@ -847,85 +893,87 @@ const optionOrder = async (e)=>{
   })
 }
 
-/*
-Echo.channel("OptionsEvent")
-  .listen('OptionClassesAdder',({optionClass})=>{
-    OptionStore.optionClasses.data = [
-      ...OptionStore.optionClasses.data,
-      {...optionClass}
-    ]
-  })
-  .listen('OptionClassesEditor',({optionClass})=>{
-    const classIndex = OptionStore.optionClasses.data.findIndex(x => x.id === optionClass.id);
-    OptionStore.optionClasses.data[classIndex] = {...optionClass}
-  })
-  .listen('OptionClassesDeleter',({optionClass})=>{
-    OptionStore.optionClasses.data = OptionStore.optionClasses.data.filter(x=> +x.id !== +optionClass.id)
-  })
 
-  .listen('OptionSubClassesAdder',({optionSubClass})=>{
-    OptionStore.optionSubClasses.data = [...OptionStore.optionSubClasses.data, {...optionSubClass}]
-    if ( OptionStore.optionSubClass.data.length && +OptionStore.optionSubClass.data[0].option_class_id === +optionSubClass.option_class_id )
-      OptionStore.optionSubClass.data = [...OptionStore.optionSubClass.data, {...optionSubClass}]
-  })
-  .listen('OptionSubClassesEditor',({optionSubClass})=>{
-    if ( OptionStore.optionSubClasses.data.length ) {
-      const optionIndex = OptionStore.options.data.findIndex(x => x.id === optionSubClass.id);
-      OptionStore.optionSubClasses.data = [
-        ...OptionStore.optionSubClasses.data.slice(0,optionIndex),
-        {...optionSubClass},
-        ...OptionStore.optionSubClasses.data.slice(optionIndex+1)
-      ]
-    }
-    if ( OptionStore.optionSubClass.data.length ) {
-      const optionIndex = OptionStore.optionSubClass.data.findIndex(x => x.id === optionSubClass.id);
-      OptionStore.optionSubClass.data[optionIndex] = {...optionSubClass}
-    }
-  })
-  .listen('OptionSubClassesDeleter',({optionSubClass})=>{
-      OptionStore.optionSubClasses.data = OptionStore.optionSubClasses.data.filter(x=> +x.id !== +optionSubClass.id)
-      OptionStore.optionSubClass.data = OptionStore.optionSubClass.data.filter(x=> +x.id !== +optionSubClass.id)
-  })
+// No Options Cars
+const autobans = computed(()=>OptionStore.optionCars);
+const rightOthersDialogComputed = ref(false)
+const step = ref(0)
+const optionClassCars = (payload) => {
+  rightOthersDialogComputed.value = true
+  step.value = payload.order
+  OptionStore.initOptionClassCars(payload)
+}
+const optionSubClassCars = (payload) => {
+  rightOthersDialogComputed.value = true
+  step.value = optionClasses.value.data.filter(x=>+x.id===+payload.option_class_id).map(x=>x.order)[0]
+  OptionStore.initOptionSubClassCars(payload)
+}
+const optionCategoryCars = (payload) => {
+  rightOthersDialogComputed.value = true
+  const option_class_id = optionSubClass.value.data.filter(x=>+x.id===+payload.option_sub_class_id)[0].option_class_id;
+  step.value = optionClasses.value.data.filter(x=>+x.id===+option_class_id).map(x=>x.order)[0]
+  OptionStore.initOptionCategoryCars(payload)
+}
+const optionCars = (option) => {
+  rightOthersDialogComputed.value = true
+  const option_sub_class_id = optionCategory.value.data.filter(x=>+x.id===+option.option_category_id)[0].option_sub_class_id;
+  console.log(option_sub_class_id)
+  const option_class_id = optionSubClass.value.data.filter(x=>+x.id===+option_sub_class_id)[0].option_class_id;
+  step.value = optionClasses.value.data.filter(x=>+x.id===+option_class_id).map(x=>x.order)[0]
+  OptionStore.initOptionCars(option)
+}
+const AutobanOptionsStore = useAutobanOptionsStore()
+const handleAutobanOptions = async (optionModel) => {
+  try {
+    loading.value = true
+    let opModel = Object.keys(optionModel).reduce((a,b)=>{
+      const x = optionModel[b]
+      if ( typeof x === 'object' && x && x.length ) a[b] = x
+      else if (typeof x !== 'object' && typeof x !== 'undefined') a[b] = x
+      return a;
+    },{})
+    await AutobanOptionsStore.handleAutobanOption(selectedAutoban.value,opModel)
+    autobanOption.value = !autobanOption.value
+    toast.add({
+      closable: false,
+      severity: "success",
+      summary: "Options",
+      detail: "Success",
+      life: 3000
+    })
+    loading.value = false
+  } catch (e) {
+    loading.value = false
+    errors.value = e;
+  }
+}
 
-  .listen('OptionCategoryAdder',({optionCategory})=>{
-    OptionStore.optionCategories.data = [...OptionStore.optionCategories.data, {...optionCategory}]
-    if ( OptionStore.optionCategory.data.length && +OptionStore.optionCategory.data[0].option_sub_class_id === +optionCategory.option_sub_class_id )
-      OptionStore.optionCategory.data = [...OptionStore.optionCategory.data, {...optionCategory}]
-  })
-  .listen('OptionCategoryEditor',({optionCategory})=>{
-    if ( OptionStore.optionCategories.data.length ) {
-      const optionIndex = OptionStore.optionCategories.data.findIndex(x => x.id === optionCategory.id);
-      OptionStore.optionCategories.data[optionIndex] = {...optionCategory}
-    }
-    if ( OptionStore.optionCategory.data.length ) {
-      const optionIndex = OptionStore.optionCategory.data.findIndex(x => x.id === optionCategory.id);
-      OptionStore.optionCategory.data[optionIndex] = {...optionCategory}
-    }
-  })
-  .listen('OptionCategoryDeleter',({optionCategory})=>{
-      OptionStore.optionCategories.data = OptionStore.optionCategories.data.filter(x=> +x.id !== +optionCategory.id)
-      OptionStore.optionCategory.data = OptionStore.optionCategory.data.filter(x=> +x.id !== +optionCategory.id)
-  })
 
-  .listen('OptionAdder',({option})=>{
-    OptionStore.options.data = [...OptionStore.options.data, option]
-    if ( OptionStore.option.data.length && +OptionStore.option.data[0].option_category_id === +option.option_category_id )
-      OptionStore.option.data = [...OptionStore.option.data, option]
-  })
-  .listen('OptionEditor',({option})=>{
-    if ( OptionStore.options.data.length ) {
-      const optionIndex = OptionStore.options.data.findIndex(x => x.id === option.id);
-      OptionStore.options.data[optionIndex] = {...option}
-    }
-    if ( OptionStore.option.data.length ) {
-      const optionIndex = OptionStore.option.data.findIndex(x => x.id === option.id);
-      OptionStore.option.data[optionIndex] = {...option}
-    }
-  })
-  .listen('OptionDeleter',({option})=>{
-      OptionStore.options.data = OptionStore.options.data.filter(x=> +x.id !== +option.id)
-      OptionStore.option.data = OptionStore.option.data.filter(x=> +x.id !== +option.id)
-  })
-*/
+
+const selectedAutoban = ref(null)
+const autobanOption = ref(false)
+const getNewDetails = (payload) => {
+  autobanOption.value = true
+  selectedAutoban.value = payload
+}
+
 </script>
 
+<style>
+.step-progress__step{
+  cursor: default;
+}
+.step-progress__step:after {
+  height: 50px !important;
+  width: 50px !important;
+}
+.step-progress__step-label{
+  top: calc(100% + 15px) !important;
+}
+.step-progress__step span{
+  font-size: 35px !important;
+}
+.rtl .step-progress__wrapper-after {
+  transform-origin: right center;
+}
+</style>

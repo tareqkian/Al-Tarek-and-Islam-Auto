@@ -117,11 +117,8 @@
 
     <!-- addRole -->
     <Dialog
-      modal
-      dismissableMask
-      class="modal-content modal-lg"
+      modal class="modal-content modal-lg"
       content-class="modal-body"
-      :showHeader="false"
       v-model:visible="roleDialogShow">
       <form @submit.prevent="addNewRole">
         <template v-for="(input,index) in newRole" :key="index">

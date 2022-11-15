@@ -1,8 +1,8 @@
 /**!
  * lightgallery.js | 1.0.3 | May 17th 2018
  * http://sachinchoolur.github.io/lightgallery.js/
- * Copyright (c) 2016 Sachin N; 
- * @license GPLv3 
+ * Copyright (c) 2016 Sachin N;
+ * @license GPLv3
  */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Lightgallery = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 (function (global, factory) {
     if (typeof define === "function" && define.amd) {
@@ -947,7 +947,7 @@
         ** ** avoid simultaneous image load
     <=> ** Preload() will check for s.preload value and call loadContent() again accoring to preload value
         ** loadContent()  <====> Preload();
-    
+
     *   @param {Number} index - index of the slide
     *   @param {Boolean} fromTouch - true if slide function called via touch event or mouse drag
     *   @param {Boolean} fromThumb - true if slide function called via thumbnail click
@@ -982,7 +982,18 @@
                 if (_this.s.dynamic) {
                     _src = _this.s.dynamicEl[index].downloadUrl !== false && (_this.s.dynamicEl[index].downloadUrl || _this.s.dynamicEl[index].src);
                 } else {
-                    _src = _this.items[index].getAttribute('data-download-url') !== 'false' && (_this.items[index].getAttribute('data-download-url') || _this.items[index].getAttribute('href') || _this.items[index].getAttribute('data-src'));
+
+/*
+                  console.log(
+                    _this,
+                    _this.items,
+                    index,
+                    _this.items[index],
+                    _this.items[0].querySelectorAll('.owl-item:not(.cloned)')[index],
+                  )
+                  _src = _this.items[0].querySelectorAll('.owl-item:not(.cloned)')[index].getAttribute('data-download-url') !== 'false' && (_this.items[0].querySelectorAll('.owl-item:not(.cloned)')[index].getAttribute('data-download-url') || _this.items[0].querySelectorAll('.owl-item:not(.cloned)')[index].getAttribute('href') || _this.items[0].querySelectorAll('.owl-item:not(.cloned)')[index].getAttribute('data-src'));
+*/
+                  _src = _this.items[index].getAttribute('data-download-url') !== 'false' && (_this.items[index].getAttribute('data-download-url') || _this.items[index].getAttribute('href') || _this.items[index].getAttribute('data-src'));
                 }
 
                 if (_src) {

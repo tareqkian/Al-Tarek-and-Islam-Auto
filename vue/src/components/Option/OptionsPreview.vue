@@ -27,7 +27,7 @@
                 {{ t(category.options.filter(x=>+x.id === +optionModel[category.id])[0],'option_title') || t(optionModel,category.id) }}
               </span>
               <ul v-else class="list-style-disc mt-2">
-                <li v-for="option in category.options">
+                <li v-for="option in category.options.filter(x=> optionModel[category.id].includes(x.id) )">
                   {{ t(option,'option_title') }}
                   <span class="text-muted fw-bold mx-1">
                     {{ option.abbreviation }}

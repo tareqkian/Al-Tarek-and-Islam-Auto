@@ -75,7 +75,7 @@ class SettingController extends Controller
       $setting->save();
     }
     $settings = Setting::all();
-    broadcast(new SettingsEditor(SettingResource::collection($settings)));
+//    broadcast(new SettingsEditor(SettingResource::collection($settings)));
     return SettingResource::collection($settings);
   }
 

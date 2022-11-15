@@ -8,6 +8,7 @@ use App\Http\Requests\StoreAutobanRequest;
 use App\Http\Requests\UpdateAutobanRequest;
 use App\Models\AutobanCategory;
 use App\Models\Option;
+use App\Models\OptionCategory;
 use Illuminate\Http\Request;
 
 class AutobanOptionController extends Controller
@@ -56,38 +57,43 @@ class AutobanOptionController extends Controller
    * @param  \App\Models\Autoban  $autoban
    * @return \Illuminate\Http\Response
    */
-  public function update(Request $request,$id)
-  {
-    $autoban = Autoban::find($id);
-    $data = $request->all();
-    $dataC = [];
-    foreach ($data as $key => $item) {
-      if ( !is_array($item) && !Option::where('id',$item)->exists() ) {
-        if ($item) $dataC[$key] = ['option'=>$item];
-      } else {
-        $dataC[] = $key;
-      }
-    }
-    $autoban->autobanCateory()->sync($dataC);
-    foreach ($autoban->pivots as $item) {
-      $syncedOptions = $data[$item['option_category_id']];
-      if ( is_array($syncedOptions) )
-        $item->options()->sync($syncedOptions);
-      else
-        if ( Option::where('id',$syncedOptions)->exists() )
-          $item->options()->sync($syncedOptions);
-    }
-    return [
-      'autoban' => $autoban,
-      'autobanPivot' => $autoban->pivots,
-      'autobanCateory' => $autoban->autobanCateory,
-      'data' => $data,
-      'dataKeys' => array_keys($data),
-      'dataC' => $dataC,
-    ];
-  }
+    public function update(Request $request,$id)
+    {
+        $autoban = Autoban::find($id);
+        $data = $request->all();
+        $dataC = [];
+        foreach ($data as $key => $item) {
+            $category = OptionCategory::find($key);
+            if ( !is_array($item) && in_array($category->input_type,['text','number']) ) {
+                if ($item) $dataC[$key] = ['option'=>$item];
+            } else {
+                $dataC[] = $key;
+            }
+        }
 
-  /**
+        $autoban->autobanCateory()->sync($dataC);
+
+        foreach ($autoban->pivots as $item) {
+            $category = OptionCategory::find($item['option_category_id']);
+            $syncedOptions = $data[$item['option_category_id']];
+            if ( is_array($syncedOptions) )
+                $item->options()->sync($syncedOptions);
+            else
+                if ( !str_contains($syncedOptions,'/') && !in_array($category->input_type,['text','number']) )
+                    $item->options()->sync($syncedOptions);
+        }
+
+        return [
+            'autoban' => $autoban,
+            'autobanPivot' => $autoban->pivots,
+            'autobanCateory' => $autoban->autobanCateory,
+            'data' => $data,
+            'dataKeys' => array_keys($data),
+            'dataC' => $dataC,
+        ];
+    }
+
+    /**
    * Remove the specified resource from storage.
    *
    * @param  \App\Models\Autoban  $autoban

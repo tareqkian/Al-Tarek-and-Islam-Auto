@@ -21,7 +21,7 @@ class UsersTableSeeder extends Seeder
       "name" => "Administrator",
       "email" => "admin@admin.com",
       "password" => bcrypt("admin"),
-      "settings" => '{"devices":[{"device":"Desktop","count":1},{"device":"Mobile","count":1}]}'
+      "settings" => '{"devices":[{"device":"Desktop","count":10},{"device":"Mobile","count":10}]}'
     ]);
   }
 }

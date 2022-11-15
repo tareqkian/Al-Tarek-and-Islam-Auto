@@ -54,11 +54,8 @@
     </div>
     <!-- menuAddModal -->
     <Dialog
-      modal
-      dismissableMask
-      class="modal-content modal-lg"
+      modal class="modal-content modal-lg"
       content-class="modal-body"
-      :showHeader="false"
       v-model:visible="menuModalShow">
       <form @submit.prevent="handelMenu">
         <div class="form-floating my-2">
@@ -82,11 +79,8 @@
     </Dialog>
     <!-- menuItemAddModal -->
     <Dialog
-      modal
-      dismissableMask
-      class="modal-content modal-lg"
+      modal class="modal-content modal-lg"
       content-class="modal-body"
-      :showHeader="false"
       v-model:visible="menuItemModalShow">
       <div class="card">
         <div class="card-body p-3 text-end">

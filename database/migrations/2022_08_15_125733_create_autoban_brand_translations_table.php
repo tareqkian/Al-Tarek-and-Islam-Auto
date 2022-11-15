@@ -19,8 +19,7 @@ class CreateAutobanBrandTranslationsTable extends Migration
             $table->string("locale")->index();
             $table->string("brand_title");
 
-            $table->unique(['brand_id', 'locale']);
-            $table->foreign('autoban_brand_id')->references('id')->on('autoban_brands')->onDelete("cascade");
+           $table->foreign('autoban_brand_id')->references('id')->on('autoban_brands')->onDelete("cascade");
         });
     }
 

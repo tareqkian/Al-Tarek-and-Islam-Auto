@@ -6,7 +6,7 @@
           <div class="box-widget widget-user">
             <div class="widget-user-image d-sm-flex">
               <span class="avatar" style="overflow: hidden">
-                <Image :src="user.avatar" preview/>
+                <Image :src="user.avatar !== BASE_URL ? user.avatar : `${BASE_URL}/users/default.png`" preview/>
               </span>
 
               <div class="ms-sm-4 mt-4">
@@ -129,11 +129,8 @@
     />
 
     <Dialog
-      modal
-      dismissableMask
-      class="modal-content modal-lg"
+      modal class="modal-content modal-lg"
       content-class="modal-body"
-      :showHeader="false"
       v-model:visible="passwordDialogShow">
       <form @submit.prevent="changePassword">
         <div class="form-floating my-2">
@@ -198,6 +195,8 @@ import { useToast } from "primevue/usetoast";
 import {useAuth} from "../../store/Auth";
 import {computed, ref} from "vue";
 import {useUsersStore} from "../../store/Users";
+
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const toast = useToast();
 const authStore = useAuth();

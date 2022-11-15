@@ -43,7 +43,7 @@ class RolesController extends Controller
   public function store(StoreRoleRequest $request)
   {
     $role = Role::create($request->validated());
-    broadcast(new RoleAdder(new RoleResource($role)));
+//    broadcast(new RoleAdder(new RoleResource($role)));
     return $role;
     return new RoleResource($role);
   }
@@ -69,14 +69,14 @@ class RolesController extends Controller
   public function update(Request $request, Role $role)
   {
     $role->permissions()->sync($request->input('rolePermissions', []));
-    broadcast(new RolePermissionsChange($role->permissions->pluck('key'),$role));
+//    broadcast(new RolePermissionsChange($role->permissions->pluck('key'),$role));
     return ["status" => 200];
   }
 
   public function updateRole(UpdateRoleRequest $request, $id) {
     $role = Role::findOrFail($id);
     $role->update($request->validated());
-    broadcast(new RoleEditor(new RoleResource($role)));
+//    broadcast(new RoleEditor(new RoleResource($role)));
     return new RoleResource($role);
   }
 
@@ -91,7 +91,7 @@ class RolesController extends Controller
     $deletedRole = $role;
     $role->permissions()->sync([]);
     $role->delete();
-    broadcast(new RoleDeletor($deletedRole));
+//    broadcast(new RoleDeletor($deletedRole));
     return ['status' => 204];
   }
 }

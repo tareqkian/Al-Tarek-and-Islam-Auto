@@ -26,26 +26,48 @@ class AutobanController extends Controller
    */
   public function index(Request $request)
   {
+
+    $column = "CONCAT(brand_title, ' ', model_title)";
+    if ( $request->input('column') === 'brand_title' )
+    {
+      $column = $request->input('column');
+    }
+    if ( $request->input('column') === 'model_title' )
+    {
+      $column = "CONCAT(brand_title, ' ', model_title)";
+    }
+
+    $filter = "%{$request->input('filter')}%";
+    if ( $request->input('filterMode') === 'like' || $request->input('filter') === '' )
+    {
+      $filter = "%{$request->input('filter')}%";
+    }
+    else
+    {
+      $filter = "{$request->input('filter')}";
+    }
+
+
     $autoban = Autoban::with(
       'model',
       'type',
       'year',
       'price')
         ->select('autobans.*')
-      ->join('autoban_model_translations','autoban_model_translations.autoban_model_id','=','autobans.autoban_model_id')->where('autoban_model_translations.locale','en')
+      ->join('autoban_model_translations','autoban_model_translations.autoban_model_id','=','autobans.autoban_model_id')->where('autoban_model_translations.locale',app()->getLocale())
       ->join('autoban_models','autoban_models.id','=','autobans.autoban_model_id')
-      ->join('autoban_brand_translations','autoban_brand_translations.autoban_brand_id','=','autoban_models.autoban_brand_id')->where('autoban_brand_translations.locale','en')
-      ->join('autoban_year_translations','autoban_year_translations.autoban_year_id','=','autobans.autoban_year_id')->where('autoban_year_translations.locale','en')
+      ->join('autoban_brand_translations','autoban_brand_translations.autoban_brand_id','=','autoban_models.autoban_brand_id')->where('autoban_brand_translations.locale',app()->getLocale())
+      ->join('autoban_year_translations','autoban_year_translations.autoban_year_id','=','autobans.autoban_year_id')->where('autoban_year_translations.locale',app()->getLocale())
       ->whereRaw(
-        "CONCAT(brand_title, ' ', model_title) LIKE ?",
-        ["%{$request->input('filter')}%"]
+        "$column LIKE ?",
+        [$filter]
       )
       ->orderBy('autoban_brand_translations.brand_title')
       ->orderBy('autoban_model_translations.model_title')
       ->orderBy('autoban_year_translations.year_number')
       ->orderBy('order')
       ->paginate($request->perPage ?: 10);
-    /*->sortBy(['model.brand.brand_title','model.model_title','year.year_number','order'])*/
+
     return AutobanResource::collection($autoban);
   }
 
@@ -57,36 +79,38 @@ class AutobanController extends Controller
    */
   public function store(StoreAutobanRequest $request)
   {
+    $idsIns = [];
     $validated = $request->validated();
-    $validated['order'] = Autoban::latestOrder($validated['autoban_model_id']);
+    $types = $validated['autoban_type_id'];
+    foreach ($types as $type) {
+      $validated['autoban_type_id'] = $type;
+      $validated['order'] = Autoban::latestOrder($validated['autoban_model_id'])+1;
+      $price = AutobanPrice::create([
+        'en' => [
+          'official' => 0,
+          'commercial' => 0,
+          'sale' => 0,
+        ],
+        'ar' => [
+          'official' => 0,
+          'commercial' => 0,
+          'sale' => 0,
+        ]
+      ]);
+      $validated['autoban_price_id'] = $price->id;
+      $autoban = Autoban::create($validated);
 
-    $price = AutobanPrice::create([
-      'en' => [
-        'official' => 0,
-        'commercial' => 0,
-        'sale' => 0,
-      ],
-      'ar' => [
-        'official' => 0,
-        'commercial' => 0,
-        'sale' => 0,
-      ]
-    ]);
+      $idsIns[] = $autoban->id;
+    }
 
-    $validated['autoban_price_id'] = $price->id;
-
-    $autoban = Autoban::create($validated);
-
-
-    $autoban->load(
+    $autobans = Autoban::whereIn('id',$idsIns)->with(
       'model.brand.translations',
       'type.translations',
       'year.translations',
       'price.translations',
-    );
+    )->get();
 
-    broadcast(new AutobanAdder(new AutobanResource($autoban)));
-    return new AutobanResource($autoban);
+    return AutobanResource::collection($autobans);
   }
 
   /**
@@ -97,10 +121,14 @@ class AutobanController extends Controller
    */
   public function show($id)
   {
-    $model = AutobanModel::findOrFail($id);
+    $model = AutobanModel::find($id);
     $model->load([
       "autobans" => function($query){
-        $query->with('type','year','price')->orderBy('order');
+        $query->with(
+          'type',
+          'year',
+          'price',
+        )->orderBy('order');
       }
     ]);
     return new AutobanModelResource($model);
@@ -122,10 +150,10 @@ class AutobanController extends Controller
       ->whereNotIn('autobans.id',[$id])
       ->with( 'model', 'type', 'year', 'price')
       ->select('*','autobans.id as id')
-      ->join('autoban_model_translations','autoban_model_translations.autoban_model_id','=','autobans.autoban_model_id')->where('autoban_model_translations.locale','en')
+      ->join('autoban_model_translations','autoban_model_translations.autoban_model_id','=','autobans.autoban_model_id')->where('autoban_model_translations.locale',app()->getLocale())
       ->join('autoban_models','autoban_models.id','=','autobans.autoban_model_id')
-      ->join('autoban_brand_translations','autoban_brand_translations.autoban_brand_id','=','autoban_models.autoban_brand_id')->where('autoban_brand_translations.locale','en')
-      ->join('autoban_year_translations','autoban_year_translations.autoban_year_id','=','autobans.autoban_year_id')->where('autoban_year_translations.locale','en')
+      ->join('autoban_brand_translations','autoban_brand_translations.autoban_brand_id','=','autoban_models.autoban_brand_id')->where('autoban_brand_translations.locale',app()->getLocale())
+      ->join('autoban_year_translations','autoban_year_translations.autoban_year_id','=','autobans.autoban_year_id')->where('autoban_year_translations.locale',app()->getLocale())
       ->orderBy('autoban_brand_translations.brand_title')
       ->orderBy('autoban_model_translations.model_title')
       ->orderBy('autoban_year_translations.year_number')
@@ -150,6 +178,7 @@ class AutobanController extends Controller
   public function update(UpdateAutobanRequest $request, Autoban $autoban)
   {
     $validated = $request->validated();
+    $validated['autoban_type_id'] = $validated['autoban_type_id'][0];
     $autoban->update($validated);
     $autoban->load(
       'model.brand.translations',
@@ -157,7 +186,6 @@ class AutobanController extends Controller
       'year.translations',
       'price.translations'
     );
-    broadcast(new AutobanEditor(new AutobanResource($autoban)));
     return new AutobanResource($autoban);
   }
 
@@ -187,7 +215,7 @@ class AutobanController extends Controller
    */
   public function destroy(Autoban $autoban)
   {
-    broadcast(new AutobanDeleter($autoban));
+//    broadcast(new AutobanDeleter($autoban));
     $autoban->delete();
     return [ "status" => 204 ];
   }

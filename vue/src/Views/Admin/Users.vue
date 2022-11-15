@@ -29,7 +29,7 @@
           <Column :sortable="true" field="email" header="Email"></Column>
           <Column field="avatar" header="Avatar">
             <template #body="val">
-                <Image imageStyle="width: 60px" :src="val.data[val.field]" preview/>
+                <Image imageStyle="width: 60px" :src="val.data[val.field] !== BASE_URL ? val.data[val.field] : `${BASE_URL}/users/default.png`" preview/>
             </template>
           </Column>
           <Column :sortable="true" field="role.display_name" header="Role">
@@ -76,6 +76,8 @@ import { FilterMatchMode } from "primevue/api";
 import { useUsersStore } from "/src/store/Users";
 import { useRoute } from "vue-router";
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const filters = ref({'global': { value: null, matchMode: FilterMatchMode.CONTAINS }})
 const confirm = useConfirm();
 const toast = useToast();
@@ -100,7 +102,7 @@ const userForm = ref({
 })
 const userDialog = (user = {})=>{
   userDialogShow.value = !userDialogShow.value
-  defaultImg.value = user.avatar || null
+  defaultImg.value = (user.avatar !== BASE_URL ? user.avatar : `${BASE_URL}/users/default.png`)
   userForm.value.id = user.id || null
   userForm.value.name = user.name || null
   userForm.value.email = user.email || null

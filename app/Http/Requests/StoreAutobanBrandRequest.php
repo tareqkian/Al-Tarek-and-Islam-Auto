@@ -26,7 +26,7 @@ class StoreAutobanBrandRequest extends FormRequest
     return [
       'brand_image' => 'required|string',
       'en.brand_title' => 'required|string|regex:/^[a-zA-Z0-9\!-_ ]+$/u|unique:autoban_brand_translations,brand_title',
-      'ar.brand_title' => 'required|string|regex:/^[كگچپژیلفقهمو ء-ي 0-9]+$/|unique:autoban_brand_translations,brand_title',
+      'ar.brand_title' => 'required|string|regex:/^[كگچپژیلفقهموى ء-ي \!-_0-9]+$/|unique:autoban_brand_translations,brand_title',
     ];
   }
 }

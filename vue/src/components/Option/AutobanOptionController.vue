@@ -2,6 +2,7 @@
   <form @submit.prevent="emits('handleAutobanOptions',optionModel);loading = true">
     <div class="border-bottom text-center pb-3">
       {{ `${t(selectedAutoban.model.brand,'brand_title')} - ${t(selectedAutoban.model,'model_title')} - ${t(selectedAutoban.type,'type_title')} - ${t(selectedAutoban.year,'year_number')}` }}
+      <Image width="100" :src="selectedAutoban.model.model_image" preview />
     </div>
     <div class="border-bottom text-center pb-3">
       <div class="form-floating my-1">
@@ -32,7 +33,11 @@
           {{ t(subClass,'option_sub_class_title') }}
           <div class="row text-start">
             <div v-for="category in subClass.option_categories" class="col-12">
-              <div v-if="!category.input_type.includes('select')" class="form-floating my-1">
+              <div
+                v-if="!category.input_type.includes('select')"
+                class="form-floating my-1"
+                :class="[optionModel[category.id] || 'border-danger border']"
+              >
                 <input v-model="optionModel[category.id]"
                        class="form-control"
                        step="0.01"
@@ -40,7 +45,7 @@
                        :placeholder="t(category, 'option_category_title')">
                 <label> {{ t(category, 'option_category_title') }} </label>
               </div>
-              <div v-if="category.input_type.includes('select')" class="form-floating my-1">
+              <div v-if="category.input_type.includes('select')" class="form-floating my-1" :class="[optionModel[category.id] || 'border-danger border']">
                 <MultiSelect v-model="optionModel[category.id]"
                              v-if="category.input_type.includes('multiple')"
                              :selectAll="false"
@@ -50,11 +55,9 @@
                              class="form-control d-flex align-items-stretch"
                              :placeholder="t(category,'option_category_title')" />
                 <Dropdown v-model="optionModel[category.id]"
-                          v-else
-                          :options="category.options"
-                          filter
-                          filter-placeholder="Search"
-                          option-value="id"
+                          v-else :options="category.options"
+                          filter filter-placeholder="Search"
+                          option-value="id" show-clear
                           :option-label="opt=>t(opt,'option_title')"
                           class="form-control d-flex align-items-stretch"
                           :placeholder="t(category, 'option_category_title')" />
@@ -79,7 +82,7 @@
                 v-if="currentStep !== optionClasses.data.length"
                 :disabled="optionSubClass.loading"
                 @click="currentStep++"> Next </button>
-        <button v-else type="submit" class="btn btn-success" :class="[!loading || 'btn-loading']"> Finish </button>
+        <button type="submit" class="btn btn-success ms-2" :class="[!loading || 'btn-loading']"> Finish </button>
       </div>
     </div>
   </form>
@@ -87,10 +90,12 @@
 
 <script setup>
 import 'vue-step-progress/dist/main.css';
-import Loading from "../../components/Loading.vue";
 import StepProgress from 'vue-step-progress';
+import Loading from "../../components/Loading.vue";
 import Dropdown from "primevue/dropdown";
 import MultiSelect from "primevue/multiselect";
+import Image from "primevue/image";
+
 import _debounce from "lodash/debounce"
 import OptionsPreview from "./OptionsPreview.vue";
 import {computed, inject, onMounted, ref, watch} from "vue";
@@ -99,11 +104,19 @@ import {useOptionStore} from "../../store/Options";
 import {useAutobanStore} from "../../store/Autoban";
 
 const props = defineProps({
-  "selectedAutoban": Object
+  "selectedAutoban": Object,
+  "optionTree": {
+    type: Boolean,
+    default: true
+  },
+  "step": {
+    type: Number,
+    default: 0
+  }
 })
 const emits = defineEmits([
   'autobansByBrandOption',
-  'handleAutobanOptions'
+  'handleAutobanOptions',
 ])
 const selectedAutobanOption = ref(null);
 const t = inject('t')
@@ -131,8 +144,11 @@ const autobanOptionFunction = async (autoban = false) => {
 }
 
 onMounted(_debounce(async ()=>{
-  await OptionStore.initOptionClasses()
-  currentStep.value = 0
+  if ( props.optionTree ) {
+    await OptionStore.initOptionClasses()
+  }
+  /*currentStep.value = 0*/
+  currentStep.value = props.step
   AutobanStore.initAutobansByBrand(props.selectedAutoban)
   autobanOptionFunction()
 },0))

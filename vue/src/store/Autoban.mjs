@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {reactive, ref} from "vue";
+import {inject, reactive, ref} from "vue";
 import api from "../axios";
 
 export const useAutobanStore = defineStore("Autoban",()=>{
@@ -16,6 +16,10 @@ export const useAutobanStore = defineStore("Autoban",()=>{
     loading: ref(false),
     data: ref([]),
     pagination: ref({})
+  }
+  const autobanModel = {
+    loading: ref(false),
+    data: ref([]),
   }
   const autobanTypes = {
     loading: ref(false),
@@ -40,10 +44,12 @@ export const useAutobanStore = defineStore("Autoban",()=>{
     data: []
   })
 
-  const initAutobans = async (meta={},filter = '') => {
+  const t = inject('t')
+
+  const initAutobans = async (meta={},filter = '',filterMode = 'like', column = '') => {
     try {
       autobans.loading.value = true
-      const {data} = await api.get(`/autoban?page=${meta.page+1 || 0}&perPage=${meta.rows || 0}&filter=${filter}`)
+      const {data} = await api.get(`/autoban?page=${meta.page+1 || 0}&perPage=${meta.rows || 0}&filter=${filter}&filterMode=${filterMode}&column=${column}`)
       autobans.data.value = data.data
       autobans.pagination.value = data.meta
       autobans.loading.value = false
@@ -61,11 +67,10 @@ export const useAutobanStore = defineStore("Autoban",()=>{
       throw e.response.data.errors
     }
   }
-  const initAutobanModels = async (meta={}) => {
+  const initAutobanModels = async (meta={},filter = '',filterMode = 'like', column = '') => {
     try {
       autobanModels.loading.value = true
-      /*?page=${meta.page+1 || 0}&perPage=${meta.rows || 0}*/
-      const {data} = await api.get(`/autobanModels`)
+      const {data} = await api.get(`/autobanModels?page=${meta.page+1 || 0}&perPage=${meta.rows || 0}&filter=${filter}&filterMode=${filterMode}&column=${column}`)
       autobanModels.data.value = data.data
       autobanModels.pagination.value = data.meta
       autobanModels.loading.value = false
@@ -73,10 +78,42 @@ export const useAutobanStore = defineStore("Autoban",()=>{
       throw e.response.data.errors
     }
   }
-  const initAutobanTypes = async (meta={}) => {
+  const initAutobanModelsAll = async (meta={},filter = '',filterMode = 'like') => {
+    try {
+      autobanModel.loading.value = true
+      const {data} = await api.get(`/autobanModels?page=${meta.page+1 || 0}&perPage=${10000}&filter=${filter}&filterMode=${filterMode}`)
+      autobanModel.data.value = data.data
+      autobanModel.loading.value = false
+    } catch (e) {
+      throw e.response.data.errors
+    }
+  }
+  const initAutobanModel = async (brand) => {
+    try {
+      autobanModel.loading.value = true
+      /*?page=${meta.page+1 || 0}&perPage=${meta.rows || 0}*/
+      const {data} = await api.get(`/autobanModel/${+brand}`)
+      autobanModel.data.value = data.data
+      autobanModel.loading.value = false
+    } catch (e) {
+      throw e.response.data.errors
+    }
+  }
+  const initAutobanTypes = async (meta={},filter = '') => {
     try {
       autobanTypes.loading.value = true
-      const {data} = await api.get(`/autobanTypes?page=${meta.page+1 || 0}&perPage=${meta.rows || 0}`)
+      const {data} = await api.get(`/autobanTypes?page=${meta.page+1 || 0}&perPage=${meta.rows || 0}&filter=${filter}`)
+      autobanTypes.data.value = data.data
+      autobanTypes.pagination.value = data.meta
+      autobanTypes.loading.value = false
+    } catch (e) {
+      throw e.response.data.errors
+    }
+  }
+  const initAutobanTypesAll = async (meta={},filter = '') => {
+    try {
+      autobanTypes.loading.value = true
+      const {data} = await api.get(`/autobanTypes?page=${meta.page+1 || 0}&perPage=${1000}&filter=${filter}`)
       autobanTypes.data.value = data.data
       autobanTypes.pagination.value = data.meta
       autobanTypes.loading.value = false
@@ -88,6 +125,17 @@ export const useAutobanStore = defineStore("Autoban",()=>{
     try {
       autobanYears.loading.value = true
       const {data} = await api.get(`/autobanYears?page=${meta.page+1 || 0}&perPage=${meta.rows || 0}`)
+      autobanYears.data.value = data.data
+      autobanYears.pagination.value = data.meta
+      autobanYears.loading.value = false
+    } catch (e) {
+      throw e.response.data.errors
+    }
+  }
+  const initAutobanYearsAll = async (meta={}) => {
+    try {
+      autobanYears.loading.value = true
+      const {data} = await api.get(`/autobanYears?page=${meta.page+1 || 0}&perPage=${1000}`)
       autobanYears.data.value = data.data
       autobanYears.pagination.value = data.meta
       autobanYears.loading.value = false
@@ -173,6 +221,7 @@ export const useAutobanStore = defineStore("Autoban",()=>{
         ]
         autobanModels.data.value = autobanModels.data.value.map(x=>{
           if ( x.brand.id === data.data.id ) {
+            // data.data.brand_title = t(data.data,'brand_title')
             x.brand = {...data.data}
           }
           return x;
@@ -197,6 +246,19 @@ export const useAutobanStore = defineStore("Autoban",()=>{
           ...autobanModels.data.value.slice(modelIndex+1)
         ]
       }
+    } catch (e) {
+      throw e.response.data.errors
+    }
+  }
+  const handleAutobanModelGallery = async (payload)=>{
+    try {
+      const {data} = await api.put('/newCarGallery/'+payload.model.id, payload.gallery)
+      const modelIndex = autobanModels.data.value.findIndex(x => x.id === data.data.id);
+      autobanModels.data.value = [
+        ...autobanModels.data.value.slice(0,modelIndex),
+        {...data.data},
+        ...autobanModels.data.value.slice(modelIndex+1)
+      ]
     } catch (e) {
       throw e.response.data.errors
     }
@@ -355,6 +417,19 @@ export const useAutobanStore = defineStore("Autoban",()=>{
       throw e.response.data.errors
     }
   }
+  const distroyAutobanModelGallery = async (payload)=>{
+    try {
+      const {data} = await api.delete('/deleteNewCarGallery/'+payload.id)
+      const modelIndex = autobanModels.data.value.findIndex(x => x.id === data.model_id);
+      const imageIndex = autobanModels.data.value[modelIndex].gallery.findIndex(x => +x.id === +payload.id)
+      autobanModels.data.value[modelIndex].gallery = [
+        ...autobanModels.data.value[modelIndex].gallery.slice(0,imageIndex),
+        ...autobanModels.data.value[modelIndex].gallery.slice(imageIndex+1)
+      ]
+    } catch (e) {
+      throw e.response.data.errors
+    }
+  }
 
   const reOrder = async (payload)=>{
     try {
@@ -368,6 +443,7 @@ export const useAutobanStore = defineStore("Autoban",()=>{
     autobans,
     autobanBrands,
     autobanModels,
+    autobanModel,
     autobanTypes,
     autobanYears,
     autobanPriceTasks,
@@ -377,8 +453,12 @@ export const useAutobanStore = defineStore("Autoban",()=>{
     initAutobans,
     initAutobanBrands,
     initAutobanModels,
+    initAutobanModelsAll,
+    initAutobanModel,
     initAutobanTypes,
+    initAutobanTypesAll,
     initAutobanYears,
+    initAutobanYearsAll,
     initAutobanPriceTask,
     initAutobanPriceTasks,
     initAutobansByBrand,
@@ -387,6 +467,7 @@ export const useAutobanStore = defineStore("Autoban",()=>{
     handleAutobans,
     handleAutobanBrands,
     handleAutobanModels,
+    handleAutobanModelGallery,
     handleAutobanTypes,
     handleAutobanYears,
     handleAutobanPrices,
@@ -398,6 +479,7 @@ export const useAutobanStore = defineStore("Autoban",()=>{
     distroyAutobanType,
     distroyAutobanYear,
     distroyAutobanPriceTask,
+    distroyAutobanModelGallery,
 
     reOrder,
   }

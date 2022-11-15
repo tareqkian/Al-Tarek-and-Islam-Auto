@@ -19,7 +19,6 @@ import Echo from 'laravel-echo'
 import Pusher from "pusher-js"
 import api from "./axios";
 
-
 import { appSettings } from "./appSettings";
 import t from "./plugins/translator"
 import { plugin as Slicksort } from 'vue-slicksort';

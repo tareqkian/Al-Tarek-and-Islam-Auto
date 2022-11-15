@@ -6,6 +6,7 @@ use App\Http\Resources\AutobanBrandResource;
 use App\Http\Resources\AutobanModelResource;
 use App\Http\Resources\AutobanPriceResource;
 use App\Http\Resources\AutobanResource;
+use App\Models\Autoban;
 use App\Models\AutobanBrand;
 use App\Models\AutobanModel;
 use App\Models\AutobanPrice;
@@ -46,19 +47,49 @@ class PricelistController extends Controller
    */
   public function show($id)
   {
-    $brand = AutobanBrand::findOrFail($id);
+    $brand = AutobanBrand::find($id);
     $brand->load([
-      "models.autobans" => function ($query) {
-        return $query->where('price_list_appearance',true)
-          ->with('type', 'year', 'price');
+      "models" => function ($query) {
+        return $query->whereHas('autobans')
+          ->with(['gallery','autobans' => function ($q) {
+            return $q->where('price_list_appearance',true)
+              ->with(
+                'year',
+                'price',
+              );
+          }]);
       }
     ]);
-    $brand->models = $brand->models->sortBy(function ($val){
-      $val->autobans = $val->autobans->sortBy(['year.year_number','order']);
-      return $val;
-    });
     $brand->models = $brand->models->sortBy('model_title');
     return new AutobanBrandResource($brand);
+  }
+
+  /**
+   * Display the specified resource.
+   *
+   * @param  int  $id
+   * @return \Illuminate\Http\Response
+   */
+  public function showDetails($id)
+  {
+    $model = AutobanModel::find($id);
+    $model->load([
+      "gallery",
+      "brand",
+      'autobans' => function ($q) {
+        return $q->where('price_list_appearance',true)
+          ->with(
+            'model.brand',
+            'type',
+            'year',
+            'price',
+            'range',
+            'pivots.category',
+            'pivots.options'
+          );
+      }
+    ]);
+    return new AutobanModelResource($model);
   }
 
   /**

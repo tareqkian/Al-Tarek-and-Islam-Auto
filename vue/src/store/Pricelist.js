@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {ref} from "vue";
+import {reactive, ref} from "vue";
 import api from "../axios";
 
 export const usePricelistStore = defineStore("Pricelist",()=>{
@@ -11,6 +11,10 @@ export const usePricelistStore = defineStore("Pricelist",()=>{
     loading: ref(false),
     data: ref([])
   }
+  const pricelistDetails = reactive({
+    loading: false,
+    data: []
+  })
   const pricelistAutobans = {
     loading: ref(false),
     data: ref([])
@@ -36,6 +40,16 @@ export const usePricelistStore = defineStore("Pricelist",()=>{
       throw e.response.data.errors
     }
   }
+  const initPricelistDetails = async (payload) => {
+    try {
+      pricelistDetails.loading = true
+      const {data} = await api.get('/pricelistDetails/'+payload.id)
+      pricelistDetails.data = data.data
+      pricelistDetails.loading = false
+    } catch (e) {
+      throw e.response.data.errors
+    }
+  }
   const initPricelistAutobans = async (payload) => {
     try {
       pricelistAutobans.loading.value = true
@@ -50,10 +64,12 @@ export const usePricelistStore = defineStore("Pricelist",()=>{
   return {
     pricelistBrands,
     pricelistModels,
+    pricelistDetails,
     pricelistAutobans,
 
     initPricelistBrands,
     initPricelistModels,
+    initPricelistDetails,
     initPricelistAutobans,
   }
 })
