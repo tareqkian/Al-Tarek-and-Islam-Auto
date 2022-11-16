@@ -7,15 +7,18 @@
       <tr>
         <th>Model</th>
         <th style="width: 3rem" v-if="type === 'autoban'"></th>
-        <th style="width: 25rem">Type</th>
+        <th style="width: 15rem">Type</th>
         <th style="width: 6rem">Year</th>
+        <th style="width: 6rem" v-if="type === 'options'">No. Of Specs</th>
+        <th style="width: 6rem" v-if="type === 'options'">No. Of Specs</th>
+        <th style="width: 15rem" v-if="type === 'options'">Last Update</th>
         <th style="width: 13rem" v-if="type === 'autoban' || type === 'prices'">Official</th>
         <th style="width: 13rem" v-if="type === 'prices'">Commercial</th>
         <th style="width: 13rem" v-if="type === 'prices'">Sale</th>
         <th style="width: 3rem" v-if="type === 'prices'"></th>
         <th style="width: 10rem" v-if="type === 'autoban'"> Appearance </th>
         <th style="width: 10rem" v-if="type === 'prices'"> Availability </th>
-        <th style="width: 7rem" v-if="type === 'options'"></th>
+        <th style="width: 7rem" v-if="type === 'options'"> Insert / Edit </th>
         <th style="width: 7rem" v-if="type === 'autoban' && ($can(`edit_${route.meta.permissionsLayout}`) || $can(`delete_${route.meta.permissionsLayout}`))"> Actions </th>
       </tr>
     </thead>
@@ -66,8 +69,15 @@
               <template #item="{element}">
                 <tr>
                   <td style="width: 3rem" v-if="type === 'autoban'" class="text-center"> <i class="pi pi-bars handle p-1" style="cursor: move"></i> </td>
-                  <td style="width: 25rem"> {{ t(element.type,'type_title') }} </td>
+                  <td style="width: 15rem"> {{ t(element.type,'type_title') }} </td>
                   <td style="width: 6rem"> {{ t(element.year,'year_number') }} </td>
+
+                  <td style="width: 6rem" v-if="type === 'options'"> {{ element.pivotsOptions_count }} </td>
+                  <td style="width: 6rem" v-if="type === 'options'" class="text-warning">
+                    {{ element.pivotsOptionsRequired || '-' }}
+                  </td>
+                  <td style="width: 15rem" v-if="type === 'options'"> {{ element.latestOptionUpdate }} </td>
+
                   <td style="width: 13rem" v-if="type === 'autoban' || type === 'prices'">
                     <InputNumber v-if="type === 'prices'" v-model="element.price.official"
                                  input-class="form-control form-control-sm"
@@ -237,14 +247,15 @@ const meta = ref({})
 const filtera = ref("")
 
 
+
 const array_move = (arr, old_index, new_index) => {
   arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
   return arr;
 }
+const OrderedArr = ref(null)
 const onRowReorder = async (event) => {
-  const autobansFiltered = props.autoban.data.filter(x => +x.model.id === +event.moved.element.model.id);
+  const autobansFiltered = (OrderedArr.value || AutobanStore.autobans.data.filter(x => +x.model.id === +event.moved.element.model.id));
   let newArray = array_move(autobansFiltered,event.moved.oldIndex,event.moved.newIndex)
-  const newOrder = newArray[event.moved.newIndex].order
   let order = 0;
   if ( !newArray.map(x=>x.order).includes(0) ) {
     order = Math.min.apply( Math, newArray.map(x=>x.order) );
@@ -254,9 +265,17 @@ const onRowReorder = async (event) => {
     order++
     return x;
   })
+/*
+  for (let i = 0; i < newArray.length; i++) {
+    const v = newArray[i];
+    const oldIndex = AutobanStore.autobans.data.findIndex(x=>x.id===v.id)
+    AutobanStore.autobans.data[oldIndex] = v
+  }
+*/
+
+  OrderedArr.value = newArray
 
   await AutobanStore.reOrder(newArray)
-
   toast.add({
     closable: false,
     severity: "success",

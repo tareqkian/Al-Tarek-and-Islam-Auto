@@ -36,7 +36,6 @@ class AutobanController extends Controller
     {
       $column = "CONCAT(brand_title, ' ', model_title)";
     }
-
     $filter = "%{$request->input('filter')}%";
     if ( $request->input('filterMode') === 'like' || $request->input('filter') === '' )
     {
@@ -47,21 +46,21 @@ class AutobanController extends Controller
       $filter = "{$request->input('filter')}";
     }
 
-
     $autoban = Autoban::with(
       'model',
       'type',
       'year',
-      'price')
-        ->select('autobans.*')
+      'price',
+      'pivotsOptions',
+      'latestOptionUpdate',
+      'pivotsOptionsRequired'
+      )
+      ->select('autobans.*')
       ->join('autoban_model_translations','autoban_model_translations.autoban_model_id','=','autobans.autoban_model_id')->where('autoban_model_translations.locale',app()->getLocale())
       ->join('autoban_models','autoban_models.id','=','autobans.autoban_model_id')
       ->join('autoban_brand_translations','autoban_brand_translations.autoban_brand_id','=','autoban_models.autoban_brand_id')->where('autoban_brand_translations.locale',app()->getLocale())
       ->join('autoban_year_translations','autoban_year_translations.autoban_year_id','=','autobans.autoban_year_id')->where('autoban_year_translations.locale',app()->getLocale())
-      ->whereRaw(
-        "$column LIKE ?",
-        [$filter]
-      )
+      ->whereRaw("$column LIKE ?", [$filter])
       ->orderBy('autoban_brand_translations.brand_title')
       ->orderBy('autoban_model_translations.model_title')
       ->orderBy('autoban_year_translations.year_number')
@@ -128,7 +127,7 @@ class AutobanController extends Controller
           'type',
           'year',
           'price',
-        )->orderBy('order');
+        )->withCount('pivots')->orderBy('order');
       }
     ]);
     return new AutobanModelResource($model);
@@ -137,7 +136,7 @@ class AutobanController extends Controller
   public function showAutoban($id)
   {
     $autoban = Autoban::find($id);
-    return new AutobanResource($autoban->load('pivots.category', 'pivots.options'));
+    return new AutobanResource($autoban->load('pivots.category', 'pivots.options')->withCount('pivots'));
   }
 
   public function showByBrand($id)
@@ -150,6 +149,7 @@ class AutobanController extends Controller
       ->whereNotIn('autobans.id',[$id])
       ->with( 'model', 'type', 'year', 'price')
       ->select('*','autobans.id as id')
+      ->withCount('pivots')
       ->join('autoban_model_translations','autoban_model_translations.autoban_model_id','=','autobans.autoban_model_id')->where('autoban_model_translations.locale',app()->getLocale())
       ->join('autoban_models','autoban_models.id','=','autobans.autoban_model_id')
       ->join('autoban_brand_translations','autoban_brand_translations.autoban_brand_id','=','autoban_models.autoban_brand_id')->where('autoban_brand_translations.locale',app()->getLocale())
@@ -185,7 +185,7 @@ class AutobanController extends Controller
       'type.translations',
       'year.translations',
       'price.translations'
-    );
+    )->withCount('pivots');
     return new AutobanResource($autoban);
   }
 
@@ -201,7 +201,7 @@ class AutobanController extends Controller
         'type.translations',
         'year.translations',
         'price.translations',
-      );
+      )->withCount('pivots');
       $orderedAutoban[] = $autoban;
     }
     return AutobanResource::collection($orderedAutoban);

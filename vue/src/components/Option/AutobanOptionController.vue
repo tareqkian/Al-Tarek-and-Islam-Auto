@@ -36,7 +36,7 @@
               <div
                 v-if="!category.input_type.includes('select')"
                 class="form-floating my-1"
-                :class="[optionModel[category.id] || 'border-danger border']"
+                :class="[category.required && !optionModel[category.id] ? 'border-warning border' : !optionModel[category.id] ? 'border-danger border' : '']"
               >
                 <input v-model="optionModel[category.id]"
                        class="form-control"
@@ -45,7 +45,11 @@
                        :placeholder="t(category, 'option_category_title')">
                 <label> {{ t(category, 'option_category_title') }} </label>
               </div>
-              <div v-if="category.input_type.includes('select')" class="form-floating my-1" :class="[optionModel[category.id] || 'border-danger border']">
+              <div
+                v-if="category.input_type.includes('select')"
+                class="form-floating my-1"
+                :class="[category.required && !optionModel[category.id] ? 'border-warning border' : !optionModel[category.id] ? 'border-danger border' : '']"
+              >
                 <MultiSelect v-model="optionModel[category.id]"
                              v-if="category.input_type.includes('multiple')"
                              :selectAll="false"

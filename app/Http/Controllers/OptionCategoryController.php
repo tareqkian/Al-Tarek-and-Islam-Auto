@@ -42,7 +42,6 @@ class OptionCategoryController extends Controller
     $validated['order'] = (OptionCategory::order($request->input('option_sub_class_id'))->order + 1);
     $optionCategory = OptionCategory::create($validated);
     $optionCategory->load(['options' => function($x){$x->orderBy('order');}]);
-//    broadcast(new OptionCategoryAdder(new OptionCategoryResource($optionCategory)));
     return new OptionCategoryResource($optionCategory);
   }
 
@@ -73,7 +72,6 @@ class OptionCategoryController extends Controller
   {
     $optionCategory->update($request->validated());
     $optionCategory->load(['options' => function($x){$x->orderBy('order');}]);
-//    broadcast(new OptionCategoryEditor(new OptionCategoryResource($optionCategory)));
     return new OptionCategoryResource($optionCategory);
   }
 

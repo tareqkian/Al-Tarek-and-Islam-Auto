@@ -23,8 +23,7 @@ class PricelistController extends Controller
   {
     $brands = AutobanBrand::whereHas('models.autobans',function ($query){
       $query->where('price_list_appearance',true);})
-      ->get()
-      ->sortBy('brand_title');
+      ->get();
     return AutobanBrandResource::collection($brands);
   }
 
@@ -60,7 +59,7 @@ class PricelistController extends Controller
           }]);
       }
     ]);
-    $brand->models = $brand->models->sortBy('model_title');
+
     return new AutobanBrandResource($brand);
   }
 

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class AutobanCategory extends Pivot
 {
+  public $timestamps = true;
   public function autoban()
   {
     return $this->belongsTo(Autoban::class,'autoban_id');
@@ -20,6 +21,6 @@ class AutobanCategory extends Pivot
       Option::class,
       'autoban_category_option',
       'autoban_category_id',
-      'option_id');
+      'option_id')->withTimestamps();
   }
 }

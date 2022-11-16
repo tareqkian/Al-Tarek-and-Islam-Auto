@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\Autoban;
+use App\Models\OptionCategory;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -27,6 +28,24 @@ class AutobanResource extends JsonResource
       'market_availability' => ($this->market_availability || false),
       'order' => $this->order,
       'pivots' => AutobanCategoryResource::collection($this->whenLoaded('pivots')),
+      "pivotsOptions" => $this->pivotsOptions,
+
+
+      "pivotsOptionsRequired" => $this->whenLoaded('pivotsOptionsRequired',function (){
+        $pivotRequiredId = $this->pivotsOptionsRequired->map(function ($v){return $v->category->id;});
+        $categoryRequired = OptionCategory::where('required',1)->whereNotIn('id',$pivotRequiredId)->get();
+        return $categoryRequired->count();
+      }),
+
+
+      "pivotsOptions_count" => $this->whenLoaded('pivotsOptions',function (){
+        return $this->pivotsOptions->map(function ($x){
+          return $x['option'] ?: $x['options'];
+        })->flatten(1)->count();
+      }),
+      "latestOptionUpdate" => $this->whenLoaded("latestOptionUpdate",function (){
+        return $this->latestOptionUpdate->map(function ($x){return $x['updated_at']->format('d/m/Y');})->get(0);
+      }),
       'range' => $this->whenLoaded('range',function (){
         $official = $this->price->official;
         $gearBoxId = collect($this->pivots)

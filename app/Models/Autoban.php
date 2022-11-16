@@ -48,13 +48,39 @@ class Autoban extends Model
   {
     return $this->hasMany(AutobanCategory::class);
   }
+
+  public function pivotsOptions()
+  {
+    return $this->pivots()->with("options");
+  }
+
+  public function pivotsOptionsRequired()
+  {
+    return $this->pivots()->whereHas('category',function ($x){
+      return $x->where('required',1);
+    })->with('category');
+  }
+
   public function autobanCateory()
   {
     return $this->belongsToMany(
       OptionCategory::class,
       'autoban_category'
-    );
+    )->withTimestamps();
   }
+
+
+  public function latestOptionUpdate()
+  {
+    return $this->belongsToMany(
+      OptionCategory::class,
+      'autoban_category'
+    )->latest('updated_at');
+  }
+
+
+
+
   public function range()
   {
     return $this->belongsTo(AutobanPrice::class,'autoban_price_id')->with('translations');

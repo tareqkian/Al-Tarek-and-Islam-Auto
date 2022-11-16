@@ -29,7 +29,7 @@ class StoreOptionCategoryRequest extends FormRequest
       'en.option_category_title' => 'required_without:order|string|regex:/^[a-zA-Z0-9\!-_ ]+$/u|unique:option_category_translations,option_category_title',
       'ar.option_category_title' => 'required_without:order|string|regex:/^[كگچپژیلفقهموى ء-ي \!-_0-9]+$/|unique:option_category_translations,option_category_title',
       'input_type' => 'required_without:order|string',
-//      'number_format' => 'required_if:input_type,number|regex:(0)'
+      'required' => 'nullable|boolean',
     ];
   }
 }

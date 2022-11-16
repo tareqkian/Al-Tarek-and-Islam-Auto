@@ -42,7 +42,7 @@ class UpdateOptionCategoryRequest extends FormRequest
           ->ignore($this->id,'option_category_id')
       ],
       'input_type' => 'required_without:order|string',
-//      'number_format' => 'required_if:input_type,number|regex:(0)'
+      'required' => 'nullable|boolean',
     ];
   }
 }

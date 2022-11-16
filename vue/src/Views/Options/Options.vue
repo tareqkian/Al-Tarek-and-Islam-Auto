@@ -359,18 +359,17 @@
           </div>
         </div>
 
-<!--        <div class="form-floating my-2" v-if="selectedCategory.input_type === 'number'">
-          <input class="form-control"
-                 v-model="selectedCategory.number_format"
-                 :class="[errors.number_format ? 'is-invalid' : '']"
-                 placeholder="category Title">
-          <label> Number Format </label>
-          <div class="invalid-feedback">
-            <ul>
-              <li v-for="err in errors.number_format" :key="err"> {{err}} </li>
-            </ul>
+
+        <div class="my-2 mx-2">
+          <label> Input Required </label>
+          <div class="form-switch">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              v-model='selectedCategory.required'
+            />
           </div>
-        </div>-->
+        </div>
 
         <div class="modal-footer d-flex justify-content-center pb-0">
           <button type="submit" class="btn btn-primary" :class="[!loading || 'btn-loading']">Save</button>
@@ -448,8 +447,6 @@
         </div>
       </form>
     </Dialog>
-
-
 
 
 
@@ -723,6 +720,7 @@ const selectedCategoryOriginal = {
   ar: {option_category_title: null,},
   abbreviation: null,
   input_type: null,
+  required: false
   // number_format: null
 }
 const selectedCategory = reactive({...selectedCategoryOriginal})
@@ -739,6 +737,7 @@ const categoryDialog = (category = {})=>{
     ar:{option_category_title: category.option_category_title ? t(category,'option_category_title','ar') : null},
     abbreviation: category.abbreviation || null,
     input_type: category.input_type || null,
+    required: category.required || false
     // number_format: category.number_format || null
   })
 }

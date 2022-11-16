@@ -25,7 +25,8 @@ class OptionCategoryResource extends JsonResource
       'abbreviation' => $this->abbreviation,
       'input_type' => $this->input_type,
 //      'number_format' => $this->number_format,
-      'order' => $this->order
+      'order' => $this->order,
+      'required' => ($this->required || false),
     ];
   }
 }
