@@ -68,6 +68,7 @@ Route::middleware('auth:sanctum')->group(function(){
   Route::apiResource('/autobanTypes', AutobanTypeController::class);
   Route::apiResource('/autobanYears', AutobanYearController::class);
   Route::apiResource('/autoban', AutobanController::class);
+  Route::put('/autobanReview/{id}', [AutobanController::class,'autobanReview']);
   Route::get('/showAutoban/{any}', [AutobanController::class,'showAutoban']);
   Route::get('/autobanByBrand/{any}', [AutobanController::class,'showByBrand']);
   Route::apiResource('/autobanOption', AutobanOptionControllerAlias::class);

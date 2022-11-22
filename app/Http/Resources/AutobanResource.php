@@ -27,25 +27,21 @@ class AutobanResource extends JsonResource
       'price_list_appearance' => ($this->price_list_appearance || false),
       'market_availability' => ($this->market_availability || false),
       'order' => $this->order,
+      'reviewed' => $this->reviewed,
       'pivots' => AutobanCategoryResource::collection($this->whenLoaded('pivots')),
-      "pivotsOptions" => $this->pivotsOptions,
-
-
       "pivotsOptionsRequired" => $this->whenLoaded('pivotsOptionsRequired',function (){
         $pivotRequiredId = $this->pivotsOptionsRequired->map(function ($v){return $v->category->id;});
         $categoryRequired = OptionCategory::where('required',1)->whereNotIn('id',$pivotRequiredId)->get();
-        return $categoryRequired->count();
+        return [
+          'data' => $categoryRequired,
+          'count' => $categoryRequired->count()
+        ];
       }),
+      "specs_no" => $this->specs_no,
+      "specs_req0" => $this->specs_req0,
+      "specs_req" => $this->specs_req,
+      "latestOptionUpdate" => $this->latestOptionUpdate ? date("d/m/Y",strtotime($this->latestOptionUpdate)) : '',
 
-
-      "pivotsOptions_count" => $this->whenLoaded('pivotsOptions',function (){
-        return $this->pivotsOptions->map(function ($x){
-          return $x['option'] ?: $x['options'];
-        })->flatten(1)->count();
-      }),
-      "latestOptionUpdate" => $this->whenLoaded("latestOptionUpdate",function (){
-        return $this->latestOptionUpdate->map(function ($x){return $x['updated_at']->format('d/m/Y');})->get(0);
-      }),
       'range' => $this->whenLoaded('range',function (){
         $official = $this->price->official;
         $gearBoxId = collect($this->pivots)
@@ -61,9 +57,9 @@ class AutobanResource extends JsonResource
           ->map(function ($v){ return $v['id']; })
           ->first();
         $upRange = Autoban::whereHas("price.translations", function ($q) use ($official) {
-            $q->where("official", ">", $official)
-              ->where("official", "<", ($official * 1.1));
-          })
+          $q->where("official", ">", $official)
+            ->where("official", "<", ($official * 1.1));
+        })
           ->whereHas("pivots.options", function ($q) use ($gearBoxId) {
             $q->where("option_id",$gearBoxId);
           })
@@ -71,7 +67,7 @@ class AutobanResource extends JsonResource
             $q->where('option_id',$bodyShapeId);
           })
           ->where('autoban_model_id','!=',$this->autoban_model_id)
-          ->with('model.brand', 'type', 'year', 'price')
+          ->with('model.brand', 'type', 'year', 'price')->withoutGlobalScope('order')
           ->select('autoban_model_id',DB::raw(
             'MAX(autoban_price_id) autoban_price_id, MAX(autoban_year_id) autoban_year_id, MAX(autoban_type_id) autoban_type_id, MAX(id) id'
           ))
@@ -81,9 +77,9 @@ class AutobanResource extends JsonResource
           ->sortBy('price.official');;
 
         $downRange = Autoban::whereHas("price.translations", function ($q) use ($official) {
-            $q->where("official", "<", $official)
-              ->where("official", ">", ($official - ($official * 0.1)));
-          })
+          $q->where("official", "<", $official)
+            ->where("official", ">", ($official - ($official * 0.1)));
+        })
           ->whereHas("pivots.options", function ($q) use ($gearBoxId) {
             $q->where("option_id",$gearBoxId);
           })
@@ -91,7 +87,7 @@ class AutobanResource extends JsonResource
             $q->where('option_id',$bodyShapeId);
           })
           ->where('autoban_model_id','!=',$this->autoban_model_id)
-          ->with('model.brand', 'type', 'year', 'price')
+          ->with('model.brand', 'type', 'year', 'price')->withoutGlobalScope('order')
           ->select('autoban_model_id',DB::raw(
             'MAX(autoban_price_id) autoban_price_id, MAX(autoban_year_id) autoban_year_id, MAX(autoban_type_id) autoban_type_id, MAX(id) id'
           ))

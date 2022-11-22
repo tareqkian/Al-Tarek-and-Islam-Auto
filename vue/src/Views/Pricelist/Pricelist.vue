@@ -434,6 +434,7 @@ const getDetails = async (model, newAutobanSelect = null)=>{
   /*},500)*/
 
 
+/*
   const node = document.getElementById("lightgallery").children;
   const clone = node.cloneNode(true);
   document.getElementById("lightgallery").appendChild(clone);
@@ -441,6 +442,7 @@ const getDetails = async (model, newAutobanSelect = null)=>{
   document.getElementById("lightgallery").appendChild(clone);
   document.getElementById("lightgallery").appendChild(clone);
   document.getElementById("lightgallery").appendChild(clone);
+*/
 
 }
 

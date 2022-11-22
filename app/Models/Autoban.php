@@ -18,6 +18,7 @@ class Autoban extends Model
     'price_list_appearance',
     'market_availability',
     'order',
+    "reviewed"
   ];
 
   protected static function boot()
@@ -30,7 +31,8 @@ class Autoban extends Model
 
   public function model()
   {
-    return $this->belongsTo(AutobanModel::class,'autoban_model_id')->with('translations','brand');
+    return $this->belongsTo(AutobanModel::class,'autoban_model_id')
+      ->with('brand');
   }
   public function type()
   {
@@ -53,7 +55,6 @@ class Autoban extends Model
   {
     return $this->pivots()->with("options");
   }
-
   public function pivotsOptionsRequired()
   {
     return $this->pivots()->whereHas('category',function ($x){
@@ -68,18 +69,13 @@ class Autoban extends Model
       'autoban_category'
     )->withTimestamps();
   }
-
-
-  public function latestOptionUpdate()
+  /*public function latestOptionUpdate()
   {
     return $this->belongsToMany(
       OptionCategory::class,
       'autoban_category'
     )->latest('updated_at');
-  }
-
-
-
+  }*/
 
   public function range()
   {

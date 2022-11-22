@@ -110,7 +110,9 @@
                   @toggle="toggle"
                   @priceChange="priceChange"
                   @price_list_appearance_market_availability="price_list_appearance_market_availability"
-                  @page="AutobanStore.initAutobans" />
+                  @page="AutobanStore.initAutobans"
+                  @sort="sort"
+                />
 
               </div>
             </div>
@@ -524,6 +526,10 @@ const price_list_appearance_market_availability = async(autoban)=>{
       life: 3000
     })
   }
+}
+
+const sort = (meta,filter,dataSort,sortDir)=>{
+  AutobanStore.initAutobans(meta, filter, '', '',dataSort,sortDir)
 }
 
 </script>

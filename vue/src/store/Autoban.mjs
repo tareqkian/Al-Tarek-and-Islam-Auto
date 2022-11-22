@@ -46,10 +46,18 @@ export const useAutobanStore = defineStore("Autoban",()=>{
 
   const t = inject('t')
 
-  const initAutobans = async (meta={},filter = '',filterMode = 'like', column = '') => {
+  const initAutobans = async (
+    meta={},
+    filter = '',
+    filterMode = '',
+    column = '',
+    sortColumn = '',
+    sortDir = 'asc'
+  ) => {
     try {
+      filterMode = filterMode || 'like'
       autobans.loading.value = true
-      const {data} = await api.get(`/autoban?page=${meta.page+1 || 0}&perPage=${meta.rows || 0}&filter=${filter}&filterMode=${filterMode}&column=${column}`)
+      const {data} = await api.get(`/autoban?page=${meta.page+1 || 0}&perPage=${meta.rows || 0}&filter=${filter}&filterMode=${filterMode}&column=${column}&sortColumn=${sortColumn}&sortDir=${sortDir}`)
       autobans.data.value = data.data
       autobans.pagination.value = data.meta
       autobans.loading.value = false
@@ -204,6 +212,34 @@ export const useAutobanStore = defineStore("Autoban",()=>{
       throw e.response.data.errors
     }
   }
+  const handleAutobanReview = async (v, payload)=>{
+    try {
+      payload.pivotsOptionsRequired.v = v
+      const {data} = await api.put('/autobanReview/'+payload.id,payload)
+      const obj = autobans.data.value.find(x=>x.id===data.data.id);
+      if ( v ) obj.reviewed = payload.pivotsOptionsRequired.count
+      else obj.reviewed = 0
+    } catch (e) {
+      throw e.response.data.errors
+    }
+  }
+
+  const handleAutobanOption = async (autoban,payload) => {
+    try {
+      const {data} = await api.put(`/autobanOption/${autoban.id}`,payload);
+      const index = autobans.data.value.findIndex(x=>x.id===data.data.id);
+      console.log(
+        data.data,
+        autobans.data.value[index]
+      )
+
+      autobans.data.value[index] = {...data.data}
+    } catch (e) {
+      throw e.response.data.errors
+    }
+  }
+
+
   const handleAutobanBrands = async (payload)=>{
     try {
       if ( !payload.id ) {
@@ -465,6 +501,8 @@ export const useAutobanStore = defineStore("Autoban",()=>{
     initAutoban,
 
     handleAutobans,
+    handleAutobanReview,
+    handleAutobanOption,
     handleAutobanBrands,
     handleAutobanModels,
     handleAutobanModelGallery,

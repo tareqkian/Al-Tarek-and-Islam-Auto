@@ -542,3 +542,36 @@ input[type=number] {
     right: -40px;
   }
 }
+
+/*
+.p-tooltip{
+  background: #333;
+  color: #fff;
+  padding: 5px 10px !important;
+  border-radius: 10px;
+  z-index: 999999999;
+
+  .p-tooltip-arrow {
+    background: #333;
+    width: 10px !important;
+    height: 10px !important;
+  }
+}
+*/
+
+.p-tooltip {
+  z-index: 9999;
+  .p-tooltip-text {
+    /*background: #495057;*/
+    background: #333;
+    color: #ffffff;
+    padding: 0.75rem 0.75rem;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+  }
+  &.p-tooltip-right .p-tooltip-arrow {border-right-color: #495057;}
+  &.p-tooltip-left .p-tooltip-arrow {border-left-color: #495057;}
+  &.p-tooltip-top .p-tooltip-arrow {border-top-color: #495057;}
+  &.p-tooltip-bottom .p-tooltip-arrow {border-bottom-color: #495057;}
+}
+

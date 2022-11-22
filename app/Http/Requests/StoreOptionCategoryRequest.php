@@ -29,7 +29,32 @@ class StoreOptionCategoryRequest extends FormRequest
       'en.option_category_title' => 'required_without:order|string|regex:/^[a-zA-Z0-9\!-_ ]+$/u|unique:option_category_translations,option_category_title',
       'ar.option_category_title' => 'required_without:order|string|regex:/^[كگچپژیلفقهموى ء-ي \!-_0-9]+$/|unique:option_category_translations,option_category_title',
       'input_type' => 'required_without:order|string',
-      'required' => 'nullable|boolean',
+      'required' => 'boolean',
     ];
   }
+
+
+  /**
+   * Prepare inputs for validation.
+   *
+   * @return void
+   */
+  protected function prepareForValidation()
+  {
+    $this->merge([
+      'required' => $this->toBoolean($this->required),
+    ]);
+  }
+
+  /**
+   * Convert to boolean
+   *
+   * @param $booleable
+   * @return boolean
+   */
+  private function toBoolean($booleable)
+  {
+    return filter_var($booleable, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+  }
+
 }

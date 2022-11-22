@@ -19,6 +19,7 @@ export const useAutobanOptionsStore = defineStore('AutobanOptions',()=>{
     }
   }
 
+/*
   const handleAutobanOption = async (autoban,payload) => {
     try {
       await api.put(`/autobanOption/${autoban.id}`,payload);
@@ -26,10 +27,11 @@ export const useAutobanOptionsStore = defineStore('AutobanOptions',()=>{
       throw e.response.data.errors
     }
   }
+*/
 
   return {
     autobanOption,
     initAutobanOption,
-    handleAutobanOption
+    /*handleAutobanOption*/
   }
 })

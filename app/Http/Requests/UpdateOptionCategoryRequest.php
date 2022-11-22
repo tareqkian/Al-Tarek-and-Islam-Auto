@@ -42,7 +42,31 @@ class UpdateOptionCategoryRequest extends FormRequest
           ->ignore($this->id,'option_category_id')
       ],
       'input_type' => 'required_without:order|string',
-      'required' => 'nullable|boolean',
+      'required' => 'boolean',
     ];
   }
+
+  /**
+   * Prepare inputs for validation.
+   *
+   * @return void
+   */
+  protected function prepareForValidation()
+  {
+    $this->merge([
+      'required' => $this->toBoolean($this->required),
+    ]);
+  }
+
+  /**
+   * Convert to boolean
+   *
+   * @param $booleable
+   * @return boolean
+   */
+  private function toBoolean($booleable)
+  {
+    return filter_var($booleable, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+  }
+
 }

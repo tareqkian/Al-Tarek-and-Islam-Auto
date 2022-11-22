@@ -9,6 +9,7 @@ import ConfirmationService from 'primevue/confirmationservice';
 import "primevue/resources/primevue.min.css";
 import 'primeicons/primeicons.css';
 import BadgeDirective from 'primevue/badgedirective';
+import Tooltip from 'primevue/tooltip';
 
 import VueBlocksTree from 'vue3-blocks-tree';
 import 'vue3-blocks-tree/dist/vue3-blocks-tree.css';
@@ -22,6 +23,7 @@ import api from "./axios";
 import { appSettings } from "./appSettings";
 import t from "./plugins/translator"
 import { plugin as Slicksort } from 'vue-slicksort';
+
 
 window.Pusher = Pusher;
 window.Echo = new Echo({
@@ -63,6 +65,7 @@ app.use(PrimeVue, {inputStyle: 'filled'});
 app.use(ToastService);
 app.use(ConfirmationService);
 app.directive('badge', BadgeDirective);
+app.directive('tooltip', Tooltip);
 
 app.use(Slicksort)
 

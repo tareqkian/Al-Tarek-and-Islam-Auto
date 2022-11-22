@@ -1,18 +1,18 @@
 <template>
   <PageLayout>
-
     <div class="card">
       <div class="card-body">
         <autoban-table
           type="options"
           :autoban="autoban"
           :filters="filters"
-          :filter="filter"
           @autobanOptionDialog="autobanOptionDialog"
-          @page="AutobanStore.initAutobans" />
+          @page="AutobanStore.initAutobans"
+          @sort="sort"
+          @AutobanReviewed="AutobanReviewed"
+        />
       </div>
     </div>
-
     <Dialog
       modal class="modal-content modal-lg" content-class="modal-body"
       v-model:visible="autobanOptionDialogShow">
@@ -21,7 +21,6 @@
         @handleAutobanOptions="handleAutobanOptions"
       />
     </Dialog>
-
   </PageLayout>
 </template>
 
@@ -38,6 +37,7 @@ import {useAutobanStore} from "../../store/Autoban";
 import {FilterMatchMode} from "primevue/api";
 import {useAutobanOptionsStore} from "../../store/AutobanOptions";
 import {useToast} from "primevue/usetoast";
+
 
 const toast = useToast();
 const t = inject('t')
@@ -70,7 +70,7 @@ const handleAutobanOptions = async (optionModel) => {
       else if (typeof x !== 'object' && typeof x !== 'undefined') a[b] = x
       return a;
     },{})
-    await AutobanOptionsStore.handleAutobanOption(selectedAutoban.value,opModel)
+    await AutobanStore.handleAutobanOption(selectedAutoban.value,opModel)
     autobanOptionDialogShow.value = !autobanOptionDialogShow.value
     toast.add({
       closable: false,
@@ -84,6 +84,21 @@ const handleAutobanOptions = async (optionModel) => {
     loading.value = false
     errors.value = e;
   }
+}
+
+const sort = (meta,filter,dataSort,sortDir)=>{
+  AutobanStore.initAutobans(meta, filter, '', '',dataSort,sortDir)
+}
+
+const AutobanReviewed = async (v,autoban) => {
+  await AutobanStore.handleAutobanReview(v, autoban)
+  toast.add({
+    closable: false,
+    severity: "success",
+    summary: "Options",
+    detail: "Success",
+    life: 3000
+  })
 }
 
 </script>
