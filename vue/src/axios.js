@@ -10,4 +10,9 @@ api.interceptors.request.use(config=>{
   return config
 })
 api.defaults.withCredentials = true
+api.defaults.headers.common = {
+  'X-Requested-With': 'XMLHttpRequest',
+  'Content-Type':'application/json',
+  'Accept':'application/json'
+};
 export default api;

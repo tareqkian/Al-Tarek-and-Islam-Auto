@@ -321,6 +321,7 @@
         </template>
       </FileUpload>
     </Dialog>
+
   </PageLayout>
 </template>
 
@@ -674,6 +675,7 @@ const deleteImage = (event,img) => {
     }
   });
 }
+
 </script>
 
 <style scoped>

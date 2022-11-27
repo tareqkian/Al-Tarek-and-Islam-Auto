@@ -12,6 +12,7 @@ use App\Models\AutobanModel;
 use App\Http\Requests\StoreAutobanModelRequest;
 use App\Http\Requests\UpdateAutobanModelRequest;
 use App\Models\NewCarGallery;
+use App\Models\SaveMyFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
@@ -70,7 +71,7 @@ class AutobanModelController extends Controller
     $autobanBrand = AutobanBrand::find($request->input('autoban_brand_id'));
     $data = $request->input('data');
     foreach ($request->input('data') as $index => $item) {
-      $dpPath = $this->saveImage($data[$index]['model_image']);
+      $dpPath = SaveMyFile::image($data[$index]['model_image'],"models/");
       $data[$index]['model_image'] = $dpPath;
     }
     $models = $autobanBrand->models()->createMany($data);
@@ -87,7 +88,7 @@ class AutobanModelController extends Controller
   {
     $autobanModel = AutobanModel::find($id);
     foreach ($request->all() as $image) {
-      $imagePath = $this->saveImage($image,"newCarGallery/{$autobanModel->id}/");
+      $imagePath = SaveMyFile::image($image,"newCarGallery/{$autobanModel->id}/","watermark/newCarGallery.png");
       $autobanModel->gallery()->create(['image' => $imagePath]);
     }
     return new AutobanModelResource($autobanModel->load('brand','gallery'));
@@ -130,7 +131,7 @@ class AutobanModelController extends Controller
 
     if ( isset($validated['model_image']) ) {
       if (preg_match('/^data:image\/(\w+);base64,/',$validated['model_image'],$type)) {
-        $dpPath = $this->saveImage($validated['model_image']);
+        $dpPath = SaveMyFile::image($validated['model_image'],"models/");
         $validated['model_image'] = $dpPath;
         if ( $autobanModel->model_image ) {
           $deletePath = public_path($autobanModel->model_image);
@@ -163,7 +164,7 @@ class AutobanModelController extends Controller
     return [ "status" => 204 ];
   }
 
-  private function saveImage($image,$dir = "models/")
+  /*private function saveImage($image,$dir = "models/")
   {
     if (preg_match('/^data:image\/(\w+);base64,/',$image,$type)) {
       $image = substr($image, strpos($image,',')+1);
@@ -179,7 +180,6 @@ class AutobanModelController extends Controller
     } else {
       throw new \Exception("did not match data URI with image data");
     }
-    /*$dir = $dir;*/
     $file = Str::random().time().'.'.$type;
     $absolutePath = public_path($dir);
     $relativePath = $dir.$file;
@@ -188,6 +188,6 @@ class AutobanModelController extends Controller
     }
     file_put_contents($relativePath,$image);
     return $relativePath;
-  }
+  }*/
 
 }

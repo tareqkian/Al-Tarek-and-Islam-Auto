@@ -17,7 +17,10 @@ use App\Models\AutobanPrice;
 use App\Models\OptionCategory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 
 class AutobanController extends Controller
 {
@@ -87,6 +90,13 @@ class AutobanController extends Controller
     ->join('autoban_year_translations','autoban_year_translations.autoban_year_id','=','autobans.autoban_year_id')
       ->where('autoban_year_translations.locale',app()->getLocale())
 
+    ->join(
+      'autoban_price_translations',
+      'autoban_price_translations.autoban_price_id',
+      '=',
+      'autobans.autoban_price_id'
+    )->where('autoban_price_translations.locale',app()->getLocale())
+
     ->leftJoinSub(
       DB::table('autoban_category')
         ->leftJoin("autoban_category_option", 'autoban_category_option.autoban_category_id', '=', 'autoban_category.id')
@@ -132,28 +142,7 @@ class AutobanController extends Controller
     ->orderByRaw($sortQuery)
     ->paginate($request->perPage ?: 10);
 
-/*    $autoban = Autoban::with(
-      'model',
-      'type',
-      'year',
-      'price',
-      'pivotsOptions',
-      'latestOptionUpdate',
-      'pivotsOptionsRequired'
-    )
-      ->select('autobans.*')
-      ->join('autoban_model_translations','autoban_model_translations.autoban_model_id','=','autobans.autoban_model_id')->where('autoban_model_translations.locale',app()->getLocale())
-      ->join('autoban_models','autoban_models.id','=','autobans.autoban_model_id')
-      ->join('autoban_brand_translations','autoban_brand_translations.autoban_brand_id','=','autoban_models.autoban_brand_id')->where('autoban_brand_translations.locale',app()->getLocale())
-      ->join('autoban_year_translations','autoban_year_translations.autoban_year_id','=','autobans.autoban_year_id')->where('autoban_year_translations.locale',app()->getLocale())
-      ->whereRaw("$column LIKE ?", [$filter]);
-    if ( !$sortColumn || $sortColumn === 'model' ) {
-      $autoban->orderBy('autoban_brand_translations.brand_title', $sortDir)
-        ->orderBy('autoban_model_translations.model_title', $sortDir)
-        ->orderBy('autoban_year_translations.year_number')
-        ->orderBy('order');
-    }
-    $autoban->paginate($request->perPage ?: 10);*/
+
 
     /*return $autoban;*/
     return AutobanResource::collection($autoban);
@@ -316,4 +305,48 @@ class AutobanController extends Controller
     $autoban->delete();
     return [ "status" => 204 ];
   }
+
+/*  public function images(Request $request)
+  {
+    $folder = public_path("newCarGallery");
+    $filesInFolder = File::directories($folder);
+    $fileNames = [];
+    foreach($filesInFolder as $path) {
+      $file = pathinfo($path);
+      $fileNames[] = $file ;
+    }
+    $autobanModel = AutobanModel::with("brand")
+      ->get()
+      ->map(function ($x){
+        return [
+          'name' => Str::lower("{$x->brand->brand_title}_{$x->model_title}"),
+          'id' => $x->id
+        ];
+      })->reject(function ($x) use ($fileNames) {
+        $nameArr = collect($fileNames)->map(function ($x){ return $x['filename']; })->toArray();
+        return !in_array($x['name'],$nameArr);
+      })->values();
+
+    $newFiles = [];
+    foreach ($autobanModel as $files) {
+      $oldFolder = public_path("newCarGallery/{$files['name']}");
+      $renameFolder = public_path("newCarGallery/{$files['id']}");
+      File::move($oldFolder,$renameFolder);
+      $autobanModel = AutobanModel::find($files['id']);
+      $filesPath = File::files($renameFolder);
+      $newFiles[$files['id']] = collect($filesPath)->map(function ($x){
+        $x = pathinfo($x);
+        $path = "{$x['dirname']}/{$x['basename']}";
+        $whatIWant = substr($path, strpos($path, "public\\") + 7);
+        return ["image" => $whatIWant];
+      });
+      $autobanModel->gallery()->createMany($newFiles[$files['id']]);
+    }
+    return [
+      "fileNames" => $fileNames,
+      "autobanModel" => $autobanModel,
+      'newFiles' => $newFiles
+    ];
+  }
+*/
 }

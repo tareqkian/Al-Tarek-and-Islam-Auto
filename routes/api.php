@@ -94,6 +94,7 @@ Route::middleware('auth:sanctum')->group(function(){
 
   Route::apiResource('/autobanComparison', AutobanComparisonControllerAlias::class);
 
+
   Route::post('/logout',[AuthController::class,'logout']);
 });
 Route::apiResource('/settings',SettingController::class);

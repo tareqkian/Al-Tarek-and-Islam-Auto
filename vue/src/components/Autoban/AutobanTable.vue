@@ -28,22 +28,22 @@
     <thead>
       <tr @click="trSorting($event)">
         <th class="sorting" data-sort="model">Model</th>
-        <th style="width: 3rem" v-if="type === 'autoban'"></th>
-        <th class="sorting" data-sort="type_title" style="width: 15rem">Type</th>
-        <th class="sorting" data-sort="year_number" style="width: 6rem">Year</th>
-        <th class="sorting" data-sort="specs_no" style="width: 10rem" v-if="type === 'options'">No. Of Specs</th>
-        <th class="sorting" data-sort="specs_req" style="width: 10rem" v-if="type === 'options'">Required Specs</th>
-        <th style="width: 7rem" v-if="type === 'options'">Review</th>
-        <th class="sorting" data-sort="latestOptionUpdate" style="width: 15rem" v-if="type === 'options'">Last Update</th>
-        <th style="width: 13rem" v-if="type === 'autoban' || type === 'prices'">Official</th>
-        <th style="width: 13rem" v-if="type === 'prices'">Commercial</th>
-        <th style="width: 13rem" v-if="type === 'prices'">Sale</th>
-        <th style="width: 3rem;padding: 0 !important;" v-if="type === 'prices'"></th>
-        <th style="width: 10rem" v-if="type === 'autoban'"> Appearance </th>
-        <th style="width: 3rem" v-if="type === 'prices'"> Availability </th>
-        <th style="width: 7rem" v-if="type === 'options'"> Insert / Edit </th>
-        <th style="width: 7rem" v-if="type === 'autoban' && ($can(`edit_${route.meta.permissionsLayout}`) || $can(`delete_${route.meta.permissionsLayout}`))"> Actions </th>
-        <th style="width: 7rem" v-if="type === 'prices'"></th>
+        <th style="width: 40px;padding: 0 !important;" v-if="type === 'autoban'"></th>
+        <th class="sorting" data-sort="type_title" style="width: 230px !important;">Type</th>
+        <th class="sorting" data-sort="year_number" style="width: 80px">Year</th>
+        <th class="sorting" data-sort="specs_no" style="width: 100px" v-if="type === 'options'">No. Of Specs</th>
+        <th class="sorting" data-sort="specs_req" style="width: 100px" v-if="type === 'options'">Required Specs</th>
+        <th style="width: 90px" v-if="type === 'options'">Review</th>
+        <th class="sorting" data-sort="latestOptionUpdate" style="width: 230px !important;" v-if="type === 'options'">Last Update</th>
+        <th class="sorting" data-sort="official" style="width: 130px" v-if="type === 'autoban' || type === 'prices'">Official</th>
+        <th class="sorting" data-sort="commercial" style="width: 130px" v-if="type === 'prices'">Commercial</th>
+        <th class="sorting" data-sort="sale" style="width: 130px" v-if="type === 'prices'">Sale</th>
+        <th style="width: 40px;padding: 0 !important;" v-if="type === 'prices'"></th>
+        <th style="width: 100px" v-if="type === 'autoban'"> Appearance </th>
+        <th style="width: 40px" v-if="type === 'prices'"> AV </th>
+        <th style="width: 90px" v-if="type === 'options'"> Insert / Edit </th>
+        <th style="width: 90px" v-if="type === 'autoban' && ($can(`edit_${route.meta.permissionsLayout}`) || $can(`delete_${route.meta.permissionsLayout}`))"> Actions </th>
+        <th style="width: 90px" v-if="type === 'prices'"></th>
       </tr>
     </thead>
     <thead>
@@ -86,7 +86,7 @@
           <Image width="80" :src="item.model.model_image" preview/>
           <span class="mx-2"> {{ `${t(item.model.brand,'brand_title')} - ${t(item.model,'model_title')}` }} </span>
         </td>
-        <td style="width: 75%" colspan="20" class="p-1">
+        <td style="width: 75%;padding: 7px 0 !important;" colspan="20" class="p-0">
           <table class="w-100">
             <draggable
               :list="ref(autoban.data.slice(item.indexFrom,item.indexTo)).value"
@@ -98,18 +98,18 @@
             >
               <template #item="{element}">
                 <tr>
-                  <td style="width: 3rem" v-if="type === 'autoban'" class="text-center"> <i class="pi pi-bars handle p-1" style="cursor: move"></i> </td>
-                  <td style="width: 15rem"> {{ t(element.type,'type_title') }} </td>
-                  <td style="width: 6rem"> {{ t(element.year,'year_number') }} </td>
+                  <td style="width: 40px; padding: 0 !important;" v-if="type === 'autoban'" class="text-center"> <i class="pi pi-bars handle p-1" style="cursor: move"></i> </td>
+                  <td style="width: 230px !important;"> {{ t(element.type,'type_title') }} </td>
+                  <td style="width: 80px"> {{ t(element.year,'year_number') }} </td>
 
-                  <td style="width: 10rem" v-if="type === 'options'">{{ element.specs_no || '-' }}</td>
-                  <td style="width: 10rem" v-if="type === 'options'"
+                  <td style="width: 100px" v-if="type === 'options'">{{ element.specs_no || '-' }}</td>
+                  <td style="width: 100px" v-if="type === 'options'"
                       :class="element.reviewed === element.pivotsOptionsRequired.count || 'text-warning'">
                     <span v-tooltip.right="{ value: element.pivotsOptionsRequired.data.map(x=>`${t(x,'option_category_title')} <small class='text-muted'>${x.abbreviation}</small>`).join('<br>'), escape: true}">
                       {{ element.pivotsOptionsRequired.count || '-' }}
                     </span>
                   </td>
-                  <td style="width: 7rem" v-if="type === 'options'">
+                  <td style="width: 90px" v-if="type === 'options'">
                     <div class="form-switch">
                       <input
                         class="form-check-input"
@@ -119,32 +119,32 @@
                       />
                     </div>
                   </td>
-                  <td style="width: 15rem" v-if="type === 'options'"> {{ element.latestOptionUpdate }} </td>
+                  <td style="width: 230px !important;" v-if="type === 'options'"> {{ element.latestOptionUpdate }} </td>
 
-                  <td style="width: 13rem" v-if="type === 'autoban' || type === 'prices'">
+                  <td style="width: 130px" v-if="type === 'autoban' || type === 'prices'">
                     <InputNumber v-if="type === 'prices'" v-model="element.price.official"
                                  input-class="form-control form-control-sm"
                                  mode="decimal" />
                     <span v-if="type === 'autoban'">{{ t(element.price,'official',null,true) }}</span>
                   </td>
-                  <td style="width: 13rem" v-if="type === 'prices'">
+                  <td style="width: 130px" v-if="type === 'prices'">
                     <InputNumber
                       v-model="element.price.commercial"
                       input-class="form-control form-control-sm"
                       mode="decimal"
                     />
                   </td>
-                  <td style="width: 13rem" v-if="type === 'prices'">
+                  <td style="width: 130px" v-if="type === 'prices'">
                     <InputNumber
                       v-model="element.price.sale"
                       input-class="form-control form-control-sm"
                       mode="decimal"
                     />
                   </td>
-                  <td style="width: 3rem; padding: 0 !important;" class="text-center" v-if="type === 'prices'">
+                  <td style="width: 40px; padding: 0 !important;" class="text-center" v-if="type === 'prices'">
                     <i @click="emits('toggle',$event,element)" class="text-primary fa fa-calculator"></i>
                   </td>
-                  <td style="width: 10rem" class="text-center" v-if="type === 'autoban'">
+                  <td style="width: 100px" class="text-center" v-if="type === 'autoban'">
                     <div class="form-switch">
                       <input
                         class="form-check-input"
@@ -154,7 +154,7 @@
                       />
                     </div>
                   </td>
-                  <td style="width: 3rem; padding: 0 !important;" class="text-center" v-if="type === 'prices'">
+                  <td style="width: 40px; padding: 0 !important;" class="text-center" v-if="type === 'prices'">
                     <div class="form-switch px-2">
                       <input
                         class="form-check-input m-0"
@@ -164,12 +164,12 @@
                       />
                     </div>
                   </td>
-                  <td style="width: 7rem" v-if="type === 'options'">
+                  <td style="width: 90px" v-if="type === 'options'">
                     <div class="form-switch">
                       <i class="fa fa-edit text-info mx-1" @click="emits('autobanOptionDialog',element)"></i>
                     </div>
                   </td>
-                  <td style="width: 7rem" v-if="type === 'autoban' && ($can(`edit_${route.meta.permissionsLayout}`) || $can(`delete_${route.meta.permissionsLayout}`))">
+                  <td style="width: 90px" v-if="type === 'autoban' && ($can(`edit_${route.meta.permissionsLayout}`) || $can(`delete_${route.meta.permissionsLayout}`))">
                     <i class="fa fa-edit text-info mx-1"
                        v-if="$can(`edit_${route.meta.permissionsLayout}`)"
                        @click="emits('autobanDialog',element)"></i>
@@ -177,7 +177,7 @@
                        v-if="$can(`delete_${route.meta.permissionsLayout}`)"
                        @click="emits('autobanDelete',$event,element)"></i>
                   </td>
-                  <td style="width: 7rem; padding: 0 !important;" class="text-center" v-if="type === 'prices'">
+                  <td style="width: 90px; padding: 0 !important;" class="text-center" v-if="type === 'prices'">
                     <button @click.prevent="emits('priceChange',element)" type="submit" class="btn btn-sm btn-primary">Confirm</button>
                   </td>
                 </tr>
@@ -187,114 +187,6 @@
         </td>
       </tr>
     </tbody>
-<!--    <tbody v-for="{ model } in autoban.data.filter((value, index, self)=>(index ? value.model.id !== self[index-1].model.id : true ))" :key="model.id">
-      <tr>
-        <td style="width: 25%">
-          <Image width="50" :src="model.brand.brand_image" preview/>
-          <Image width="80" :src="model.model_image" preview/>
-          <span class="mx-2"> {{ `${t(model.brand,'brand_title')} - ${t(model,'model_title')}` }} </span>
-        </td>
-        <td style="width: 75%" colspan="20" class="p-1">
-          <table class="w-100">
-            <draggable
-              :list="ref(autoban.data.filter(x=>x.model.id===model.id)).value"
-              @start="drag=true" @end="drag=false"
-              :group="`model${model.id}`"
-              tag="tbody" item-key="id"
-              @change="onRowReorder"
-              handle=".handle"
-            >
-              <template #item="{element}">
-                <tr>
-                  <td style="width: 3rem" v-if="type === 'autoban'" class="text-center"> <i class="pi pi-bars handle p-1" style="cursor: move"></i> </td>
-                  <td style="width: 15rem"> {{ t(element.type,'type_title') }} </td>
-                  <td style="width: 6rem"> {{ t(element.year,'year_number') }} </td>
-
-                  <td style="width: 10rem" v-if="type === 'options'">{{ element.pivotsOptions_count }} </td>
-                  <td style="width: 10rem" v-if="type === 'options'"
-                      :class="element.reviewed === element.pivotsOptionsRequired.count || 'text-warning'">
-                    <span v-tooltip.right="{ value: element.pivotsOptionsRequired.data.map(x=>`${t(x,'option_category_title')} <small class='text-muted'>${x.abbreviation}</small>`).join('<br>'), escape: true}">
-                      {{ element.pivotsOptionsRequired.count || '-' }}
-                    </span>
-                  </td>
-                  <td style="width: 7rem" v-if="type === 'options'">
-                    <div class="form-switch">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        :checked="element.reviewed === element.pivotsOptionsRequired.count"
-                        @change="emits('AutobanReviewed',$event.target.checked,element)"
-                      />
-                    </div>
-                  </td>
-                  <td style="width: 15rem" v-if="type === 'options'"> {{ element.latestOptionUpdate }} </td>
-
-                  <td style="width: 13rem" v-if="type === 'autoban' || type === 'prices'">
-                    <InputNumber v-if="type === 'prices'" v-model="element.price.official"
-                                 input-class="form-control form-control-sm"
-                                 mode="decimal" />
-                    <span v-if="type === 'autoban'">{{ t(element.price,'official',null,true) }}</span>
-                  </td>
-                  <td style="width: 13rem" v-if="type === 'prices'">
-                    <InputNumber
-                      v-model="element.price.commercial"
-                      input-class="form-control form-control-sm"
-                      mode="decimal"
-                    />
-                  </td>
-                  <td style="width: 13rem" v-if="type === 'prices'">
-                    <InputNumber
-                      v-model="element.price.sale"
-                      input-class="form-control form-control-sm"
-                      mode="decimal"
-                    />
-                  </td>
-                  <td style="width: 3rem; padding: 0 !important;" class="text-center" v-if="type === 'prices'">
-                    <i @click="emits('toggle',$event,element)" class="text-primary fa fa-calculator"></i>
-                  </td>
-                  <td style="width: 10rem" class="text-center" v-if="type === 'autoban'">
-                    <div class="form-switch">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        @change="emits('price_list_appearance_market_availability',element)"
-                        v-model='element.price_list_appearance'
-                      />
-                    </div>
-                  </td>
-                  <td style="width: 3rem; padding: 0 !important;" class="text-center" v-if="type === 'prices'">
-                    <div class="form-switch px-2">
-                      <input
-                        class="form-check-input m-0"
-                        type="checkbox"
-                        @change="emits('price_list_appearance_market_availability',element)"
-                        v-model='element.market_availability'
-                      />
-                    </div>
-                  </td>
-                  <td style="width: 7rem" v-if="type === 'options'">
-                    <div class="form-switch">
-                      <i class="fa fa-edit text-info mx-1" @click="emits('autobanOptionDialog',element)"></i>
-                    </div>
-                  </td>
-                  <td style="width: 7rem" v-if="type === 'autoban' && ($can(`edit_${route.meta.permissionsLayout}`) || $can(`delete_${route.meta.permissionsLayout}`))">
-                    <i class="fa fa-edit text-info mx-1"
-                       v-if="$can(`edit_${route.meta.permissionsLayout}`)"
-                       @click="emits('autobanDialog',element)"></i>
-                    <i class="fa fa-trash text-danger mx-1"
-                       v-if="$can(`delete_${route.meta.permissionsLayout}`)"
-                       @click="emits('autobanDelete',$event,element)"></i>
-                  </td>
-                  <td style="width: 7rem; padding: 0 !important;" class="text-center" v-if="type === 'prices'">
-                    <button @click.prevent="emits('priceChange',element)" type="submit" class="btn btn-sm btn-primary">Confirm</button>
-                  </td>
-                </tr>
-              </template>
-            </draggable>
-          </table>
-        </td>
-      </tr>
-    </tbody>-->
     <tfoot>
       <tr>
         <td colspan="20">
@@ -471,5 +363,9 @@ const findLastIndex = (arr,v,indexStart)=>{
 }
 ::v-deep(.p-dropdown-clear-icon) {
   top: 51% !important;
+}
+
+.sorting {
+  padding-left: 25px !important;
 }
 </style>

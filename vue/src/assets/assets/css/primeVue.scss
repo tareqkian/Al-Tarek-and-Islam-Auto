@@ -575,3 +575,15 @@ input[type=number] {
   &.p-tooltip-bottom .p-tooltip-arrow {border-bottom-color: #495057;}
 }
 
+.sorting{
+  &:before {
+    top: 8px !important;
+    left: 1em !important;
+    right: unset !important;
+  }
+  &:after {
+    top: 8px !important;
+    left: 0.5em !important;
+    right: unset !important;
+  }
+}

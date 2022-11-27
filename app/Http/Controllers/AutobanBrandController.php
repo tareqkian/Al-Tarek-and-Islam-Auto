@@ -10,6 +10,7 @@ use App\Http\Resources\AutobanBrandResource;
 use App\Models\AutobanBrand;
 use App\Http\Requests\StoreAutobanBrandRequest;
 use App\Http\Requests\UpdateAutobanBrandRequest;
+use App\Models\SaveMyFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\File;
@@ -39,7 +40,8 @@ class AutobanBrandController extends Controller
   public function store(StoreAutobanBrandRequest $request)
   {
     $validated = $request->all();
-    $dpPath = $this->saveImage($validated['brand_image']);
+    /*$dpPath = $this->saveImage($validated['brand_image']);*/
+    $dpPath = SaveMyFile::image($validated['brand_image'],'brands/');
     $validated['brand_image'] = $dpPath;
     $brand = AutobanBrand::create($validated);
 //    broadcast(new BrandAdder(new AutobanBrandResource($brand)));
@@ -69,7 +71,8 @@ class AutobanBrandController extends Controller
     $validated = $request->all();
     if ( isset($validated['brand_image']) ) {
       if (preg_match('/^data:image\/(\w+);base64,/',$validated['brand_image'],$type)) {
-        $dpPath = $this->saveImage($validated['brand_image']);
+        /*$dpPath = $this->saveImage($validated['brand_image']);*/
+        $dpPath = SaveMyFile::image($validated['brand_image'],'brands/');
         $validated['brand_image'] = $dpPath;
         if ( $autobanBrand->brand_image ) {
           $deletePath = public_path($autobanBrand->brand_image);
@@ -108,7 +111,7 @@ class AutobanBrandController extends Controller
   }
 
 
-  private function saveImage($image)
+/*  private function saveImage($image)
   {
     if (preg_match('/^data:image\/(\w+);base64,/',$image,$type)) {
       $image = substr($image, strpos($image,',')+1);
@@ -134,6 +137,6 @@ class AutobanBrandController extends Controller
     }
     file_put_contents($relativePath,$image);
     return $relativePath;
-  }
+  }*/
 
 }

@@ -67,30 +67,23 @@
       <div v-if="!Array.isArray(pricelistDetails.data)" class="card-body position-relative">
         <Loading class="absolute-loading my-0" v-if="pricelistDetails.loading" />
         <div class="h-100">
-<!--
-          <div v-if="pricelistDetails.data.gallery.length" class="mx-3">
-            <lightgallery class="owl-carousel owl-carousel-icons2 mb-3 mt-3" :settings="{ speed: 500, plugins: plugins }">
-              <a v-for="img of pricelistDetails.data.gallery.map(x=>x.image)"
-                 :href="img" :data-external-thumb-image="img"
-                 class="item">
-                <img width="100" :src="img" />
-              </a>
-            </lightgallery>
+          <div class="mb-5">
+            <span class="h4 pb-1 border-bottom">Gallery:</span>
+            <infinite-slide-bar :duration="`${pricelistDetails.data.gallery.length*2}s`" >
+              <div class="lightgallery row flex-nowrap overflow-hidden mt-3 ms-2">
+                <a v-for="(img,index) of pricelistDetails.data.gallery"
+                   :data-src="img.image"
+                   :key="img.id"
+                   class="item col d-flex align-items-center text-center pointer p-0 mx-3">
+                  <img
+                    class="img-responsive rounded"
+                    style="width: 100px"
+                    :src="img.image"
+                    :alt="`Thumb-${index+2}`">
+                </a>
+              </div>
+            </infinite-slide-bar>
           </div>
--->
-          <div class="my-5">
-            <div id="lightgallery" class="row flex-nowrap overflow-hidden">
-              <a v-for="(img,index) of pricelistDetails.data.gallery"
-                 :data-src="img.image" href="" class="item col-3">
-                <img
-                  class="img-responsive rounded"
-                  :src="img.image"
-                  :alt="`Thumb-${index+1}`">
-              </a>
-            </div>
-          </div>
-
-
           <span class="h4 pb-1 border-bottom">Generations:</span>
           <template v-for="year in pricelistDetails.data.autobans.map(x=>x.year.year_number).filter((a,b,c)=>c.indexOf(a)===b).sort((a,b)=>a-b)" :key="year">
             <div v-if="pricelistDetails.data.autobans.map(x=>x.year.year_number).filter((a,b,c)=>c.indexOf(a)===b).length > 1"
@@ -193,18 +186,6 @@
                   {{ t(Math.abs(autobanSelected.price.official - autobanSelected.price.sale),'self',null,true) }}
                 </div>
               </div>
-<!--
-              <div class="my-2">
-                <div>
-                  <small class="text-muted">Deposite</small>
-                  60000
-                </div>
-                <div>
-                  <small class="text-muted">Installment</small>
-                  2963 x 60
-                </div>
-              </div>
--->
             </div>
             <Divider />
             <div class="mb-3">
@@ -309,7 +290,6 @@
     </Dialog>
 
     <div v-if="leftDetailedDialogComputed" class="background"></div>
-
   </PageLayout>
 </template>
 
@@ -329,6 +309,7 @@ import lightgallery from 'lightgallery/vue';
 import lgThumbnail from 'lightgallery/plugins/thumbnail';
 import lgZoom from 'lightgallery/plugins/zoom';
 import styles from 'lightgallery/scss/lightgallery.scss';
+import InfiniteSlideBar from 'vue3-infinite-slide-bar';
 
 const plugins = ref([lgThumbnail, lgZoom]);
 
@@ -407,43 +388,7 @@ const getDetails = async (model, newAutobanSelect = null)=>{
     autobanSelected.value = pricelistDetails.value.data.autobans[0]
   }
 
-
-  lightGallery(document.getElementById('lightgallery'));
-
-  /*setTimeout(()=>{*/
-    var owl = $('.owl-carousel-icons2');
-    owl.trigger('destroy.owl.carousel')
-    owl.owlCarousel({
-      loop: true,
-      rewind: false,
-      margin: 15,
-      animateIn: 'fadeInDowm',
-      animateOut: 'fadeOutDown',
-      autoplayTimeout: 1500, // set value to change speed
-      autoplayHoverPause: true,
-      dots: false,
-      nav: false,
-      autoplay: true,
-      responsiveClass: true,
-      responsive: {
-        0: {items: 2, nav: true},
-        600: {items: 3, nav: true},
-        1300: {items: 5, nav: true}
-      }
-    })
-  /*},500)*/
-
-
-/*
-  const node = document.getElementById("lightgallery").children;
-  const clone = node.cloneNode(true);
-  document.getElementById("lightgallery").appendChild(clone);
-  document.getElementById("lightgallery").appendChild(clone);
-  document.getElementById("lightgallery").appendChild(clone);
-  document.getElementById("lightgallery").appendChild(clone);
-  document.getElementById("lightgallery").appendChild(clone);
-*/
-
+  lightGallery(document.querySelector('.lightgallery'));
 }
 
 const optionTree = computed(()=>OptionStore.optionTree)
@@ -511,6 +456,7 @@ const basicOption = (optId)=>{
 
 </script>
 
+
 <style scoped lang="scss">
 :deep(.p-overlaypanel) {
   padding: 150px !important;
@@ -547,14 +493,4 @@ const basicOption = (optId)=>{
   bottom: 0;
   z-index: 1000;
 }
-
-
-
-#lightgallery > .item {
-  animation: 10s autoplay3 infinite linear}
-@keyframes autoplay3 {
-  0% {right: 0}
-  100% {right: 100em}
-}
-
 </style>

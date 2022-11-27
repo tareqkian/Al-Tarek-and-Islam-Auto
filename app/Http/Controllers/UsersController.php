@@ -8,6 +8,7 @@ use App\Events\UsersDeleter;
 use App\Events\UsersEditor;
 use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Resources\UserResource;
+use App\Models\SaveMyFile;
 use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
@@ -36,7 +37,8 @@ class UsersController extends Controller
   {
     $validated = $request->validated();
     if ( isset($validated['avatar']) && $validated['avatar'] ){
-      $dpPath = $this->saveImage($validated['avatar']);
+      /*$dpPath = $this->saveImage($validated['avatar']);*/
+      $dpPath = SaveMyFile::image($validated['avatar'],"users/");
       $validated['avatar'] = $dpPath;
     }
     $validated['settings']["devices"] = [
@@ -47,7 +49,6 @@ class UsersController extends Controller
     unset($validated['Desktop']);
     unset($validated['Mobile']);
     $user = User::create($validated);
-//    broadcast(new UsersAdder(new UserResource($user)));
     return new UserResource($user);
   }
 
@@ -73,7 +74,8 @@ class UsersController extends Controller
   {
     $validated = $request->validated();
     if ( isset($validated['avatar']) && $validated['avatar'] ){
-      $dpPath = $this->saveImage($validated['avatar']);
+      /*$dpPath = $this->saveImage($validated['avatar']);*/
+      $dpPath = SaveMyFile::image($validated['avatar'],"users/");
       $validated['avatar'] = $dpPath;
       if ( $user->avatar && $user->avatar !== 'users/default.png' ) {
         $deletePath = public_path($user->avatar);
@@ -89,8 +91,6 @@ class UsersController extends Controller
     unset($validated['Desktop']);
     unset($validated['Mobile']);
     $user->update($validated);
-//    broadcast(new MainEvent());
-//    broadcast(new UsersEditor(new UserResource($user)));
     return new UserResource($user);
   }
 
@@ -114,12 +114,11 @@ class UsersController extends Controller
       $deletePath = public_path($user->avatar);
       File::delete($deletePath);
     }
-//    broadcast(new UsersDeleter($user));
     $user->delete();
     return [ "status" => 204 ];
   }
 
-  private function saveImage($avatar)
+/*  private function saveImage($avatar)
   {
     if ($avatar && preg_match('/^data:image\/(\w+);base64,/',$avatar,$type)) {
       $avatar = substr($avatar, strpos($avatar,',')+1);
@@ -145,5 +144,5 @@ class UsersController extends Controller
     }
     file_put_contents($relativePath,$avatar);
     return $relativePath;
-  }
+  }*/
 }

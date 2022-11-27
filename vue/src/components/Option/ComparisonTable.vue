@@ -1,6 +1,13 @@
 <template class="overflow-hidden">
-  <div v-if="type === 'diff' && autobansOptions.data.length === 1" class="h4 text-center"> Options </div>
-  <div v-if="type === 'diff' && autobansOptions.data.length === 2" class="h4 text-center"> Diff </div>
+  <div v-if="type === 'diff' && autobansOptions.data.length === 1" class="h4 text-center">
+    {{`
+      ${t(autobansOptions.data[0].model.brand,'brand_title')}
+      - ${t(autobansOptions.data[0].model,'model_title')}
+      - ${t(autobansOptions.data[0].type,'type_title')}
+    `}}
+  </div>
+  <div v-if="type === 'diff' && autobansOptions.data.length === 1" class="h4 text-center"> SPECS </div>
+  <div v-if="type === 'diff' && autobansOptions.data.length === 2" class="h4 text-center"> Different Style+ TO VRS </div>
   <table class="table table-hover table-striped table-bordered table-center">
     <tbody v-if="autobansOptions.data.length" v-show="type !== 'diff'">
       <tr>
@@ -48,26 +55,23 @@
       <template v-for="classOption in optionTree.data" :key="classOption.id">
         <tr>
           <td :colspan="autobansOptions.data.length+1" class="bg-blue-darker text-white py-1">
-            {{ t(classOption,'option_class_title') }}
+            <span class="h3">{{ t(classOption,'option_class_title') }}</span>
           </td>
         </tr>
         <template v-for="subClass in classOption.sub_classes" :key="subClass.id">
           <tr v-show="eliminateDuplicates(autobansOptions.data.filter(x=>x.pivots.map(x=>x.category.option_category_title)).map(x=>x.pivots.filter(z=>+z.category.option_sub_class_id===+subClass.id).filter(z=>z.category.input_type==='multiple select').map(z=>z.options).flat(1)).flat(1).map(x=>x.option_title)).length || eliminateDuplicates(autobansOptions.data.filter(x=>x.pivots.map(x=>x.category.option_category_title)).map(x=>x.pivots.filter(z=>+z.category.option_sub_class_id===+subClass.id).filter(z=>z.category.input_type!=='multiple select').map(z=>z.category)).flat(1).map(x=>x.option_category_title)).length">
-            <td :colspan="autobansOptions.data.length+1" class="py-0">
+            <td :colspan="autobansOptions.data.length+1" class="py-0 text-start">
               <u class="h4">
                 {{ t(subClass,'option_sub_class_title') }}
               </u>
             </td>
-<!--
-            <td :colspan="autobansOptions.data.length+1" class="bg-azure-dark text-white py-0">
-              {{ t(subClass,'option_sub_class_title') }} - {{ subClass.id }}
-            </td>
--->
           </tr>
           <template v-for="category in subClass.option_categories.filter(x=>['select','number','text'].includes(x.input_type))" :key="category.id">
             <tr v-if="autobansOptions.data.filter(x=>x.pivots.map(x=>x.category.option_category_title).includes(category.option_category_title)).length"
-                v-show="(type === 'diff' && (autobansOptions.data.filter(x=>x.pivots.map(x=>x.category.option_category_title).includes(category.option_category_title)).length === 1 || eliminateDuplicates(autobansOptions.data.filter(x=>x.pivots.map(x=>x.category.option_category_title).includes(category.option_category_title)).map(x=>x.pivots).flat(1).filter(x=>category.id===x.category.id).map(x=>x.option)).length)) || type !== 'diff'">
-              <td class="py-1"> {{ t(category,'option_category_title') }} </td>
+                v-show="(type === 'diff' && (autobansOptions.data.filter(x=>x.pivots.map(x=>x.category.option_category_title).includes(category.option_category_title)).length === 1 || eliminateDuplicates(autobansOptions.data.filter(x=>x.pivots.map(x=>x.category.option_category_title).includes(category.option_category_title)).map(x=>x.pivots).flat(1).filter(x=>category.id===x.category.id).map(x=>x.option)).length || eliminateDuplicates(autobansOptions.data.filter(x=>x.pivots.map(x=>x.category.option_category_title).includes(category.option_category_title)).map(x=>x.pivots).flat(1).filter(x=>category.id===x.category.id).map(x=>x.options)).length)) || type !== 'diff'">
+              <td class="py-1">
+                {{ t(category,'option_category_title') }}
+              </td>
               <td class="py-1" v-for="({pivots},index) in autobansOptions.data" v-show="(!index && type === 'diff' && autobansOptions.data.length === 2) || (!index && type === 'diff' && autobansOptions.data.length === 1) || type !== 'diff'">
                 <span v-if="pivots.filter(x=> +x.category.id === +category.id)[0]">
                   {{ t(pivots.filter(x=> +x.category.id === +category.id)[0],'option') || t(pivots.filter(x=> +x.category.id === +category.id)[0].options[0],'option_title') }}
@@ -79,7 +83,7 @@
           <template v-for="category in subClass.option_categories.filter(x=>!['select','number','text'].includes(x.input_type))">
             <tr v-show="autobansOptions.data.filter(x=>x.pivots.map(x=>x.category.option_category_title).includes(category.option_category_title)).length&& eliminateDuplicates(autobansOptions.data.map(x=> x.pivots.filter(x=>x.category.option_category_title === category.option_category_title)[0] ? x.pivots.filter(x=>x.category.option_category_title === category.option_category_title)[0].options : []).map(x=>x.map(z=>z.option_title)[0])).length">
               <td colspan="2" class="py-1 text-start">
-                <u class="h5">{{ t(category,'option_category_title') }}</u>
+                <u class="h6">{{ t(category,'option_category_title') }}</u>
               </td>
 <!--
               <td class="py-1 bg-primary text-white">
